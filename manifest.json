@@ -17,7 +17,7 @@
 	"browser_action":
 	{
 		"default_icon": "img/icon.png",
-		"default_title": "这是一个-示例Chrome插件",
+		"default_title": "优化网页的小工具",
 		"default_popup": "popup.html"
 	},
 	// 需要直接注入页面的JS
@@ -34,9 +34,9 @@
 		},
 		// 这里仅仅是为了演示content-script可以配置多个规则
 		{
-			"matches": ["*://space.bilibili.com/*/favlist*"],
-			"js": ["js/jq.js","js/Btools/viv.js"],
-			"run_at": "document_idle"
+			"matches": ["*://*.bilibili.com/*"],
+			"js": ["js/Btools/viv.js"],
+			"run_at": "document_end"
 		}
 	],
 	// 权限申请
