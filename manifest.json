@@ -46,6 +46,12 @@
 			"js": ["core/viv/m.js"],
 			"css": ["core/viv/m.css"],
 			"run_at": "document_end"
+		},
+		{
+			"matches": ["*://live.bilibili.com/*"],
+			"js": ["core/liveHelper/m.js"],
+			"css": ["core/liveHelper/m.css"],
+			"run_at": "document_end"
 		}
 	],
 	// 权限申请

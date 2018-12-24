@@ -1,0 +1,84 @@
+@charset "UTF-8";
+
+#BtoolsLiveHelper
+{
+  position: absolute;
+  bottom: 10px;
+  left: 23px;
+  width: 30px;
+  height: 30px;
+  text-decoration: none;
+  background: transparent url('https://s1.ax1x.com/2018/12/24/F6vtun.png') no-repeat scroll 0 0 / 30px 30px;
+  **background: transparent url('chrome-extension://__MSG_@@extension_id__/img/icon.png') no-repeat scroll 0 0 / 30px 30px;**
+}
+
+#BtoolsLiveHelper p
+{
+  margin:0;
+  padding:0;
+}
+
+#BtoolsLiveHelper a
+{
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#BtoolsLiveHelperOptions
+{
+  position:absolute;
+  top: 0;
+  left: 0;
+  width: 200px;
+  height: 300px;
+
+  border: 5px #CCC solid;
+  border-radius: 10px;
+
+  overflow: hidden;
+
+  background: #FFF url('https://i.postimg.cc/hP1yktHQ/TIM-20181224195716.jpg') no-repeat scroll 57px 0 / 90px 67px;
+
+  display:none;
+}
+
+#BtoolsLiveHelperOptions .BtoolsFirst
+{
+  margin-top: 80px;
+}
+
+.BtoolsText
+{
+  font-size: 20px;
+  color: #999;
+}
+
+.BtoolsCenter
+{
+  text-align: center;
+}
+
+.BtoolsOption a
+{
+  font-size: 20px;
+  color: #666;
+  text-decoration: none;
+}
+
+.BtoolsBG
+{
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: 0.75;
+}
+
+#BtoolsLiveHelperError .BtoolsLiveHelperErrorA
+{
+  color: #F66;
+  font-size: 20px;
+  font-weight: 700;
+}

@@ -55,7 +55,7 @@ function VivInit() {
   if($('.fav-video-list li.disabled').length > 0) {
     $('.fav-video-list li.disabled').each(function() {
       var keyword = $(this).find('a:eq(0) img:eq(0)').attr('alt');
-      $(this).find('a.title').html('<span class=\'viv-video-name\'>' + keyword + '</span>');
+      $(this).find('a.title').html('<span class=\'Btools-viv-video-name\'>' + keyword + '</span>');
       $(this).find('a').each(function() {
         if ($(this).attr('href') == 'javascript:;') {
           $(this).attr({
