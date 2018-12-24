@@ -12,28 +12,21 @@ const VivSet = {
   eqNum: 0
 }
 
-console.log('加载页面');
-
 $(document).ready(function(){
   $(document).on('click', '#fav-list-container a.text', function(){
-    console.log('左侧收藏夹');
     VivInitLoopStart();
   });
   $('body').on('click', '.be-pager li.be-pager-item', function(){
-    console.log('分页');
     VivInitLoopStart();
   });
   $('body').on('click', 'li.be-pager-prev,.be-pager-next', function(){
-    console.log('上下一页');
     VivInitLoopStart();
   });
   $('body').on('click', '.n-tab-links a.n-favlist', function(){
-    console.log('顶部收藏夹');
     VivInitLoopStart();
   });
   $(document).on('keyup', '.be-pager .be-pager-options-elevator input', function(e){
     if(e.which === 13) {
-      console.log('回车');
       VivInitLoopStart();
     }
   });
@@ -53,18 +46,16 @@ function VivInitLoop()
 {
   VivSet.timerOff = false;
   VivSet.timer = setInterval(function() {
-    console.log(VivSet.loopNum);
     VivInit();
     VivSet.loopNum++;
   }, 500);
 }
 
 function VivInit() {
-  console.log('失效视频个数：'+$('.fav-video-list li.disabled').length);
   if($('.fav-video-list li.disabled').length > 0) {
     $('.fav-video-list li.disabled').each(function() {
       var keyword = $(this).find('a:eq(0) img:eq(0)').attr('alt');
-      $(this).find('a.title').html('<span style=\'color:#F66\'>' + keyword + '</span>');
+      $(this).find('a.title').html('<span class=\'viv-video-name\'>' + keyword + '</span>');
       $(this).find('a').each(function() {
         if ($(this).attr('href') == 'javascript:;') {
           $(this).attr({
