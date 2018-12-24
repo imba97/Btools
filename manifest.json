@@ -34,7 +34,7 @@
 		},
 		// 这里仅仅是为了演示content-script可以配置多个规则
 		{
-			"matches": ["*://*.bilibili.com/*"],
+			"matches": ["*://space.bilibili.com/*"],
 			"js": ["js/Btools/viv.js"],
 			"run_at": "document_end"
 		}
