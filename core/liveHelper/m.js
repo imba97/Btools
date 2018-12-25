@@ -13,9 +13,20 @@ var BtoolsConfig = {
   PKPoint: true
 }
 
+
+// live助手初始化
 function liveHelperInit() {
-  $('#gift-control-vm .gift-control-panel').append('<div id="BtoolsLiveHelper"><a id="BtoolsHideCtrl" href="javascript:;" target="_self"></a><div id="BtoolsLiveHelperOptions"><p class="BtoolsText BtoolsCenter BtoolsFirst">这么辣鸡的界面对不起</p><p class="BtoolsOption"><a id="BtoolsLiveHelperPKPointHide" href="javascript:;" target="_self"><span>隐藏</span>PK分数值</a></p><p id="BtoolsLiveHelperError"></p></div></div>');
-  console.log('运行');
+  var liveHelperHTML =
+    '<div id="BtoolsLiveHelper">' +
+      '<a id="BtoolsHideCtrl" href="javascript:;" target="_self"></a>' +
+      '<div id="BtoolsLiveHelperOptions">' +
+        '<p class="BtoolsText BtoolsCenter BtoolsFirst">这么辣鸡的界面对不起</p>' +
+        '<p class="BtoolsOption"><a id="BtoolsLiveHelperPKPointHide" href="javascript:;" target="_self"><span>隐藏</span>PK分数值</a></p>' +
+        '<p id="BtoolsLiveHelperError"></p>' +
+      '</div>' +
+    '</div>'
+  $('#gift-control-vm .gift-control-panel').append(liveHelperHTML);
+  console.log('liveHelper 运行');
 
   $('#BtoolsLiveHelper #BtoolsHideCtrl').click(function(){
     if($('#BtoolsLiveHelperOptions').is(':hidden')) {
@@ -56,6 +67,7 @@ function liveHelperInit() {
   });
 }
 
+// 用于第一次进入页面的默认隐藏或显示
 function liveHelperHideTimer(k)
 {
   if(!LiveHelperSet.hideTimerOff) return false;
@@ -89,6 +101,7 @@ function liveHelperHide(k)
   }
 }
 
+// 错误显示
 function BtoolsLiveHelperError(text)
 {
   $('#BtoolsLiveHelperError').append('<a href="javascript:;" target="_self" class="BtoolsLiveHelperErrorA">' + text + '</a>');
