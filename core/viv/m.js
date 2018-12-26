@@ -25,6 +25,15 @@ $(document).ready(function(){
   $('body').on('click', '.n-tab-links a.n-favlist', function(){
     VivInitLoopStart();
   });
+  $('body').on('click', '#page-index .fav .fav-item a', function(){
+    VivInitLoopStart();
+  });
+  $('body').on('click', 'div.fav-filters,div.video-check-container,div.fav-action-fixtop', function(){
+    VivInitLoopStart();
+  });
+  window.onpopstate = function(event) {
+    VivInitLoopStart();
+  };
   $(document).on('keyup', '.be-pager .be-pager-options-elevator input', function(e){
     if(e.which === 13) {
       VivInitLoopStart();
@@ -46,6 +55,7 @@ function VivInitLoop()
 {
   VivSet.timerOff = false;
   VivSet.timer = setInterval(function() {
+    console.log(VivSet.loopNum);
     VivInit();
     VivSet.loopNum++;
   }, 500);

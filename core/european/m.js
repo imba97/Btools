@@ -8,16 +8,23 @@ const europeanSet = {
   card: null,
   winnerNum: 0,
   upName: null,
-  start: false
+  start: false,
+  autoLoadTimer: null,
+  autoLoadFlag: true,
+  autoLoadTimerOff: true
 }
 setTimeout(function() {
-  europeanShow();
+  if($('.content').children('.card').length === 0) europeanShow();
 }, 1000);
 
 function europeanShow()
 {
   var europeanShowHTML =
   '<div id="europeanPage">' +
+    '<a href="#" target="_self" class="BtoolsLogoBtn"></a>' +
+    '<div class="BtoolsBtnAll">' +
+      '<a id="BtoolsEuropeanBtn" href="#" target="_self">抽奖</a>' +
+    '</div>' +
     '<div class="europeanStartPage">' +
       '<p class="europeanUserArrLength">人数：<span>--</span></p>' +
       '<p class="europeanBtn">' +
@@ -25,6 +32,7 @@ function europeanShow()
         '<a id="europeanThisShitBtn" href="#" target="_self">就四李啦！</a>' +
         '<a id="europeanEndBtn" href="#" target="_self">结束抽奖</a>' +
       '</p>' +
+      '<a href="#" target="_self" class="europeanAutoLoad">自动加载</a>' +
       '<div id="europeanUserArr"><p class="europeanUser"></p></div>' +
       '<div class="europeanWinners"></div>' +
     '</div>' +
@@ -33,15 +41,53 @@ function europeanShow()
 
   $('body').append(europeanShowHTML);
 
+  var BtoolsBtnTop = $(window).height() * 0.3;
+  var BtoolsBtnLeft = $(window).width() * 0.23;
+
+  $('.BtoolsLogoBtn').css({
+    'top': BtoolsBtnTop,
+    'left': BtoolsBtnLeft
+  });
+  $('.BtoolsBtnAll').css({
+    'top': BtoolsBtnTop + 50,
+    'left': BtoolsBtnLeft + 5
+  });
+
+  $('#BtoolsEuropeanBtn').click(function(){
+    if($('.europeanStartPage').is(':hidden')) {
+      $('.europeanStartPage,.europeanPageBG').show().css({
+        'width': $(window).width(),
+        'height': $(window).height()
+      })
+    } else {
+      $('.europeanStartPage,.europeanPageBG').hide();
+    }
+  });
+
+  $('.europeanAutoLoad').click(function(){
+    autoLoad();
+    return false;
+  });
 
   $('#europeanStartBtn').click(function(){
     if(europeanSet.start) return false;
     console.log('start:'+europeanSet.start);
     europeanSet.start = true;
+    $('#europeanStartBtn').css({
+      'background-color': '#666'
+    });
+    $('#europeanThisShitBtn').css({
+      'background-color': '#ff94b1'
+    });
+    $('#europeanEndBtn').css({
+      'background-color': '#ff94b1'
+    });
+
     europeanSet.upName = $('.main-content:eq(0) .user-name:eq(0) a.c-pointer').text();
     $('.forw-list .dynamic-list-item-wrap').each(function() {
       europeanInArr($(this));
     });
+    if(europeanSet.userArr.length === 0) return false;
     europeanSet.timer = setInterval(function(){
       console.log('timer');
       if(europeanSet.loopNum < europeanSet.userArr.length) {
@@ -52,7 +98,7 @@ function europeanShow()
         var user = europeanSet.userArr[europeanSet.loopNum];
       }
 
-      var europeanUserHTML = '<span style="background:transparent url(\'' + user.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a href="' + user.uSpace + '">' + user.uName + '</a>';
+      var europeanUserHTML = '<span style="background:transparent url(\'' + user.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="#">' + user.uName + '</a>';
       $('#europeanUserArr .europeanUser').html(europeanUserHTML);
       $('.europeanUserArrLength span').text(europeanSet.userArr.length);
 
@@ -63,17 +109,20 @@ function europeanShow()
   });
 
   $('#europeanThisShitBtn').click(function(){
+    if(!europeanSet.start) return false;
     if(europeanSet.userArr.length === 1) {
+      var lastUser = europeanSet.userArr[0];
       $('.europeanUserArrLength span').text('0');
       if($('#europeanUserArr .europeanUser:first').css('top') == '0px') {
         $('#europeanUserArr .europeanUser:first').animate({'top':$('.europeanWinners .europeanUser').length * 50 + 80}, function(){
-          $('.europeanWinners').append($(this).prop('outerHTML'));
+          $('.europeanWinners').append(makeUserHTML(lastUser));
           $('.europeanWinners .europeanUser:last').css({
             'top': 50 * europeanSet.winnerNum
           });
           europeanSet.winnerNum++;
 
           $(this).html('').css({'top':0});
+
         });
       }
       return false;
@@ -88,8 +137,7 @@ function europeanShow()
 			}
 		});
 		europeanSet.userArr = europeanSet.userArr2;
-    var europeanUserHTML = '<p class="europeanUser"><span style="background:transparent url(\'' + winU.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a href="' + winU.uSpace + '">' + winU.uName + '</a></p>';
-    $('.europeanWinners').append(europeanUserHTML);
+    $('.europeanWinners').append(makeUserHTML(winU));
     $('.europeanWinners .europeanUser:last').css({
       'top': 50 * europeanSet.winnerNum
     });
@@ -97,8 +145,20 @@ function europeanShow()
   });
 
   $('#europeanEndBtn').click(function(){
+    if(!europeanSet.start) return false;
     europeanSet.start = false;
     europeanSet.userArr.length = [];
+    $('#europeanStartBtn').css({
+      'background-color': '#ff94b1'
+    });
+    $('#europeanThisShitBtn').css({
+      'background-color': '#666'
+    });
+    $('#europeanEndBtn').css({
+      'background-color': '#666'
+    });
+    $('.europeanUserArrLength span').text('--');
+    $('#europeanUserArr .europeanUser').html('');
     clearInterval(europeanSet.timer);
   });
 
@@ -118,4 +178,34 @@ function europeanInArr(ud) {
 	} else {
 		if (uData.uName != europeanSet.upName) europeanSet.userArr.push(uData)
 	}
+}
+
+function autoLoad() {
+  if(!europeanSet.autoLoadFlag) return false;
+  if(europeanSet.autoLoadTimerOff) {
+    europeanSet.autoLoadTimerOff = false;
+    $('.europeanAutoLoad').text('取消');
+    europeanSet.autoLoadTimer = setInterval(function(){
+      console.log($('.forw-more .nomore').length);
+      if($('.forw-more .nomore').length !== 0)
+      {
+        europeanSet.autoLoadFlag = false;
+        $('.europeanAutoLoad').text('加载完成');
+        $('html,body').scrollTop('0');
+        clearInterval(europeanSet.autoLoadTimer);
+      }
+      $('html,body').scrollTop($(document).height());
+    }, 500)
+  } else {
+    europeanSet.autoLoadTimerOff = true;
+    $('.europeanAutoLoad').text('继续加载');
+    clearInterval(europeanSet.autoLoadTimer);
+  }
+}
+
+function makeUserHTML(u)
+{
+  var mid = /com\/(\d*)\//g.exec(u.uSpace);
+  var msgUrl = 'http://message.bilibili.com/#/whisper/mid' + mid[1];
+  return '<p class="europeanUser"><span style="background:transparent url(\'' + u.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="' + u.uSpace + '" target="_blank">' + u.uName + '</a><a class="europeanUMsg" href="' + msgUrl + '" target="_blank">私信TA</a></p>';
 }

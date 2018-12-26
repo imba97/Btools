@@ -43,6 +43,7 @@
 		{
 			"matches": ["*://*.bilibili.com/*"],
 			"js": ["core/Btools.js"],
+			"css": ["core/Btools.css"],
 			"run_at": "document_start"
 		},
 		// 这里仅仅是为了演示content-script可以配置多个规则
