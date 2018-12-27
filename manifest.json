@@ -17,7 +17,7 @@
 	"browser_action":
 	{
 		"default_icon": "img/icon.png",
-		"default_title": "优化网页的小工具",
+		"default_title": "Btools",
 		"default_popup": "popup.html"
 	},
 	"options_page": "options.html",

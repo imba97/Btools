@@ -41,8 +41,10 @@ function europeanShow()
 
   $('body').append(europeanShowHTML);
 
+  var cardW = $('.detail-card .card:eq(0)').outerWidth();
+
   var BtoolsBtnTop = $(window).height() * 0.3;
-  var BtoolsBtnLeft = $(window).width() * 0.23;
+  var BtoolsBtnLeft = ($(window).width() / 2) - (cardW / 2) - 70;
 
   $('.BtoolsLogoBtn').css({
     'top': BtoolsBtnTop,
@@ -114,7 +116,8 @@ function europeanShow()
       var lastUser = europeanSet.userArr[0];
       $('.europeanUserArrLength span').text('0');
       if($('#europeanUserArr .europeanUser:first').css('top') == '0px') {
-        $('#europeanUserArr .europeanUser:first').animate({'top':$('.europeanWinners .europeanUser').length * 50 + 80}, function(){
+        var sTop = $('.europeanWinners').scrollTop();
+        $('#europeanUserArr .europeanUser:first').animate({'top':$('.europeanWinners .europeanUser').length * 50 - sTop + 80}, function(){
           $('.europeanWinners').append(makeUserHTML(lastUser));
           $('.europeanWinners .europeanUser:last').css({
             'top': 50 * europeanSet.winnerNum
