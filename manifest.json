@@ -41,7 +41,7 @@
 			"run_at": "document_start"
 		},
 		{
-			"matches": ["*://*.bilibili.com/*"],
+			"matches": ["*://*.bilibili.com/*","*://*.weibo.com/*"],
 			"js": ["core/Btools.js"],
 			"css": ["core/Btools.css"],
 			"run_at": "document_start"

@@ -13,5 +13,26 @@ function completeLoading() {
         }
       }
       console.log(Btools.info,Btools.infoColor);
+
+      var url = window.location.href;
+
+      // 微博自动刷新评论工具
+      if(/(?:http|https)\:\/\/([^\/\?]*)\/\d+\/[a-zA-Z0-9]+\?type=comment/i.test(url)) {
+        console.log('开启自动加载评论');
+        window.onscroll = function() {
+          if (document.getElementsByClassName("more_txt")[0] != undefined) {
+            var scrollH = document.documentElement.scrollHeight || document.body.scrollHeight;
+          	var clientH = document.documentElement.clientHeight || document.body.clientHeight;
+          	var imba97_hei = (scrollH - clientH) - 100;
+          	var scrolltop = document.documentElement.scrollTop || document.body.scrollTop;
+          	if (scrolltop >= imba97_hei) {
+          		if (document.getElementsByClassName("more_txt")[0] != undefined) document.getElementsByClassName("more_txt")[0].click();
+          	}
+          }
+        }
+      }
+
+      // 其他
+
     }
 }
