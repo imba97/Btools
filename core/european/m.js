@@ -11,28 +11,32 @@ const europeanSet = {
   start: false,
   autoLoadTimer: null,
   autoLoadFlag: true,
-  autoLoadTimerOff: true
+  autoLoadTimerOff: true,
+  Alleuropeans: 0
 }
 setTimeout(function() {
   if($('.content').children('.card').length === 0) europeanShow();
+  europeanSet.Alleuropeans = Number($('.button-bar span:eq(0) span:eq(0)').text());
+  console.log(europeanSet.Alleuropeans);
 }, 1000);
 
 function europeanShow()
 {
   var europeanShowHTML =
   '<div id="europeanPage">' +
-    '<a href="#" target="_self" class="BtoolsLogoBtn"></a>' +
+    '<a href="#javascript:;" target="_self" class="BtoolsLogoBtn"></a>' +
     '<div class="BtoolsBtnAll">' +
-      '<a id="BtoolsEuropeanBtn" href="#" target="_self">抽奖</a>' +
+      '<a id="BtoolsEuropeanBtn" href="#javascript:;" target="_self">抽奖</a>' +
     '</div>' +
     '<div class="europeanStartPage">' +
       '<p class="europeanUserArrLength">人数：<span>--</span></p>' +
       '<p class="europeanBtn">' +
-        '<a id="europeanStartBtn" href="#" target="_self">开始</a>' +
-        '<a id="europeanThisShitBtn" href="#" target="_self">就四李啦！</a>' +
-        '<a id="europeanEndBtn" href="#" target="_self">结束抽奖</a>' +
+        '<a id="europeanStartBtn" href="#javascript:;" target="_self">开始</a>' +
+        '<a id="europeanThisShitBtn" href="#javascript:;" target="_self">就四李啦！</a>' +
+        '<a id="europeanEndBtn" href="#javascript:;" target="_self">结束抽奖</a>' +
       '</p>' +
-      '<a href="#" target="_self" class="europeanAutoLoad">自动加载</a>' +
+      '<a href="#javascript:;" target="_self" class="europeanAutoLoad">自动加载</a>' +
+      '<p class="europeanAutoLoadProgressBar"></p>' +
       '<div id="europeanUserArr"><p class="europeanUser"></p></div>' +
       '<div class="europeanWinners"></div>' +
     '</div>' +
@@ -100,7 +104,7 @@ function europeanShow()
         var user = europeanSet.userArr[europeanSet.loopNum];
       }
 
-      var europeanUserHTML = '<span style="background:transparent url(\'' + user.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="#">' + user.uName + '</a>';
+      var europeanUserHTML = '<span style="background:transparent url(\'' + user.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="#javascript:;">' + user.uName + '</a>';
       $('#europeanUserArr .europeanUser').html(europeanUserHTML);
       $('.europeanUserArrLength span').text(europeanSet.userArr.length);
 
@@ -111,9 +115,10 @@ function europeanShow()
   });
 
   $('#europeanThisShitBtn').click(function(){
-    if(!europeanSet.start) return false;
+    if(!europeanSet.start || europeanSet.userArr.length === 0) return false;
     if(europeanSet.userArr.length === 1) {
       var lastUser = europeanSet.userArr[0];
+      europeanSet.userArr = [];
       $('.europeanUserArrLength span').text('0');
       if($('#europeanUserArr .europeanUser:first').css('top') == '0px') {
         var sTop = $('.europeanWinners').scrollTop();
@@ -189,6 +194,9 @@ function autoLoad() {
     europeanSet.autoLoadTimerOff = false;
     $('.europeanAutoLoad').text('取消');
     europeanSet.autoLoadTimer = setInterval(function(){
+      var progressBarNum = Math.floor($('.forw-list .dynamic-list-item-wrap').length / europeanSet.Alleuropeans * 100);
+      $('.europeanAutoLoadProgressBar').css({'width': progressBarNum + '%'});
+      $('.europeanAutoLoad').text(progressBarNum + '%');
       console.log($('.forw-more .nomore').length);
       if($('.forw-more .nomore').length !== 0)
       {
@@ -196,8 +204,9 @@ function autoLoad() {
         $('.europeanAutoLoad').text('加载完成');
         $('html,body').scrollTop('0');
         clearInterval(europeanSet.autoLoadTimer);
+      } else {
+        $('.more')[0].click();
       }
-      $('html,body').scrollTop($(document).height());
     }, 500)
   } else {
     europeanSet.autoLoadTimerOff = true;

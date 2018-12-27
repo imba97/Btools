@@ -13,7 +13,7 @@ const VivSet = {
 }
 
 $(document).ready(function(){
-  $(document).on('click', '#fav-list-container a.text', function(){
+  $(document).on('click', '.be-scrollbar .fav-list .fav-item a.text', function(){
     VivInitLoopStart();
   });
   $('body').on('click', '.be-pager li.be-pager-item', function(){

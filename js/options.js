@@ -1,6 +1,4 @@
-var defaultConfig = {
-  PKPoint: true
-};
+var PKPoint;
 
 document.addEventListener('DOMContentLoaded', function() {
   showSet();
@@ -8,34 +6,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function showSet()
 {
-  chrome.storage.sync.get(defaultConfig, function(items) {
+  chrome.storage.sync.get({PKPoint: true}, function(items) {
     // PKPoint
 		if(items.PKPoint) {
       var PKPointText = '显示';
     } else {
       var PKPointText = '隐藏';
     }
-    defaultConfig.PKPoint = items.PKPoint;
+    PKPoint = items.PKPoint;
     $('#BtoolsLiveHelperPKPointHide span').text(PKPointText);
 	});
 }
 
-// $(document).on('click', '#BtoolsSet p a', function(){
-//
-// });
 $('#BtoolsSet p a').click(function(){
 
   switch($(this).attr('id'))
   {
     case 'BtoolsLiveHelperPKPointHide':
-      if(defaultConfig.PKPoint)
-        defaultConfig.PKPoint = false;
-      else
-        defaultConfig.PKPoint = true;
+      PKPoint = !PKPoint;
     break;
   }
 
-  chrome.storage.sync.set(defaultConfig, function() {
+  chrome.storage.sync.set({PKPoint: PKPoint}, function() {
     // 注意新版的options页面alert不生效！
     // alert('保存成功！');
     showSet();

@@ -64,6 +64,12 @@
 			"js": ["core/european/m.js"],
 			"css": ["core/european/m.css"],
 			"run_at": "document_end"
+		},
+		{
+			"matches": ["*://*.bilibili.com/read/*"],
+			"js": ["core/getUrl/m.js"],
+			"css": ["core/getUrl/m.css"],
+			"run_at": "document_end"
 		}
 	],
 	// 权限申请

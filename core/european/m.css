@@ -172,9 +172,9 @@
 .europeanAutoLoad
 {
   position: absolute;
-  bottom: 20px;
+  bottom: 0;
   left: 47%;
-  width: 100px;
+  width: 200px;
   height: 40px;
   line-height: 40px;
   text-align: center;
@@ -185,13 +185,12 @@
   display: block;
 }
 
-.europeanAutoLoad::before
+.europeanAutoLoadProgressBar
 {
   position: absolute;
-  bottom: -20px; left: 0;
-  content: '↓';
-  width: 100px;
-  height: 20px;
+  bottom: 0; left: 0;
+  width: 0;
+  height: 3px;
   line-height: 20px;
   font-size: 18px;
   background-color: #ff5885;
