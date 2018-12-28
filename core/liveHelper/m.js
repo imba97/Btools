@@ -27,7 +27,7 @@ function liveHelperInit() {
       '</div>' +
     '</div>'
   $('#gift-control-vm .gift-control-panel').append(liveHelperHTML);
-  console.log('liveHelper 运行');
+  // console.log('liveHelper 运行');
 
   $('#BtoolsLiveHelper #BtoolsHideCtrl').click(function(){
     if($('#BtoolsLiveHelperOptions').is(':hidden')) {
@@ -57,9 +57,9 @@ function liveHelperInit() {
   $('#BtoolsLiveHelperPKPointHide').click(function(){
     if($('.process-box').length !== 0){
       if($('.process-box').is(':hidden')){
-        liveHelperHide(1);
-      }else{
         liveHelperHide(0);
+      }else{
+        liveHelperHide(1);
       }
     } else {
       BtoolsLiveHelperMsg(false, '未检测到PK分数窗口');
@@ -70,10 +70,10 @@ function liveHelperInit() {
 // 用于第一次进入页面的默认隐藏或显示
 function liveHelperHideTimer(k)
 {
+  if(k === 0) return false;
   if(!LiveHelperSet.hideTimerOff) return false;
   LiveHelperSet.hideTimerOff = false;
   LiveHelperSet.hideTimer = setInterval(function() {
-    console.log('hide:'+LiveHelperSet.hideLoopNum);
     if(LiveHelperSet.hideLoopNum >= LiveHelperSet.hideLoopMax) {
       LiveHelperSet.hideLoopNum = 0;
       LiveHelperSet.hideTimerOff = true;
@@ -87,13 +87,15 @@ function liveHelperHideTimer(k)
     } else {
       LiveHelperSet.hideLoopNum++;
     }
+
+    // 隐藏迷你播放器
     if(BtoolsConfig.miniPlayerShow === 1) $('.player-section .live-player-ctnr').addClass('miniPlayerHide');
   }, 500); // fuck you!!!
 }
 
 function liveHelperHide(k)
 {
-  if(k === 1){
+  if(k === 0){
     $('#BtoolsLiveHelperPKPointHide span').text('隐藏');
     $('.process-box,.pk-result,.player-area:first').show();
   } else {
@@ -113,7 +115,6 @@ function BtoolsLiveHelperMsg(k,text)
 }
 
 LiveHelperSet.timer = setInterval(function() {
-  console.log(LiveHelperSet.loopNum);
   if(LiveHelperSet.loopNum >= LiveHelperSet.loopMax) clearInterval(LiveHelperSet.timer);
   if($('#gift-control-vm .gift-control-panel').length === 0) {
     LiveHelperSet.loopNum++;

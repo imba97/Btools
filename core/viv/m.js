@@ -55,7 +55,7 @@ function VivInitLoop()
 {
   VivSet.timerOff = false;
   VivSet.timer = setInterval(function() {
-    console.log(VivSet.loopNum);
+    // console.log(VivSet.loopNum);
     VivInit();
     VivSet.loopNum++;
   }, 500);

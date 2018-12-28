@@ -1,4 +1,8 @@
 const europeanSet = {
+  loopNumOnload: 0,
+  loopNumOnloadMax: 20,
+  timerOnload: null,
+  cardW: 0,
   loopNum: 0,
   timer: null,
   timerOff: false,
@@ -13,15 +17,25 @@ const europeanSet = {
   autoLoadFlag: true,
   autoLoadTimerOff: true,
   Alleuropeans: 0,
-  defaultAtNum: 2,
+  defaultAtNum: 0,
   atNumArr: [],
   atNumReg: eval(/<?a href="\/\/space\.bilibili\.com\/\d+\/dynamic"[^<>]*>\@([^<>@]*)<\/a>/ig)
 }
-setTimeout(function() {
-  if($('.content').children('.card').length === 0) europeanShow();
-  europeanSet.Alleuropeans = Number($('.button-bar span:eq(0) span:eq(0)').text());
-  console.log(europeanSet.Alleuropeans);
-}, 1000);
+
+
+europeanSet.timerOnload = setInterval(function(){
+  if($('.detail-card .card:eq(0)').length > 0) {
+    europeanSet.cardW = $('.detail-card .card:eq(0)').outerWidth();
+    if($('.content').children('.card').length === 0) europeanShow();
+    europeanSet.Alleuropeans = Number($('.button-bar span:eq(0) span:eq(0)').text());
+    // console.log(europeanSet.Alleuropeans);
+    clearInterval(europeanSet.timerOnload);
+  } else {
+    europeanSet.loopNumOnload++;
+  }
+
+  if(europeanSet.loopNumOnload > europeanSet.loopNumOnloadMax) clearInterval(europeanSet.timerOnload);
+}, 500);
 
 function europeanShow()
 {
@@ -39,7 +53,7 @@ function europeanShow()
         '<a id="europeanEndBtn" href="#javascript:;" target="_self">结束抽奖</a>' +
       '</p>' +
       '<a href="#javascript:;" target="_self" class="europeanAutoLoad">自动加载</a>' +
-      '<input type="number" value="0" class="europeanAtSet">' +
+      '<p class="europeanAtSet"><input type="number" value="0"></p>' +
       '<p class="europeanAutoLoadProgressBar"></p>' +
       '<div id="europeanUserArr"><p class="europeanUser"></p></div>' +
       '<div class="europeanWinners"></div>' +
@@ -49,28 +63,28 @@ function europeanShow()
 
   $('body').append(europeanShowHTML);
 
-  var cardW = $('.detail-card .card:eq(0)').outerWidth();
-
-  var BtoolsBtnTop = $(window).height() * 0.3;
-  var BtoolsBtnLeft = ($(window).width() / 2) - (cardW / 2) - 70;
-
-  $('.BtoolsLogoBtn').css({
-    'top': BtoolsBtnTop,
-    'left': BtoolsBtnLeft
-  });
-  $('.BtoolsBtnAll').css({
-    'top': BtoolsBtnTop + 50,
-    'left': BtoolsBtnLeft + 5
-  });
-  $('.europeanAtSet').css({
-    'top': BtoolsBtnTop + 120,
-    'left': BtoolsBtnLeft + 5
+  rePosition();
+  $(window).resize(function() {
+    rePosition();
   });
 
-  $('.europeanAtSet').bind('input propertychange', function(){
-    europeanSet.defaultAtNum = $(this).val() > 0 ? $(this).val() : 0;
-    if(europeanSet.defaultAtNum === 0) $(this).val(0);
-    console.log(europeanSet.defaultAtNum);
+  chrome.storage.sync.get({defaultAtNum: 0}, function(items) {
+    europeanSet.defaultAtNum = items.defaultAtNum;
+    $('.europeanAtSet input').val(items.defaultAtNum);
+  });
+
+  $('.europeanAtSet input').bind('input propertychange', function(){
+    var num = $(this).val();
+    if(num >= 0 && num <= 9) {
+      europeanSet.defaultAtNum = num;
+    } else {
+      $(this).val(europeanSet.defaultAtNum);
+      return false;
+    }
+    $(this).val(europeanSet.defaultAtNum);
+    chrome.storage.sync.set({defaultAtNum: europeanSet.defaultAtNum}, function() {
+      // console.log('set ✔');
+    });
   });
 
   $('#BtoolsEuropeanBtn').click(function(){
@@ -91,7 +105,7 @@ function europeanShow()
 
   $('#europeanStartBtn').click(function(){
     if(europeanSet.start) return false;
-    console.log('start:'+europeanSet.start);
+    // console.log('start:'+europeanSet.start);
     europeanSet.start = true;
     $('#europeanStartBtn').css({
       'background-color': '#666'
@@ -107,9 +121,12 @@ function europeanShow()
     $('.forw-list .dynamic-list-item-wrap').each(function() {
       europeanInArr($(this));
     });
-    if(europeanSet.userArr.length === 0) return false;
+    if(europeanSet.userArr.length === 0) {
+      $('#europeanEndBtn').click();
+      $('#europeanUserArr .europeanUser').html('<font class="europeanUserMsg">没有符合的用户</font>');
+      return false;
+    }
     europeanSet.timer = setInterval(function(){
-      console.log('timer');
       if(europeanSet.loopNum < europeanSet.userArr.length) {
         var user = europeanSet.userArr[europeanSet.loopNum];
         europeanSet.loopNum++;
@@ -183,8 +200,25 @@ function europeanShow()
     $('#europeanUserArr .europeanUser').html('');
     clearInterval(europeanSet.timer);
   });
+}
 
-  console.log('european start');
+function rePosition()
+{
+  var BtoolsBtnTop = $(window).height() * 0.3;
+  var BtoolsBtnLeft = ($(window).width() / 2) - (europeanSet.cardW / 2) - 70;
+
+  $('.BtoolsLogoBtn').css({
+    'top': BtoolsBtnTop,
+    'left': BtoolsBtnLeft
+  });
+  $('.BtoolsBtnAll').css({
+    'top': BtoolsBtnTop + 50,
+    'left': BtoolsBtnLeft + 5
+  });
+  $('.europeanAtSet').css({
+    'top': BtoolsBtnTop + 120,
+    'left': BtoolsBtnLeft + 5
+  });
 }
 
 function europeanInArr(ud) {
@@ -239,8 +273,7 @@ function autoLoad() {
     europeanSet.autoLoadTimer = setInterval(function(){
       var progressBarNum = Math.floor($('.forw-list .dynamic-list-item-wrap').length / europeanSet.Alleuropeans * 100);
       $('.europeanAutoLoadProgressBar').css({'width': progressBarNum + '%'});
-      $('.europeanAutoLoad').text(progressBarNum + '%');
-      console.log($('.forw-more .nomore').length);
+      $('.europeanAutoLoad').text(progressBarNum + '% 点击暂停');
       if($('.forw-more .nomore').length !== 0)
       {
         europeanSet.autoLoadFlag = false;
@@ -248,7 +281,7 @@ function autoLoad() {
         $('html,body').scrollTop('0');
         clearInterval(europeanSet.autoLoadTimer);
       } else {
-        $('.more')[0].click();
+        if($('.more').length > 0) $('.more')[0].click();
       }
     }, 500)
   } else {

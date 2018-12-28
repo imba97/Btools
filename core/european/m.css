@@ -20,7 +20,7 @@
   left: 10;
   width: 50px;
   height: 50px;
-  background: transparent url('https://s1.ax1x.com/2018/12/24/F6vtun.png') no-repeat scroll 0 0 / 50px 50px;
+  background: transparent url('__MSG_logo__') no-repeat scroll 0 0 / 50px 50px;
   z-index: 50;
 }
 
@@ -65,10 +65,10 @@
 
 #BtoolsEuropeanBtn::after
 {
-  content: '点击使用抽奖功能，如果人数超过5人（废话），请点击页面下方的自动加载';
+  content: '点击使用抽奖功能，如果人数超过5人（废话），请点击页面下方的自动加载，超过500人建议就别用了。';
   padding:5px;
   width: 160px;
-  height: 80px;
+  height: 100px;
   line-height: 20px;
 }
 
@@ -92,6 +92,12 @@
   float: left;
 }
 
+.europeanUserMsg
+{
+  color: #F66;
+  font-size: 20px;
+}
+
 #europeanStartBtn
 {
   background-color: #ff94b1;
@@ -106,7 +112,7 @@
 #europeanUserArr
 {
   margin: 50px auto 0 auto;
-  padding-top:30px;
+  padding-top: 30px;
   width: 400px;
   height: 50px;
   line-height: 50px;
@@ -195,20 +201,26 @@
   font-size: 18px;
   background-color: #ff5885;
 }
-
 .europeanAtSet
 {
   position: absolute;
-  padding:3px 20px;
-  width: 50px;
+  width: 90px;
+  height: 30px;
+  border: 2px #ff94b1 solid;
+  border-radius: 20px;
+  background-color: #FFF;
+  overflow: hidden;
+}
+.europeanAtSet input
+{
+  margin: 0 30px;
+  width: 30px;
   height: 30px;
   line-height: 30px;
-  border: 2px #ff94b1 solid;
   font-size: 20px;
   font-weight: 700;
   color: #666;
-  text-align: center;
-  border-radius: 20px;
+  border: none;
 }
 .europeanAtSet::before,
 .europeanAtSet::after
@@ -218,18 +230,14 @@
 }
 .europeanAtSet::before
 {
-  content: '需要 @';
+  content: '@';
   position: absolute;
-  top:0; left:0;
-  width: 50px;
-  height: 30px;
+  top:3px; left:5px;
 }
 .europeanAtSet::after
 {
   position: absolute;
-  top:0; left:0;
-  width: 50px;
-  height: 30px;
+  top:0; left:60px;
   content: '人';
 }
 
