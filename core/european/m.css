@@ -196,6 +196,43 @@
   background-color: #ff5885;
 }
 
+.europeanAtSet
+{
+  position: absolute;
+  padding:3px 20px;
+  width: 50px;
+  height: 30px;
+  line-height: 30px;
+  border: 2px #ff94b1 solid;
+  font-size: 20px;
+  font-weight: 700;
+  color: #666;
+  text-align: center;
+  border-radius: 20px;
+}
+.europeanAtSet::before,
+.europeanAtSet::after
+{
+  color: #666;
+  font-size: 20px;
+}
+.europeanAtSet::before
+{
+  content: '需要 @';
+  position: absolute;
+  top:0; left:0;
+  width: 50px;
+  height: 30px;
+}
+.europeanAtSet::after
+{
+  position: absolute;
+  top:0; left:0;
+  width: 50px;
+  height: 30px;
+  content: '人';
+}
+
 .europeanPageBG
 {
   position: absolute;

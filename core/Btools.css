@@ -4,27 +4,26 @@
 {
   position: fixed;
 }
-
 .to-top::before
 {
   content: '';
   position: absolute;
-  top: 200px; left: 25px;
+  top: 125px; left: 20px;
   width: 30px;
   height: 30px;
   background: transparent url('https://s1.ax1x.com/2018/12/24/F6vtun.png') no-repeat scroll 0 0 / 30px 30px;
-  transform: rotate(30deg);
-  -ms-transform: rotate(30deg);
-  -webkit-transform: rotate(30deg);
-  -o-transform: rotate(30deg);
-  -moz-transform: rotate(30deg);
+  transform: rotate(50deg);
+  -ms-transform: rotate(50deg);
+  -webkit-transform: rotate(50deg);
+  -o-transform: rotate(50deg);
+  -moz-transform: rotate(50deg);
 }
 .to-top::after
 {
   content: '';
   position: absolute;
-  top: 76px; left: 32px;
+  top: 69px; left: 32px;
   width: 1px;
-  height: 127px;
+  height: 57px;
   background-color: #029bcd;
 }

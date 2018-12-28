@@ -10,7 +10,8 @@ const LiveHelperSet = {
 }
 
 var BtoolsConfig = {
-  PKPoint: true
+  PKPoint: 0,
+  miniPlayerShow: 0
 }
 
 
@@ -22,7 +23,7 @@ function liveHelperInit() {
       '<div id="BtoolsLiveHelperOptions">' +
         '<p class="BtoolsText BtoolsCenter BtoolsFirst">这么辣鸡的界面对不起</p>' +
         '<p class="BtoolsOption"><a id="BtoolsLiveHelperPKPointHide" href="javascript:;" target="_self"><span>隐藏</span>PK分数值</a></p>' +
-        '<p id="BtoolsLiveHelperError"></p>' +
+        '<p id="BtoolsLiveHelperMsg"></p>' +
       '</div>' +
     '</div>'
   $('#gift-control-vm .gift-control-panel').append(liveHelperHTML);
@@ -49,20 +50,19 @@ function liveHelperInit() {
   });
 
   chrome.storage.sync.get(BtoolsConfig, function(items){
-    BtoolsConfig.PKPoint = items.PKPoint;
-    console.log(items.PKPoint);
+    BtoolsConfig = items;
     liveHelperHideTimer(items.PKPoint);
   });
 
   $('#BtoolsLiveHelperPKPointHide').click(function(){
     if($('.process-box').length !== 0){
       if($('.process-box').is(':hidden')){
-        liveHelperHide(true);
+        liveHelperHide(1);
       }else{
-        liveHelperHide(false);
+        liveHelperHide(0);
       }
     } else {
-      BtoolsLiveHelperError('未检测到PK分数窗口');
+      BtoolsLiveHelperMsg(false, '未检测到PK分数窗口');
     }
   });
 }
@@ -87,12 +87,13 @@ function liveHelperHideTimer(k)
     } else {
       LiveHelperSet.hideLoopNum++;
     }
+    if(BtoolsConfig.miniPlayerShow === 1) $('.player-section .live-player-ctnr').addClass('miniPlayerHide');
   }, 500); // fuck you!!!
 }
 
 function liveHelperHide(k)
 {
-  if(k){
+  if(k === 1){
     $('#BtoolsLiveHelperPKPointHide span').text('隐藏');
     $('.process-box,.pk-result,.player-area:first').show();
   } else {
@@ -101,11 +102,12 @@ function liveHelperHide(k)
   }
 }
 
-// 错误显示
-function BtoolsLiveHelperError(text)
+// 信息显示
+function BtoolsLiveHelperMsg(k,text)
 {
-  $('#BtoolsLiveHelperError').append('<a href="javascript:;" target="_self" class="BtoolsLiveHelperErrorA">' + text + '</a>');
-  $('#BtoolsLiveHelperError .BtoolsLiveHelperErrorA:last').animate({'opacity': 0}, 2000, function(){
+  var aClass = k ? 'BtoolsLiveHelperSuccessA' : 'BtoolsLiveHelperErrorA';
+  $('#BtoolsLiveHelperMsg').append('<a href="javascript:;" target="_self" class="' + aClass + '">' + text + '</a>');
+  $('#BtoolsLiveHelperMsg .'+aClass+':last').animate({'opacity': 0}, 2000, function(){
     $(this).remove();
   });
 }

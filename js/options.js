@@ -1,4 +1,12 @@
-var PKPoint;
+var defaultSet = {
+  PKPoint: 0,
+  miniPlayerShow: 0
+};
+
+var setText = {
+  PKPoint: ['显示', '隐藏'],
+  miniPlayerShow: ['显示', '隐藏']
+}
 
 document.addEventListener('DOMContentLoaded', function() {
   showSet();
@@ -6,28 +14,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function showSet()
 {
-  chrome.storage.sync.get({PKPoint: true}, function(items) {
-    // PKPoint
-		if(items.PKPoint) {
-      var PKPointText = '显示';
-    } else {
-      var PKPointText = '隐藏';
-    }
-    PKPoint = items.PKPoint;
-    $('#BtoolsLiveHelperPKPointHide span').text(PKPointText);
+  chrome.storage.sync.get(defaultSet, function(items) {
+    defaultSet = items;
+    $.each(items, function(k, v){
+      $('#'+k+' span').text(setText[k][v]);
+    });
 	});
 }
 
 $('#BtoolsSet p a').click(function(){
 
-  switch($(this).attr('id'))
-  {
-    case 'BtoolsLiveHelperPKPointHide':
-      PKPoint = !PKPoint;
-    break;
-  }
+  var setID = $(this).attr('id');
+  var max = Number($(this).attr('data-max'));
 
-  chrome.storage.sync.set({PKPoint: PKPoint}, function() {
+  if(defaultSet[setID] < max) ++defaultSet[setID];
+  else defaultSet[setID] = 0;
+
+  chrome.storage.sync.set(defaultSet, function() {
     // 注意新版的options页面alert不生效！
     // alert('保存成功！');
     showSet();

@@ -76,9 +76,23 @@
   opacity: 0.75;
 }
 
-#BtoolsLiveHelperError .BtoolsLiveHelperErrorA
+#BtoolsLiveHelperMsg .BtoolsLiveHelperSuccessA,
+#BtoolsLiveHelperMsg .BtoolsLiveHelperErrorA
 {
-  color: #F66;
   font-size: 20px;
   font-weight: 700;
+}
+
+#BtoolsLiveHelperMsg .BtoolsLiveHelperSuccessA
+{
+  color: #6F6;
+}
+#BtoolsLiveHelperMsg .BtoolsLiveHelperErrorA
+{
+  color: #F66;
+}
+
+.miniPlayerHide[class~=minimal]
+{
+  transform: translate(450px, 0px) !important;
 }

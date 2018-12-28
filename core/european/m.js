@@ -12,7 +12,10 @@ const europeanSet = {
   autoLoadTimer: null,
   autoLoadFlag: true,
   autoLoadTimerOff: true,
-  Alleuropeans: 0
+  Alleuropeans: 0,
+  defaultAtNum: 2,
+  atNumArr: [],
+  atNumReg: eval(/<?a href="\/\/space\.bilibili\.com\/\d+\/dynamic"[^<>]*>\@([^<>@]*)<\/a>/ig)
 }
 setTimeout(function() {
   if($('.content').children('.card').length === 0) europeanShow();
@@ -36,6 +39,7 @@ function europeanShow()
         '<a id="europeanEndBtn" href="#javascript:;" target="_self">结束抽奖</a>' +
       '</p>' +
       '<a href="#javascript:;" target="_self" class="europeanAutoLoad">自动加载</a>' +
+      '<input type="number" value="0" class="europeanAtSet">' +
       '<p class="europeanAutoLoadProgressBar"></p>' +
       '<div id="europeanUserArr"><p class="europeanUser"></p></div>' +
       '<div class="europeanWinners"></div>' +
@@ -57,6 +61,16 @@ function europeanShow()
   $('.BtoolsBtnAll').css({
     'top': BtoolsBtnTop + 50,
     'left': BtoolsBtnLeft + 5
+  });
+  $('.europeanAtSet').css({
+    'top': BtoolsBtnTop + 120,
+    'left': BtoolsBtnLeft + 5
+  });
+
+  $('.europeanAtSet').bind('input propertychange', function(){
+    europeanSet.defaultAtNum = $(this).val() > 0 ? $(this).val() : 0;
+    if(europeanSet.defaultAtNum === 0) $(this).val(0);
+    console.log(europeanSet.defaultAtNum);
   });
 
   $('#BtoolsEuropeanBtn').click(function(){
@@ -174,6 +188,33 @@ function europeanShow()
 }
 
 function europeanInArr(ud) {
+  if(europeanSet.defaultAtNum > 0) {
+    var uText = ud.find('.item-detail:eq(0) .text:eq(0)').html();
+    var uTextArr = uText.split('//<');
+    europeanSet.atNumArr = [];
+    if(uTextArr.length > 1) {
+      var text = uTextArr[0];
+    } else {
+      var text = uTextArr[0];
+    }
+    var atNumFlag = text.match(europeanSet.atNumReg);
+    // console.log(atNumFlag);
+    if(atNumFlag !== null) {
+      for(i = 0; i < atNumFlag.length; i++) {
+        uniqueArr(atNumFlag[i], europeanSet.atNumArr)
+      }
+    }
+
+    if(europeanSet.atNumArr.length < europeanSet.defaultAtNum) return false;
+
+    // if(europeanSet.atNumArr.length < europeanSet.defaultAtNum) {
+    //   var a = '不符合要求';
+    // } else {
+    //   var a = '符合要求';
+    // }
+    // console.log('['+ud.find('.item-detail:eq(0) .item-user:eq(0) a.user-name:eq(0)').text() + '] At了 ' + europeanSet.atNumArr.length + '人，' + a);
+  }
+
 	var uData = {
 		uName: ud.find('.item-detail:eq(0) .item-user:eq(0) a.user-name:eq(0)').text(),
 		uFace: ud.find('.forw-face:eq(0) .c-pointer:eq(0) .forw-head:eq(0)').attr('src'),
@@ -181,7 +222,9 @@ function europeanInArr(ud) {
 	};
 	if (europeanSet.userArr.length > 0) {
 		$.each(europeanSet.userArr, function(k, v) {
-			if (v.uName != uData.uName && uData.uName != europeanSet.upName && k == europeanSet.userArr.length - 1) europeanSet.userArr.push(uData)
+			if (v.uName !== uData.uName && uData.uName !== europeanSet.upName) {
+        if(k === europeanSet.userArr.length - 1) europeanSet.userArr.push(uData);
+      }
 		})
 	} else {
 		if (uData.uName != europeanSet.upName) europeanSet.userArr.push(uData)
@@ -220,4 +263,17 @@ function makeUserHTML(u)
   var mid = /com\/(\d*)\//g.exec(u.uSpace);
   var msgUrl = 'http://message.bilibili.com/#/whisper/mid' + mid[1];
   return '<p class="europeanUser"><span style="background:transparent url(\'' + u.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="' + u.uSpace + '" target="_blank">' + u.uName + '</a><a class="europeanUMsg" href="' + msgUrl + '" target="_blank">私信TA</a></p>';
+}
+
+function uniqueArr(val, arr)
+{
+  if(arr.length === 0) {
+    if (val != europeanSet.upName) arr.push(val);
+  } else {
+    $.each(arr, function(k, v){
+      if (val != v && val != europeanSet.upName) {
+        if(k === arr.length - 1) arr.push(val);
+      }
+    });
+  }
 }
