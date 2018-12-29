@@ -41,7 +41,7 @@
 			"run_at": "document_start"
 		},
 		{
-			"matches": ["*://*.bilibili.com/*","*://*.weibo.com/*"],
+			"matches": ["*://*.bilibili.com/*", "*://*.weibo.com/*"],
 			"js": ["core/Btools.js"],
 			"css": ["core/Btools.css"],
 			"run_at": "document_start"
@@ -69,6 +69,12 @@
 			"matches": ["*://*.bilibili.com/read/*"],
 			"js": ["core/getUrl/m.js"],
 			"css": ["core/getUrl/m.css"],
+			"run_at": "document_end"
+		},
+		{
+			"matches": ["*://*.bilibili.com/watchlater/*", "*://*.bilibili.com/video/*", "*://*.bilibili.com/bangumi/*"],
+			"js": ["core/openImg/m.js"],
+			"css": ["core/openImg/m.css"],
 			"run_at": "document_end"
 		}
 	],

@@ -1,14 +1,10 @@
 @charset "UTF-8";
 
-.to-top-Btools
-{
-  position: fixed;
-}
-.to-top::before
+#app .to-top::before
 {
   content: '';
   position: absolute;
-  top: 125px; left: 20px;
+  top: 125px; left: 21px;
   width: 30px;
   height: 30px;
   background: transparent url('__MSG_logo__') no-repeat scroll 0 0 / 30px 30px;
@@ -18,7 +14,7 @@
   -o-transform: rotate(50deg);
   -moz-transform: rotate(50deg);
 }
-.to-top::after
+#app .to-top::after
 {
   content: '';
   position: absolute;

@@ -14,22 +14,22 @@ function completeLoading() {
       }
       console.log(Btools.info,Btools.infoColor);
 
-      var url = window.location.href;
-
       // 微博自动刷新评论工具
       setTimeout(function(){
+        var url = window.location.href;
+        console.log(Btools.Reg.weiboAutoLoadComment.test(url) + url);
         if(Btools.Reg.weiboAutoLoadComment.test(url)) {
           console.log('开启自动加载评论');
           window.onscroll = function() {
             if ($('.more_txt').length > 0) {
               var scrollH = document.documentElement.scrollHeight || document.body.scrollHeight;
-            	var clientH = document.documentElement.clientHeight || document.body.clientHeight;
-            	var imba97_hei = (scrollH - clientH) - 50;
-            	var scrolltop = document.documentElement.scrollTop || document.body.scrollTop;
+              var clientH = document.documentElement.clientHeight || document.body.clientHeight;
+              var imba97_hei = (scrollH - clientH) - 50;
+              var scrolltop = document.documentElement.scrollTop || document.body.scrollTop;
               var count = clientH + scrolltop;
-            	if (scrolltop >= imba97_hei) {
-            		$('.more_txt').click();
-            	}
+              if (scrolltop >= imba97_hei) {
+                $('.more_txt').click();
+              }
               if(scrollH === count) {
                 $(window).scrollTop(scrolltop - 1);
               }
