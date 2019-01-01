@@ -72,7 +72,7 @@
 			"run_at": "document_end"
 		},
 		{
-			"matches": ["*://*.bilibili.com/watchlater/*", "*://*.bilibili.com/video/*", "*://*.bilibili.com/bangumi/*"],
+			"matches": ["*://*.bilibili.com/watchlater/*", "*://*.bilibili.com/video/*", "*://*.bilibili.com/bangumi/*", "*://live.bilibili.com/*", "*://*.bilibili.com/read/*"],
 			"js": ["core/openImg/m.js"],
 			"css": ["core/openImg/m.css"],
 			"run_at": "document_end"

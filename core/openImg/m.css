@@ -19,9 +19,10 @@
   position: absolute;
 }
 
-.BtoolsBtnAll a
+.BtoolsBtnAll a,
+#BtoolsOpenBannerImg
 {
-  padding:3px;
+  padding:5px;
   width: 30px;
   height: 30px;
   line-height: 15px;
@@ -33,7 +34,13 @@
   border-radius: 3px;
   display: block;
 }
-.BtoolsBtnAll a:hover
+.BtoolsBtnAll a:hover,
+#BtoolsOpenBannerImg:hover
 {
   color: #FFF;
+}
+
+#BtoolsOpenBannerImg
+{
+  position: absolute;
 }

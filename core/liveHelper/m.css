@@ -94,5 +94,5 @@
 
 .miniPlayerHide[class~=minimal]
 {
-  transform: translate(450px, 0px) !important;
+  transform: translate(2000px, 0px) !important;
 }

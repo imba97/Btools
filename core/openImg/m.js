@@ -7,7 +7,9 @@ const openImgSet = {
   loopNum: 0,
   loopMax: 10,
   timer: null,
-  timerOff: false
+  timerOff: false,
+  urlReg: /(.*)(?:\@[0-9a-z_]*\.webp)?/,
+  bannerImgReg: /url\("((?:http|https):\/\/[^\@]*)(?:\@[0-9a-z_]*\.webp)?"\)/
 }
 
 openImgSet.timer = setInterval(function(){
@@ -27,21 +29,38 @@ openImgSet.timer = setInterval(function(){
     });
     $('.BtoolsBtnAll').css({
       'top': bofqiTop + 40,
-      'left': bofqiLeft - 3
+      'left': bofqiLeft - 5
     });
 
     $('#BtoolsOpenImg[watchlater=true]').click(function(){
       if($('.bilibili-player-watchlater-item[data-state-play=true] img').length > 0) {
-        var reg = /(.*)\@(?:[0-9a-z_].webp)?/;
-        window.open(reg.exec($('.bilibili-player-watchlater-item[data-state-play=true] img').attr('src'))[1]);
+        window.open(openImgSet.urlReg.exec($('.bilibili-player-watchlater-item[data-state-play=true] img').attr('src'))[1]);
       } else {
         $('#BtoolsOpenImg').attr({
           'watchlater': 'false',
-          'href': 'javascript:window.open(/(https|http):\\/\\/www\\.bilibili\\.com\\/bangumi\/ig.test(window.location.href)?window.__INITIAL_STATE__.mediaInfo.cover:window.__INITIAL_STATE__.videoData.pic);'
+          'href': 'javascript:window.open(/[^\\.]*\\.bilibili\\.com\\/bangumi\/ig.test(window.location.href)?window.__INITIAL_STATE__.mediaInfo.cover:window.__INITIAL_STATE__.videoData.pic);'
         }).unbind('click').click();
       }
     });
 
+
+    clearInterval(openImgSet.timer);
+  } else if($('#BtoolsLiveHelperOptions').length > 0) {
+    var openImgBtnHTML = '<p class="BtoolsOption"><a href="javascript:if(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover!==\'\') window.open(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover);">打开封面</a></p>';
+    $('#BtoolsLiveHelperMsg').before(openImgBtnHTML);
+    clearInterval(openImgSet.timer);
+  } else if($('.banner-img-holder').length > 0) {
+    var openImgBtnHTML = '<a id="BtoolsOpenBannerImg" href="javascript:;">获取头图</a>';
+
+    var btnTop = $('.banner-img-holder').offset().top + 10;
+    var btnLeft = $('.banner-img-holder').offset().left + $('.banner-img-holder').width() - 50;
+
+    $('body').append(openImgBtnHTML).find('#BtoolsOpenBannerImg').css({
+      'top': btnTop,
+      'left': btnLeft
+    }).click(function(){
+      window.open(openImgSet.bannerImgReg.exec($('.banner-img-holder').css('background-image'))[1]);
+    });
 
     clearInterval(openImgSet.timer);
   }

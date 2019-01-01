@@ -51,7 +51,7 @@ function liveHelperInit() {
 
   chrome.storage.sync.get(BtoolsConfig, function(items){
     BtoolsConfig = items;
-    liveHelperHideTimer(items.PKPoint);
+    if(items.PKPoint !== 0) liveHelperHideTimer(items.PKPoint);
   });
 
   $('#BtoolsLiveHelperPKPointHide').click(function(){
@@ -70,7 +70,6 @@ function liveHelperInit() {
 // 用于第一次进入页面的默认隐藏或显示
 function liveHelperHideTimer(k)
 {
-  if(k === 0) return false;
   if(!LiveHelperSet.hideTimerOff) return false;
   LiveHelperSet.hideTimerOff = false;
   LiveHelperSet.hideTimer = setInterval(function() {

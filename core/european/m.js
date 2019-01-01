@@ -52,11 +52,11 @@ function europeanShow()
         '<a id="europeanThisShitBtn" href="#javascript:;" target="_self">就四李啦！</a>' +
         '<a id="europeanEndBtn" href="#javascript:;" target="_self">结束抽奖</a>' +
       '</p>' +
-      '<a href="#javascript:;" target="_self" class="europeanAutoLoad">自动加载</a>' +
-      '<p class="europeanAtSet"><input type="number" value="0"></p>' +
       '<p class="europeanAutoLoadProgressBar"></p>' +
       '<div id="europeanUserArr"><p class="europeanUser"></p></div>' +
       '<div class="europeanWinners"></div>' +
+      '<p class="europeanAtSet"><input type="number" value="0"></p>' +
+      '<a href="#javascript:;" target="_self" class="europeanAutoLoad">自动加载</a>' +
     '</div>' +
     '<div class="europeanPageBG"></div>' +
   '</div>';
