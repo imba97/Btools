@@ -11,7 +11,8 @@ const LiveHelperSet = {
 
 var BtoolsConfig = {
   PKPoint: 0,
-  miniPlayerShow: 0
+  miniPlayerShow: 0,
+  playerShow: 0
 }
 
 
@@ -23,6 +24,7 @@ function liveHelperInit() {
       '<div id="BtoolsLiveHelperOptions">' +
         '<p class="BtoolsText BtoolsCenter BtoolsFirst">这么辣鸡的界面对不起</p>' +
         '<p class="BtoolsOption"><a id="BtoolsLiveHelperPKPointHide" href="javascript:;" target="_self"><span>隐藏</span>PK分数值</a></p>' +
+        '<p class="BtoolsOption"><a id="BtoolsPlayerHide" href="javascript:;" target="_self"><span>开启盲人模式</span></a></p>' +
         '<p id="BtoolsLiveHelperMsg"></p>' +
       '</div>' +
     '</div>'
@@ -32,15 +34,16 @@ function liveHelperInit() {
   $('#BtoolsLiveHelper #BtoolsHideCtrl').click(function(){
     if($('#BtoolsLiveHelperOptions').is(':hidden')) {
       $('#BtoolsLiveHelperOptions').css({
-        'left': 60,
+        'top': 60,
+        'left':- $('#BtoolsLiveHelperOptions').outerWidth() / 2 + $('#BtoolsHideCtrl').outerWidth() / 2,
         'opacity': 0
       }).show().animate({
-        'left': 50,
+        'top': 50,
         'opacity': 1
       });
     } else {
       $('#BtoolsLiveHelperOptions').animate({
-        'left': 60,
+        'top': 60,
         'opacity': 0
       }, function(){
         $(this).hide();
@@ -49,9 +52,18 @@ function liveHelperInit() {
 
   });
 
+  $('#BtoolsPlayerHide').click(function(){
+    if($('#BtoolsPlayerHideDiv').length > 0) {
+      BtoolsPlayerHide(0);
+    } else {
+      BtoolsPlayerHide(1);
+    }
+  });
+
   chrome.storage.sync.get(BtoolsConfig, function(items){
     BtoolsConfig = items;
-    if(items.PKPoint !== 0) liveHelperHideTimer(items.PKPoint);
+    if(items.PKPoint !== 0) liveHelperHideTimer(1);
+    if(items.playerShow !== 0) BtoolsPlayerHide(1);
   });
 
   $('#BtoolsLiveHelperPKPointHide').click(function(){
@@ -111,6 +123,24 @@ function BtoolsLiveHelperMsg(k,text)
   $('#BtoolsLiveHelperMsg .'+aClass+':last').animate({'opacity': 0}, 2000, function(){
     $(this).remove();
   });
+}
+
+function BtoolsPlayerHide(k)
+{
+  if(k === 0) {
+    $('#BtoolsPlayerHide span').text('盲人模式');
+    $('#js-player-decorator').css({'opacity': 1});
+    $('#live-player #BtoolsPlayerHideDiv').remove();
+  } else if(k === 1) {
+    $('#BtoolsPlayerHide span').text('关闭盲人模式');
+    $('#js-player-decorator').css({'opacity': 0});
+    $('#live-player').append('<div id="BtoolsPlayerHideDiv">盲人模式</div>');
+    var px = /(\d*)(?:\.\d*)?px/.exec($('#BtoolsPlayerHideDiv').css('height'))[1];
+    $('#BtoolsPlayerHideDiv').css({
+      'line-height': px + 'px',
+      'font-size': px / 3
+    });
+  }
 }
 
 LiveHelperSet.timer = setInterval(function() {

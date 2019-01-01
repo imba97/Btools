@@ -1,11 +1,13 @@
 var defaultSet = {
   PKPoint: 0,
-  miniPlayerShow: 0
+  miniPlayerShow: 0,
+  playerShow: 0
 };
 
 var setText = {
   PKPoint: ['显示', '隐藏'],
-  miniPlayerShow: ['显示', '隐藏']
+  miniPlayerShow: ['显示', '隐藏'],
+  playerShow: ['关闭盲人模式', '盲人模式']
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -16,6 +18,7 @@ function showSet()
 {
   chrome.storage.sync.get(defaultSet, function(items) {
     defaultSet = items;
+    $('.whatTheFuck').text(defaultSet.playerShow);
     $.each(items, function(k, v){
       $('#'+k+' span').text(setText[k][v]);
     });

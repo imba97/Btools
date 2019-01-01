@@ -17,7 +17,6 @@ function completeLoading() {
       // 微博自动刷新评论工具
       setTimeout(function(){
         var url = window.location.href;
-        console.log(Btools.Reg.weiboAutoLoadComment.test(url) + url);
         if(Btools.Reg.weiboAutoLoadComment.test(url)) {
           console.log('开启自动加载评论');
           window.onscroll = function() {
