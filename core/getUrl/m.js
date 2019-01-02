@@ -59,8 +59,8 @@ function getUrlInit()
             imba97_num: 0
           };
           var c_html = '<div id=\'BtoolsGetUrlWindow\'>';
-          var regexp = /[^"]((http|https):\/\/([\w\-]+\.)+[\w\-]+([\/|\?][\w\u4e00-\u9fa5\-\.\/?\@\%\!\&=\+\~\:\#\;\,]*)?)/ig;
-          $('.article-holder').children('p').each(function() {
+          var regexp = /[^"]((?:http|https):\/\/([\w\-]+\.)+[\w\-]+([\/|\?][\w\u4e00-\u9fa5\-\.\/?\@\%\!\&=\+\~\:\#\;\,]*)?)/ig;
+          $('.article-holder p').each(function() {
           	var html = $(this).html();
           	var url = html.match(regexp);
           	for (val in url) {

@@ -75,7 +75,11 @@
 * `2019-01-01 Happy New Year`
    * 支持专题文章头图获取
    * 新功能：直播助手 > 盲人模式？？？
+* `2019-01-02`
+   * 盲人模式下H5播放器可以调声音
+   * 打包等待发布
 
 ## 反馈
 * 魔改的用户群：[Lost Temple 97 & Btools](https://jq.qq.com/?_wv=1027&k=5WdaKxF)
+* 演示视频下留言：[【程序猿日常】Btools Chrome插件开发](https://www.bilibili.com/video/av38950957/)
 * GitHub Issue

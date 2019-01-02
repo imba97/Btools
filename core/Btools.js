@@ -18,7 +18,7 @@ function completeLoading() {
       setTimeout(function(){
         var url = window.location.href;
         if(Btools.Reg.weiboAutoLoadComment.test(url)) {
-          console.log('开启自动加载评论');
+          // console.log('开启自动加载评论');
           window.onscroll = function() {
             if ($('.more_txt').length > 0) {
               var scrollH = document.documentElement.scrollHeight || document.body.scrollHeight;

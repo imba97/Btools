@@ -109,7 +109,7 @@
   text-align: center;
   color: #666;
   background-color: #CCC;
-  z-index: 1000;
+  z-index: 16;
 }
 
 .minimal #BtoolsPlayerHideDiv

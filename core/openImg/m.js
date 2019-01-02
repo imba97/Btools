@@ -8,8 +8,8 @@ const openImgSet = {
   loopMax: 10,
   timer: null,
   timerOff: false,
-  urlReg: /(.*)(?:\@[0-9a-z_]*\.webp)?/,
-  bannerImgReg: /url\("((?:http|https):\/\/[^\@]*)(?:\@[0-9a-z_]*\.webp)?"\)/
+  urlReg: /([^\@]*)(?:\@.*\.webp)?/,
+  bannerImgReg: /url\("((?:http|https):\/\/[^\@]*)(?:\@.*\.webp)?"\)/
 }
 
 openImgSet.timer = setInterval(function(){

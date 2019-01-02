@@ -129,12 +129,18 @@ function BtoolsPlayerHide(k)
 {
   if(k === 0) {
     $('#BtoolsPlayerHide span').text('盲人模式');
+    $('.bilibili-live-player-video-area').css({'opacity': 1});
     $('#js-player-decorator').css({'opacity': 1});
     $('#live-player #BtoolsPlayerHideDiv').remove();
   } else if(k === 1) {
     $('#BtoolsPlayerHide span').text('关闭盲人模式');
-    $('#js-player-decorator').css({'opacity': 0});
-    $('#live-player').append('<div id="BtoolsPlayerHideDiv">盲人模式</div>');
+    if($('.bilibili-live-player-video-area').length > 0) {
+      $('.bilibili-live-player-video-area').css({'opacity': 0});
+      $('.bilibili-live-player-video-controller').before('<div id="BtoolsPlayerHideDiv">盲人模式</div>');
+    } else {
+      $('#js-player-decorator').css({'opacity': 0});
+      $('#live-player').append('<div id="BtoolsPlayerHideDiv">盲人模式</div>');
+    }
     var px = /(\d*)(?:\.\d*)?px/.exec($('#BtoolsPlayerHideDiv').css('height'))[1];
     $('#BtoolsPlayerHideDiv').css({
       'line-height': px + 'px',
