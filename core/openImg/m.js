@@ -9,7 +9,8 @@ const openImgSet = {
   timer: null,
   timerOff: false,
   urlReg: /([^\@]*)(?:\@.*\.webp)?/,
-  bannerImgReg: /url\("((?:http|https):\/\/[^\@]*)(?:\@.*\.webp)?"\)/
+  bannerImgReg: /url\("((?:http|https):\/\/[^\@]*)(?:\@.*\.webp)?"\)/,
+  watchlaterUrlReg: /(?:http|https):\/\/www\.bilibili\.com\/watchlater\/.*/
 }
 
 openImgSet.timer = setInterval(function(){
@@ -33,8 +34,8 @@ openImgSet.timer = setInterval(function(){
     });
 
     $('#BtoolsOpenImg[watchlater=true]').click(function(){
-      if($('.bilibili-player-watchlater-item[data-state-play=true] img').length > 0) {
-        window.open(openImgSet.urlReg.exec($('.bilibili-player-watchlater-item[data-state-play=true] img').attr('src'))[1]);
+      if(openImgSet.watchlaterUrlReg.test(window.location.href)) {
+        if($('.bilibili-player-watchlater-item[data-state-play=true] img').length > 0) window.open(openImgSet.urlReg.exec($('.bilibili-player-watchlater-item[data-state-play=true] img').attr('src'))[1]);
       } else {
         $('#BtoolsOpenImg').attr({
           'watchlater': 'false',
@@ -42,13 +43,15 @@ openImgSet.timer = setInterval(function(){
         }).unbind('click').click();
       }
     });
-
-
     clearInterval(openImgSet.timer);
+
+    // 直播封面获取
   } else if($('#BtoolsLiveHelperOptions').length > 0) {
     var openImgBtnHTML = '<p class="BtoolsOption"><a href="javascript:if(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover!==\'\') window.open(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover);">打开封面</a></p>';
     $('#BtoolsLiveHelperMsg').before(openImgBtnHTML);
     clearInterval(openImgSet.timer);
+
+    // 文章头图获取
   } else if($('.banner-img-holder').length > 0) {
     var openImgBtnHTML = '<a id="BtoolsOpenBannerImg" href="javascript:;">获取头图</a>';
 
