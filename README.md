@@ -45,7 +45,7 @@
 
 ## 更新介绍
 
-### v0.0.1
+### v1.0.0
 * `2018-12-22 ~ `
    * 新功能：查看B站收藏夹失效视频 (viv)
    * 新功能：转发抽奖 (european) ← 不要吐槽这个命名
@@ -79,8 +79,11 @@
    * 修复在“稍后再看”页面有时会打不开封面的BUG
    * 盲人模式下H5播放器可以调声音
    * 打包等待发布
+* `2019-01-06`
+   * 转发抽奖结束抽奖后会将中奖者名单保存在Excel中并可下载
+   * 优化获取专题文章中的URL功能
 
 ## 反馈
 * 魔改的用户群：[Lost Temple 97 & Btools](https://jq.qq.com/?_wv=1027&k=5WdaKxF)
 * 演示视频下留言：[【程序猿日常】Btools Chrome插件开发](https://www.bilibili.com/video/av38950957/)
-* GitHub Issue
+* GitHub issues：[GitHub issues](https://github.com/imba97/Btools/issues)

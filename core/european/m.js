@@ -41,22 +41,22 @@ function europeanShow()
 {
   var europeanShowHTML =
   '<div id="europeanPage">' +
-    '<a href="#javascript:;" target="_self" class="BtoolsLogoBtn"></a>' +
+    '<a href="javascript:;" target="_self" class="BtoolsLogoBtn"></a>' +
     '<div class="BtoolsBtnAll">' +
-      '<a id="BtoolsEuropeanBtn" href="#javascript:;" target="_self">抽奖</a>' +
+      '<a id="BtoolsEuropeanBtn" href="javascript:;" target="_self">抽奖</a>' +
     '</div>' +
     '<div class="europeanStartPage">' +
       '<p class="europeanUserArrLength">人数：<span>--</span></p>' +
       '<p class="europeanBtn">' +
-        '<a id="europeanStartBtn" href="#javascript:;" target="_self">开始</a>' +
-        '<a id="europeanThisShitBtn" href="#javascript:;" target="_self">就四李啦！</a>' +
-        '<a id="europeanEndBtn" href="#javascript:;" target="_self">结束抽奖</a>' +
+        '<a id="europeanStartBtn" href="javascript:;" target="_self">开始</a>' +
+        '<a id="europeanThisShitBtn" href="javascript:;" target="_self">就四李啦！</a>' +
+        '<a id="europeanEndBtn" href="javascript:;" target="_self">结束抽奖</a>' +
       '</p>' +
       '<p class="europeanAutoLoadProgressBar"></p>' +
       '<div id="europeanUserArr"><p class="europeanUser"></p></div>' +
       '<div class="europeanWinners"></div>' +
       '<p class="europeanAtSet"><input type="number" value="0"></p>' +
-      '<a href="#javascript:;" target="_self" class="europeanAutoLoad">自动加载</a>' +
+      '<a href="javascript:;" target="_self" class="europeanAutoLoad">自动加载</a>' +
     '</div>' +
     '<div class="europeanPageBG"></div>' +
   '</div>';
@@ -149,6 +149,7 @@ function europeanShow()
     if(!europeanSet.start || europeanSet.userArr.length === 0) return false;
     if(europeanSet.userArr.length === 1) {
       var lastUser = europeanSet.userArr[0];
+      europeanSet.winArr.push(lastUser);
       europeanSet.userArr = [];
       $('.europeanUserArrLength span').text('0');
       if($('#europeanUserArr .europeanUser:first').css('top') == '0px') {
@@ -159,8 +160,11 @@ function europeanShow()
             'top': 50 * europeanSet.winnerNum
           });
           europeanSet.winnerNum++;
+          $('.europeanWinners').scrollTop(europeanSet.winnerNum * 50);
 
           $(this).html('').css({'top':0});
+
+          $('#europeanEndBtn').click();
 
         });
       }
@@ -180,6 +184,7 @@ function europeanShow()
     $('.europeanWinners .europeanUser:last').css({
       'top': 50 * europeanSet.winnerNum
     });
+    $('.europeanWinners').scrollTop(europeanSet.winnerNum * 50);
     europeanSet.winnerNum++;
   });
 
@@ -198,6 +203,9 @@ function europeanShow()
     });
     $('.europeanUserArrLength span').text('--');
     $('#europeanUserArr .europeanUser').html('');
+
+    makeExcel();
+
     clearInterval(europeanSet.timer);
   });
 }
@@ -218,6 +226,9 @@ function rePosition()
   $('.europeanAtSet').css({
     'top': BtoolsBtnTop + 120,
     'left': BtoolsBtnLeft + 5
+  });
+  $('.europeanAutoLoad').css({
+    'left': ($(window).width() / 2) - ($('.europeanAutoLoad').outerWidth() / 2)
   });
 }
 
@@ -249,10 +260,13 @@ function europeanInArr(ud) {
     // console.log('['+ud.find('.item-detail:eq(0) .item-user:eq(0) a.user-name:eq(0)').text() + '] At了 ' + europeanSet.atNumArr.length + '人，' + a);
   }
 
+  var userMid = /com\/(\d*)\//g.exec(ud.find('.forw-face:eq(0) .c-pointer:eq(0)').attr('href'))[1];
+
 	var uData = {
 		uName: ud.find('.item-detail:eq(0) .item-user:eq(0) a.user-name:eq(0)').text(),
 		uFace: ud.find('.forw-face:eq(0) .c-pointer:eq(0) .forw-head:eq(0)').attr('src'),
-		uSpace: ud.find('.forw-face:eq(0) .c-pointer:eq(0)').attr('href')
+		uSpace: 'https://space.bilibili.com/' + userMid,
+    uMsg: 'https://message.bilibili.com/#/whisper/mid' + userMid
 	};
 	if (europeanSet.userArr.length > 0) {
 		$.each(europeanSet.userArr, function(k, v) {
@@ -293,9 +307,7 @@ function autoLoad() {
 
 function makeUserHTML(u)
 {
-  var mid = /com\/(\d*)\//g.exec(u.uSpace);
-  var msgUrl = 'http://message.bilibili.com/#/whisper/mid' + mid[1];
-  return '<p class="europeanUser"><span style="background:transparent url(\'' + u.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="' + u.uSpace + '" target="_blank">' + u.uName + '</a><a class="europeanUMsg" href="' + msgUrl + '" target="_blank">私信TA</a></p>';
+  return '<p class="europeanUser"><span style="background:transparent url(\'' + u.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="' + u.uSpace + '" target="_blank">' + u.uName + '</a><a class="europeanUMsg" href="' + u.uMsg + '" target="_blank">私信TA</a></p>';
 }
 
 function uniqueArr(val, arr)
@@ -309,4 +321,30 @@ function uniqueArr(val, arr)
       }
     });
   }
+}
+
+function makeExcel()
+{
+  if(europeanSet.winArr.length === 0) return false;
+  var downloadBtn = '<p class="europeanUser"><span style="border-radius:0;" class="europeanExcelIcon"></span><a class="europeanUName" href="javascript:;" target="_blank">中奖名单已保存到Excel表格</a><a id="europeanExcelDownload" class="europeanUMsg" href="javascript:;" target="_blank">下载TA</a></p>';
+  var table =
+    '<table>' +
+      '<tr class="thead"><th colspan="4"><a href="' + window.location.href + '">' + europeanSet.upName + ' 的抽奖</a></th></tr>' +
+      '<tr class="theadTitle"><th>排序</th><th>用户名</th><th>空间链接</th><th>私信链接</th></tr>';
+      $.each(europeanSet.winArr, function(k, v){
+        table += '<tr class="theadContent"><td>' + (k+1) + '</td><td>' + v.uName + '</td><td><a href="' + v.uSpace + '">点击进入空间</a></td><td><a href="' + v.uMsg + '">点击私信</a></td></tr>';
+      });
+
+  table += '</table>';
+  var html = "<html><head><meta charset='utf-8' /><style>a{text-decoration:none;font-size:20px;font-weight:700;}th,td{text-align:center}.thead th,.thead th a{color:#999;} .theadTitle td{font-weight:700;font-size:26px;color:#666} .theadContent td,.theadContent td a{font-size:20px;color:#666}</style></head><body>" + table + "</body></html>";
+
+  $('#europeanUserArr .europeanUser').html(downloadBtn);
+
+  var blob = new Blob([html], { type: "application/vnd.ms-excel" });
+  var a = document.getElementById('europeanExcelDownload');
+
+  a.href = URL.createObjectURL(blob);
+
+  a.download = europeanSet.upName + ' 的抽奖中奖名单.xls';
+  // a.click();
 }

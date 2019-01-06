@@ -2,7 +2,7 @@ const getUrlSet = {
   loopNum: 0,
   loopMax: 10,
   timer: null,
-  timerOff: false,
+  timerOff: false
 }
 
 getUrlInit();
@@ -59,14 +59,14 @@ function getUrlInit()
             imba97_num: 0
           };
           var c_html = '<div id=\'BtoolsGetUrlWindow\'>';
-          var regexp = /[^"]((?:http|https):\/\/([\w\-]+\.)+[\w\-]+([\/|\?][\w\u4e00-\u9fa5\-\.\/?\@\%\!\&=\+\~\:\#\;\,]*)?)/ig;
+          var regexp = /((?:http|https):\/\/([\w\-]+\.)+[\w\-]+([\/|\?][\w\u4e00-\u9fa5\-\.\/?\@\%\!\&=\+\~\:\#\;\,]*)?)/ig;
           $('.article-holder p').each(function() {
-          	var html = $(this).html();
+          	var html = $(this).text();
           	var url = html.match(regexp);
           	for (val in url) {
           		var newUrl = url[val].toString();
-          		I_getUrl.imba97_url_arr[I_getUrl.imba97_num] = newUrl.substring(1, newUrl.length);
-          		I_getUrl.imba97_num++
+          		I_getUrl.imba97_url_arr[I_getUrl.imba97_num] = newUrl;
+          		I_getUrl.imba97_num++;
           	}
           });
           if(I_getUrl.imba97_url_arr.length === 0) {
@@ -86,7 +86,7 @@ function getUrlInit()
           		'top': animate_n * 40 + 50,
           		'opacity': 1
           	}, 500);
-          	animate_n++
+          	animate_n++;
           });
         }
       });
