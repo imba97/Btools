@@ -8,6 +8,7 @@ const europeanSet = {
   timerOff: false,
   userArr: [],
   userArr2: [],
+  addUser: [],
   winArr: [],
   card: null,
   winnerNum: 0,
@@ -56,6 +57,7 @@ function europeanShow()
       '<div id="europeanUserArr"><p class="europeanUser"></p></div>' +
       '<div class="europeanWinners"></div>' +
       '<p class="europeanAtSet"><input type="number" value="0"></p>' +
+      '<p class="europeanAddUser"><input type="text" placeholder="手动添加"><a href="javascript:;">添加</a></p>' +
       '<a href="javascript:;" target="_self" class="europeanAutoLoad">自动加载</a>' +
     '</div>' +
     '<div class="europeanPageBG"></div>' +
@@ -225,6 +227,10 @@ function rePosition()
   });
   $('.europeanAtSet').css({
     'top': BtoolsBtnTop + 120,
+    'left': BtoolsBtnLeft + 5
+  });
+  $('.europeanAddUser').css({
+    'top': BtoolsBtnTop + 170,
     'left': BtoolsBtnLeft + 5
   });
   $('.europeanAutoLoad').css({

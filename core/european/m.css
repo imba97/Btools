@@ -258,3 +258,35 @@
 {
   background: transparent url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAEmElEQVRoQ+2afUwbZRzHv9eXWYUKRB3hZVIEHPAHgw2UMJitbOrMNiBGZNEoKMYF5kYURzKUl8kcM0uYxGUuukRQI47EauZgCgGK4F6yZoBhL9mQt202vEzadUAp5cxzrk3LW3s9C6fp81/vfm+f3/ee693zHIVZQ65M9RZTkgoAcgCy2ef/7d/vxrzV8VyQIoZrXMo6wD2Ii0sBYM77S8q3qL1+8sf0sG2pXGBsQDYqM0ooCsVcArL1JSBknO5vPr5Z9nQ2W3+zvQ3IJmVGCyg85WwwZ/zMIFxheAWiN97Fsa7q4vzYnH1sm8IrEFI8ganvbc5IX731OzYwvAMhxd81jtN1vU3b2cDwEsQM82X3iS07Y7LqHFGGtyCk+F7dgKnqsnJtaXxelz0YXoOQ4gf0NycaBlUR2ZEv9y8Gw3sQR2H+EyAERj3cpc1vL5a1pP0wNp8yyw5yVF6OEK8ge1OAOd+uuaBJ9Ivz4yXIxsAk7FmX4xAIo8xQ5/VY3+iw2Q7LrghN08iP2YFng8jDtmNjPphlByGlz8yYkByQiOeDkxHqHQwP8QN2iaou17ZlRqYn8eah0VwIDRpGgwFTBgNoesYuCEUJcObVeosQvFDEbtULGDSk1rhBnG2eS/zcirikrRyCuhXh0DyXuLoVcUlbOQR1K8KheS5xdSvikrZyCOpWhEPzXOLqtCJhXsG4Y9RDMz5sU5hMGgihQIQebR9zfL1fHM5o1JhZ4L1CSAkRuzIKj0oDMDJxGxdHujFm0LKGdRokO3I71q2MQq6q0FKkWCDGZ4pytN48i6ortUwxp7ZWMzZ9usE5xUnFHjgi/wjdo1ehM+qhCEiARCRBRcfnaL7RzgrGaRBS9FH5AZzVqPHFpX/2Nd6Oeh3hPiHY1VoEE21ijp3e9g1yVXvRo527ppYV8RKkKzxR2XmcsSXqyAMTyHovE5fNcBqEJPH38AVZwik+dwhCSoDCuN14s+k9jE7+ZalhMZCCtTkQCUQ4oP50wUvPURhOICTJBv945EZlgrxnHlQfgXr4d5vci4E87v0YSp/MxzRtgrKnHp0jlyxzy1EAsx1nEKnYE189U4mJ6UlkNubBYJpyGIQYSoT3YUvwJmwOUmCVpz8G9bfw4fkK9N25wYqFM8jH69/H0MQoRJSQubz2X6hkBWJt/Mj9D2H3mjfw4AopdrV+sHQgr6x+AcmrErGjuQACSoBjioM4ce0kfuprdGiOzFdphE8YyhP2IuVU1tKArHk4EmXxBdipKkT/vcsgxEuGiqQS5LUW4Q/dgN27Vln8Hvw8oMKvt84xtqQZr4W/iHCfUBT8tn9pQA4lFqFpsA11/U02CTPCUvCEbzTeaStljn+yYR9Il61H9ZVafH31e4R6yZg7HbntjkyMgjTimrYXZecPY2xKtzQgrLIsYiwAxSyNkv+lP8eHcNvq1s0mB+fJziaZK23dIK7srjOx/x+K0FA1pNVYNlWW/aMaZ5QgPjSN0sa0mhKz/5zPnESQdFAUHNvUc7YKjn40jf5pTEZbb4zagJD4zDdbkBymATnfgAgABbQYMZk3e3f3b/CtOlHnH9jtAAAAAElFTkSuQmCC') no-repeat scroll 0 0 / 30px 30px;
 }
+
+.europeanAddUser
+{
+  position: absolute;
+  width: 150px;
+  border: 2px #ff94b1 solid;
+  border-radius: 17px;
+  overflow: hidden;
+}
+.europeanAddUser input
+{
+  padding: 0 0 0 10px;
+  width: 100px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #666;
+  border: none;
+}
+.europeanAddUser a
+{
+  position: absolute;
+  top: 0;
+  left: 110px;
+  width: 40px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  color: #FFF;
+  background-color: #ff5885;
+}
