@@ -58,6 +58,7 @@ function europeanShow()
       '<div class="europeanWinners"></div>' +
       '<p class="europeanAtSet"><input type="number" value="0"></p>' +
       '<p class="europeanAddUser"><input type="text" placeholder="手动添加"><a href="javascript:;">添加</a></p>' +
+      '<div class="europeanAddUserArr"></div>' +
       '<a href="javascript:;" target="_self" class="europeanAutoLoad">自动加载</a>' +
     '</div>' +
     '<div class="europeanPageBG"></div>' +
@@ -89,6 +90,32 @@ function europeanShow()
     });
   });
 
+  $('.europeanAddUser a').click(function(){
+    if($('.europeanAddUser input').val() === '') return false;
+    var addUserName = $('.europeanAddUser input').val();
+    var uData = {
+  		uName: addUserName,
+  		uFace: 'http://static.hdslb.com/images/member/noface.gif',
+  		uSpace: 'javascript:;',
+      uMsg: 'https://search.bilibili.com/upuser?keyword=' + addUserName
+  	};
+    if(addUserArrFunc('isAdd', addUserName)){
+      uniqueArr(uData, europeanSet.addUser, true);
+      $('.europeanAddUser input').val('');
+      $('.europeanAddUserArr').append('<a href="javascript:;">' + addUserName + '</a>');
+    }
+
+  });
+
+  $('.europeanAddUser input').keydown(function(e){
+    if(e.which === 13) $('.europeanAddUser a').click();
+  });
+
+  $('.europeanAddUserArr').on('click', 'a', function(){
+    addUserArrFunc('del', $(this).text());
+    $(this).remove();
+  });
+
   $('#BtoolsEuropeanBtn').click(function(){
     if($('.europeanStartPage').is(':hidden')) {
       $('.europeanStartPage,.europeanPageBG').show().css({
@@ -118,6 +145,9 @@ function europeanShow()
     $('#europeanEndBtn').css({
       'background-color': '#ff94b1'
     });
+    $('.europeanAddUserArr').hide();
+
+    europeanSet.userArr = europeanSet.userArr.concat(europeanSet.addUser);
 
     europeanSet.upName = $('.main-content:eq(0) .user-name:eq(0) a.c-pointer').text();
     $('.forw-list .dynamic-list-item-wrap').each(function() {
@@ -203,6 +233,9 @@ function europeanShow()
     $('#europeanEndBtn').css({
       'background-color': '#666'
     });
+
+    $('.europeanAddUserArr').show();
+
     $('.europeanUserArrLength span').text('--');
     $('#europeanUserArr .europeanUser').html('');
 
@@ -233,6 +266,10 @@ function rePosition()
     'top': BtoolsBtnTop + 170,
     'left': BtoolsBtnLeft + 5
   });
+  $('.europeanAddUserArr').css({
+    'top': BtoolsBtnTop + 220,
+    'left': BtoolsBtnLeft + 5
+  });
   $('.europeanAutoLoad').css({
     'left': ($(window).width() / 2) - ($('.europeanAutoLoad').outerWidth() / 2)
   });
@@ -252,7 +289,7 @@ function europeanInArr(ud) {
     // console.log(atNumFlag);
     if(atNumFlag !== null) {
       for(i = 0; i < atNumFlag.length; i++) {
-        uniqueArr(atNumFlag[i], europeanSet.atNumArr)
+        uniqueArr(atNumFlag[i], europeanSet.atNumArr, false)
       }
     }
 
@@ -274,15 +311,7 @@ function europeanInArr(ud) {
 		uSpace: 'https://space.bilibili.com/' + userMid,
     uMsg: 'https://message.bilibili.com/#/whisper/mid' + userMid
 	};
-	if (europeanSet.userArr.length > 0) {
-		$.each(europeanSet.userArr, function(k, v) {
-			if (v.uName !== uData.uName && uData.uName !== europeanSet.upName) {
-        if(k === europeanSet.userArr.length - 1) europeanSet.userArr.push(uData);
-      }
-		})
-	} else {
-		if (uData.uName != europeanSet.upName) europeanSet.userArr.push(uData)
-	}
+  uniqueArr(uData, europeanSet.userArr, true);
 }
 
 function autoLoad() {
@@ -313,16 +342,47 @@ function autoLoad() {
 
 function makeUserHTML(u)
 {
-  return '<p class="europeanUser"><span style="background:transparent url(\'' + u.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="' + u.uSpace + '" target="_blank">' + u.uName + '</a><a class="europeanUMsg" href="' + u.uMsg + '" target="_blank">私信TA</a></p>';
+  if(u.uSpace === 'javascript:;') {
+    var btnText = '搜索TA';
+  } else {
+    var btnText = '私信TA';
+  }
+  return '<p class="europeanUser"><span style="background:transparent url(\'' + u.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="' + u.uSpace + '" target="_blank">' + u.uName + '</a><a class="europeanUMsg" href="' + u.uMsg + '" target="_blank">' + btnText + '</a></p>';
 }
 
-function uniqueArr(val, arr)
+function addUserArrFunc(k, uName)
+{
+  switch(k){
+    case 'isAdd':
+      if(europeanSet.addUser.length === 0) return true;
+      var isAdd = true;
+      $.each(europeanSet.addUser, function(k, v){
+        if(v.uName === uName){
+          isAdd = false;
+          return true;
+        }
+      });
+      return isAdd;
+    break;
+    case 'del':
+      if(europeanSet.addUser.length === 0) return false;
+      var addUserArr2 = [];
+      $.each(europeanSet.addUser, function(k, v){
+        if(v.uName !== uName) addUserArr2.push(v);
+      });
+      europeanSet.addUser = addUserArr2;
+    break;
+  }
+}
+
+function uniqueArr(val, arr, isObj)
 {
   if(arr.length === 0) {
     if (val != europeanSet.upName) arr.push(val);
   } else {
     $.each(arr, function(k, v){
-      if (val != v && val != europeanSet.upName) {
+      var val2 = isObj ? v.uName : v;
+      if (val != val2 && val != europeanSet.upName) {
         if(k === arr.length - 1) arr.push(val);
       }
     });
@@ -338,7 +398,14 @@ function makeExcel()
       '<tr class="thead"><th colspan="4"><a href="' + window.location.href + '">' + europeanSet.upName + ' 的抽奖</a></th></tr>' +
       '<tr class="theadTitle"><th>排序</th><th>用户名</th><th>空间链接</th><th>私信链接</th></tr>';
       $.each(europeanSet.winArr, function(k, v){
-        table += '<tr class="theadContent"><td>' + (k+1) + '</td><td>' + v.uName + '</td><td><a href="' + v.uSpace + '">点击进入空间</a></td><td><a href="' + v.uMsg + '">点击私信</a></td></tr>';
+        if(v.uSpace === 'javascript:;') {
+          var spaceText = '无';
+          var msgText = '点击搜索';
+        } else {
+          var spaceText = '点击进入空间';
+          var msgText = '点击私信';
+        }
+        table += '<tr class="theadContent"><td>' + (k+1) + '</td><td>' + v.uName + '</td><td><a href="' + v.uSpace + '">' + spaceText + '</a></td><td><a href="' + v.uMsg + '">' + msgText + '</a></td></tr>';
       });
 
   table += '</table>';

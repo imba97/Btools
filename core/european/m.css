@@ -123,7 +123,7 @@
   margin:0 auto;
   padding-top:30px;
   width: 400px;
-  height: 500px;
+  height: 400px;
   overflow-y: auto;
 }
 
@@ -151,9 +151,13 @@
 {
   top: 0;
   left: 40px;
+  width: 70%;
   height: 50px;
   line-height: 50px;
   font-size: 20px;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+  overflow: hidden;
 }
 .europeanUser .europeanUMsg
 {
@@ -289,4 +293,39 @@
   text-align: center;
   color: #FFF;
   background-color: #ff5885;
+}
+.europeanAddUserArr
+{
+  position: absolute;
+  width: 300px;
+}
+.europeanAddUserArr::after
+{
+  clear: both;
+}
+.europeanAddUserArr a
+{
+  position: relative;
+  margin: 5px;
+  padding: 5px 10px;
+  max-width: 150px;
+  font-size: 18px;
+  border-radius: 15px;
+  color: #FFF;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+  overflow: hidden;
+  background-color: #ff94b1;
+  float: left;
+  display: block;
+}
+.europeanAddUserArr a:hover::before
+{
+  content: '';
+  position: absolute;
+  top: 48%;
+  left: 5%;
+  width: 90%;
+  height: 3px;
+  background-color: #FFF;
 }
