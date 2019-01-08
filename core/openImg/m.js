@@ -20,7 +20,7 @@ openImgSet.timer = setInterval(function(){
         '<a href="javascript:;"></a>' +
       '</div>' +
       '<div class="BtoolsBtnAll">' +
-        '<a id="BtoolsOpenImg" watchlater="true" href="javascript:;">获取封面</a>' +
+        '<a id="BtoolsOpenImg" href="javascript:;">获取封面</a>' +
       '</div>';
     var bofqiTop = $('#bofqi').offset().top + 22;
     var bofqiLeft = $('#bofqi').offset().left - 40;
@@ -33,13 +33,19 @@ openImgSet.timer = setInterval(function(){
       'left': bofqiLeft - 5
     });
 
-    $('#BtoolsOpenImg[watchlater=true]').click(function(){
+    if(/[^\.]*\.bilibili\.com\/bangumi\//ig.test(window.location.href)) {
+      var href = 'javascript:window.open(window.__INITIAL_STATE__.epInfo.cover);';
+      $('.BtoolsBtnAll').append('<a href="javascript:window.open(window.__INITIAL_STATE__.mediaInfo.cover);">获取海报</a>');
+    } else {
+      var href = 'javascript:window.open(window.__INITIAL_STATE__.videoData.pic);';
+    }
+
+    $('#BtoolsOpenImg').click(function(){
       if(openImgSet.watchlaterUrlReg.test(window.location.href)) {
         if($('.bilibili-player-watchlater-item[data-state-play=true] img').length > 0) window.open(openImgSet.urlReg.exec($('.bilibili-player-watchlater-item[data-state-play=true] img').attr('src'))[1]);
       } else {
         $('#BtoolsOpenImg').attr({
-          'watchlater': 'false',
-          'href': 'javascript:window.open(/[^\\.]*\\.bilibili\\.com\\/bangumi\/ig.test(window.location.href)?window.__INITIAL_STATE__.mediaInfo.cover:window.__INITIAL_STATE__.videoData.pic);'
+          'href': href
         }).unbind('click').click();
       }
     });

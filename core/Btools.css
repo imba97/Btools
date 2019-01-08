@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-#app .to-top::before
+.Btools::before
 {
   content: '';
   position: absolute;
@@ -14,7 +14,7 @@
   -o-transform: rotate(50deg);
   -moz-transform: rotate(50deg);
 }
-#app .to-top::after
+.Btools::after
 {
   content: '';
   position: absolute;

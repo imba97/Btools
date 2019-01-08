@@ -394,18 +394,18 @@ function makeExcel()
   if(europeanSet.winArr.length === 0) return false;
   var downloadBtn = '<p class="europeanUser"><span style="border-radius:0;" class="europeanExcelIcon"></span><a class="europeanUName" href="javascript:;" target="_blank">中奖名单已保存到Excel表格</a><a id="europeanExcelDownload" class="europeanUMsg" href="javascript:;" target="_blank">下载TA</a></p>';
   var table =
-    '<table>' +
+    '<table border="1" cellspacing="0" cellpadding="0">' +
       '<tr class="thead"><th colspan="4"><a href="' + window.location.href + '">' + europeanSet.upName + ' 的抽奖</a></th></tr>' +
-      '<tr class="theadTitle"><th>排序</th><th>用户名</th><th>空间链接</th><th>私信链接</th></tr>';
+      '<tr class="theadTitle"><th>排序</th><th>用户名</th><th>空间链接</th><th>联系</th></tr>';
       $.each(europeanSet.winArr, function(k, v){
         if(v.uSpace === 'javascript:;') {
-          var spaceText = '无';
+          var spaceText = '无(手动添加)';
           var msgText = '点击搜索';
         } else {
-          var spaceText = '点击进入空间';
+          var spaceText = '<a href="' + v.uSpace + '">打开空间</a>';
           var msgText = '点击私信';
         }
-        table += '<tr class="theadContent"><td>' + (k+1) + '</td><td>' + v.uName + '</td><td><a href="' + v.uSpace + '">' + spaceText + '</a></td><td><a href="' + v.uMsg + '">' + msgText + '</a></td></tr>';
+        table += '<tr class="theadContent"><td>' + (k+1) + '</td><td>' + v.uName + '</td><td>' + spaceText + '</td><td><a href="' + v.uMsg + '">' + msgText + '</a></td></tr>';
       });
 
   table += '</table>';
