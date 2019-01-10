@@ -158,14 +158,13 @@ function europeanShow()
       $('#europeanUserArr .europeanUser').html('<font class="europeanUserMsg">没有符合的用户</font>');
       return false;
     }
+    // console.log(europeanSet.userArr);
+
     europeanSet.timer = setInterval(function(){
       var user = europeanSet.userArr[europeanSet.loopNum];
+      console.log(europeanSet.loopNum);
 
-      if(europeanSet.loopNum < europeanSet.userArr.length - 1) {
-        europeanSet.loopNum++;
-      } else {
-        europeanSet.loopNum = 0;
-      }
+      resetLoopNum();
 
       // console.log(user.uName);
 
@@ -214,6 +213,7 @@ function europeanShow()
 			}
 		});
 		europeanSet.userArr = europeanSet.userArr2;
+    resetLoopNum();
     $('.europeanWinners').append(makeUserHTML(winU));
     $('.europeanWinners .europeanUser:last').css({
       'top': 50 * europeanSet.winnerNum
@@ -314,6 +314,15 @@ function europeanInArr(ud) {
     uMsg: 'https://message.bilibili.com/#/whisper/mid' + userMid
 	};
   europeanSet.userArr = uniqueArr(uData, europeanSet.userArr, true);
+}
+
+function resetLoopNum()
+{
+  if(europeanSet.loopNum < europeanSet.userArr.length - 1) {
+    europeanSet.loopNum++;
+  } else {
+    europeanSet.loopNum = 0;
+  }
 }
 
 function autoLoad() {

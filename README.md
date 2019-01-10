@@ -1,4 +1,4 @@
-# Btools 逼砣 `v0.0.1`
+# Btools 逼砣 `v1.0.0`
 
 #### 首先感谢：[【干货】Chrome插件(扩展)开发全攻略](https://www.cnblogs.com/liuxianan/p/chrome-plugin-develop.html)
 #### 这个教程给了我很大帮助
