@@ -18,7 +18,7 @@ function showSet()
 {
   chrome.storage.sync.get(defaultSet, function(items) {
     defaultSet = items;
-    $('.whatTheFuck').text(defaultSet.playerShow);
+    // $('.whatTheFuck').text(defaultSet.playerShow);
     $.each(items, function(k, v){
       $('#'+k+' span').text(setText[k][v]);
     });
