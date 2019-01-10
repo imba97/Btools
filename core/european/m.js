@@ -100,7 +100,7 @@ function europeanShow()
       uMsg: 'https://search.bilibili.com/upuser?keyword=' + addUserName
   	};
     if(addUserArrFunc('isAdd', addUserName)){
-      uniqueArr(uData, europeanSet.addUser, true);
+      europeanSet.addUser = uniqueArr(uData, europeanSet.addUser, true);
       $('.europeanAddUser input').val('');
       $('.europeanAddUserArr').append('<a href="javascript:;">' + addUserName + '</a>');
     }
@@ -147,27 +147,29 @@ function europeanShow()
     });
     $('.europeanAddUserArr').hide();
 
-    europeanSet.userArr = europeanSet.userArr.concat(europeanSet.addUser);
-
     europeanSet.upName = $('.main-content:eq(0) .user-name:eq(0) a.c-pointer').text();
     $('.forw-list .dynamic-list-item-wrap').each(function() {
       europeanInArr($(this));
     });
+    addUserInArr(europeanSet.addUser);
+
     if(europeanSet.userArr.length === 0) {
       $('#europeanEndBtn').click();
       $('#europeanUserArr .europeanUser').html('<font class="europeanUserMsg">没有符合的用户</font>');
       return false;
     }
     europeanSet.timer = setInterval(function(){
-      if(europeanSet.loopNum < europeanSet.userArr.length) {
-        var user = europeanSet.userArr[europeanSet.loopNum];
+      var user = europeanSet.userArr[europeanSet.loopNum];
+
+      if(europeanSet.loopNum < europeanSet.userArr.length - 1) {
         europeanSet.loopNum++;
       } else {
         europeanSet.loopNum = 0;
-        var user = europeanSet.userArr[europeanSet.loopNum];
       }
 
-      var europeanUserHTML = '<span style="background:transparent url(\'' + user.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="#javascript:;">' + user.uName + '</a>';
+      // console.log(user.uName);
+
+      var europeanUserHTML = '<span style="background:transparent url(\'' + user.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="javascript:;">' + user.uName + '</a>';
       $('#europeanUserArr .europeanUser').html(europeanUserHTML);
       $('.europeanUserArrLength span').text(europeanSet.userArr.length);
 
@@ -289,7 +291,7 @@ function europeanInArr(ud) {
     // console.log(atNumFlag);
     if(atNumFlag !== null) {
       for(i = 0; i < atNumFlag.length; i++) {
-        uniqueArr(atNumFlag[i], europeanSet.atNumArr, false)
+        europeanSet.atNumArr = uniqueArr(atNumFlag[i], europeanSet.atNumArr, false)
       }
     }
 
@@ -311,7 +313,7 @@ function europeanInArr(ud) {
 		uSpace: 'https://space.bilibili.com/' + userMid,
     uMsg: 'https://message.bilibili.com/#/whisper/mid' + userMid
 	};
-  uniqueArr(uData, europeanSet.userArr, true);
+  europeanSet.userArr = uniqueArr(uData, europeanSet.userArr, true);
 }
 
 function autoLoad() {
@@ -378,13 +380,30 @@ function addUserArrFunc(k, uName)
 function uniqueArr(val, arr, isObj)
 {
   if(arr.length === 0) {
-    if (val != europeanSet.upName) arr.push(val);
+    var un1 = isObj ? val.uName : val;
+    if (un1 !== europeanSet.upName) arr.push(val);
   } else {
+    var isAdd = true;
     $.each(arr, function(k, v){
-      var val2 = isObj ? v.uName : v;
-      if (val != val2 && val != europeanSet.upName) {
-        if(k === arr.length - 1) arr.push(val);
+      var un1 = isObj ? val.uName : val;
+      var un2 = isObj ? v.uName : v;
+      if (un1 === un2 || un1 === europeanSet.upName) {
+        isAdd = false;
+        return false;
       }
+    });
+    if(isAdd) {
+      arr.push(val);
+    }
+  }
+  return arr;
+}
+
+function addUserInArr(addUser)
+{
+  if(addUser.length > 0) {
+    $.each(addUser, function(k, v){
+      europeanSet.userArr = uniqueArr(v, europeanSet.userArr, true);
     });
   }
 }
