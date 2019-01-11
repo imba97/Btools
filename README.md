@@ -1,10 +1,16 @@
-# Btools 逼砣 `v1.0.0`
+# Btools
+
+[![LICENSE](https://img.shields.io/github/license/imba97/Btools.svg)](https://github.com/imba97/Btools/blob/master/LICENSE)
+[![chrome-web-store](https://img.shields.io/chrome-web-store/users/codgofkgobbmgglciccjabipdlgefnch.svg)](https://chrome.google.com/webstore/detail/take-webpage-screenshots/codgofkgobbmgglciccjabipdlgefnch)
+[![github-releases](https://img.shields.io/github/downloads/imba97/Btools/total.svg)](https://github.com/imba97/Btools/releases)
+[![website](https://img.shields.io/website-up-down-green-red/https/shields.io.svg?label=website)](http://g.imba97.cn)
+
 
 #### 首先感谢：[【干货】Chrome插件(扩展)开发全攻略](https://www.cnblogs.com/liuxianan/p/chrome-plugin-develop.html)
 #### 这个教程给了我很大帮助
 
 ## 介绍
-本插件主要目的是以B站为主的网站页面优化，增强用户体验，有方便快捷的功能。
+Btools(逼砣)，本插件主要目的是以B站为主的网站页面优化，增强用户体验，有方便快捷的功能。
 
 ## 功能介绍
 
