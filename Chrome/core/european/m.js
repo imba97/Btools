@@ -42,24 +42,24 @@ function europeanShow()
 {
   var europeanShowHTML =
   '<div id="europeanPage">' +
-    '<a href="javascript:;" target="_self" class="BtoolsLogoBtn"></a>' +
+    '<a href="javascript:void(0);" class="BtoolsLogoBtn"></a>' +
     '<div class="BtoolsBtnAll">' +
-      '<a id="BtoolsEuropeanBtn" href="javascript:;" target="_self">抽奖</a>' +
+      '<a id="BtoolsEuropeanBtn" href="javascript:void(0);">抽奖</a>' +
     '</div>' +
     '<div class="europeanStartPage">' +
       '<p class="europeanUserArrLength">人数：<span>--</span></p>' +
       '<p class="europeanBtn">' +
-        '<a id="europeanStartBtn" href="javascript:;" target="_self">开始</a>' +
-        '<a id="europeanThisShitBtn" href="javascript:;" target="_self">就四李啦！</a>' +
-        '<a id="europeanEndBtn" href="javascript:;" target="_self">结束抽奖</a>' +
+        '<a id="europeanStartBtn" href="javascript:void(0);">开始</a>' +
+        '<a id="europeanThisShitBtn" href="javascript:void(0);">就四李啦！</a>' +
+        '<a id="europeanEndBtn" href="javascript:void(0);">结束抽奖</a>' +
       '</p>' +
       '<p class="europeanAutoLoadProgressBar"></p>' +
       '<div id="europeanUserArr"><p class="europeanUser"></p></div>' +
       '<div class="europeanWinners"></div>' +
       '<p class="europeanAtSet"><input type="number" value="0"></p>' +
-      '<p class="europeanAddUser"><input type="text" placeholder="手动添加"><a href="javascript:;">添加</a></p>' +
+      '<p class="europeanAddUser"><input type="text" placeholder="手动添加"><a href="javascript:void(0);">添加</a></p>' +
       '<div class="europeanAddUserArr"></div>' +
-      '<a href="javascript:;" target="_self" class="europeanAutoLoad">自动加载</a>' +
+      '<a href="javascript:void(0);" class="europeanAutoLoad">自动加载</a>' +
     '</div>' +
     '<div class="europeanPageBG"></div>' +
   '</div>';
@@ -71,7 +71,7 @@ function europeanShow()
     rePosition();
   });
 
-  chrome.storage.sync.get({defaultAtNum: 0}, function(items) {
+  browser.storage.sync.get({defaultAtNum: 0}, function(items) {
     europeanSet.defaultAtNum = items.defaultAtNum;
     $('.europeanAtSet input').val(items.defaultAtNum);
   });
@@ -85,7 +85,7 @@ function europeanShow()
       return false;
     }
     $(this).val(europeanSet.defaultAtNum);
-    chrome.storage.sync.set({defaultAtNum: europeanSet.defaultAtNum}, function() {
+    browser.storage.sync.set({defaultAtNum: europeanSet.defaultAtNum}, function() {
       // console.log('set ✔');
     });
   });
@@ -102,7 +102,7 @@ function europeanShow()
     if(addUserArrFunc('isAdd', addUserName)){
       europeanSet.addUser = uniqueArr(uData, europeanSet.addUser, true);
       $('.europeanAddUser input').val('');
-      $('.europeanAddUserArr').append('<a href="javascript:;">' + addUserName + '</a>');
+      $('.europeanAddUserArr').append('<a href="javascript:void(0);">' + addUserName + '</a>');
     }
 
   });
@@ -168,7 +168,7 @@ function europeanShow()
 
       // console.log(user.uName);
 
-      var europeanUserHTML = '<span style="background:transparent url(\'' + user.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="javascript:;">' + user.uName + '</a>';
+      var europeanUserHTML = '<span style="background:transparent url(\'' + user.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="javascript:void(0);">' + user.uName + '</a>';
       $('#europeanUserArr .europeanUser').html(europeanUserHTML);
       $('.europeanUserArrLength span').text(europeanSet.userArr.length);
 
@@ -420,7 +420,7 @@ function addUserInArr(addUser)
 function makeExcel()
 {
   if(europeanSet.winArr.length === 0) return false;
-  var downloadBtn = '<p class="europeanUser"><span style="border-radius:0;" class="europeanExcelIcon"></span><a class="europeanUName" href="javascript:;" target="_blank">中奖名单已保存到Excel表格</a><a id="europeanExcelDownload" class="europeanUMsg" href="javascript:;" target="_blank">下载TA</a></p>';
+  var downloadBtn = '<p class="europeanUser"><span style="border-radius:0;" class="europeanExcelIcon"></span><a class="europeanUName" href="javascript:void(0);" target="_blank">中奖名单已保存到Excel表格</a><a id="europeanExcelDownload" class="europeanUMsg" href="javascript:void(0);" target="_blank">下载TA</a></p>';
   var table =
     '<table border="1" cellspacing="0" cellpadding="0">' +
       '<tr class="thead"><th colspan="4"><a href="' + window.location.href + '">' + europeanSet.upName + ' 的抽奖</a></th></tr>' +

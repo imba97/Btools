@@ -13,7 +13,7 @@ const VivSet = {
 }
 
 $(document).ready(function(){
-  $(document).on('click', '.be-scrollbar .fav-list .fav-item a.text', function(){
+  $('body').on('click', '.be-scrollbar .fav-list .fav-item a.text', function(){
     VivInitLoopStart();
   });
   $('body').on('click', '.be-pager li.be-pager-item', function(){
@@ -25,7 +25,7 @@ $(document).ready(function(){
   $('body').on('click', '.n-tab-links a.n-favlist', function(){
     VivInitLoopStart();
   });
-  $('body').on('click', '#page-index .fav .fav-item a', function(){
+  $('body').on('click', '#fav-list-container .fav-item a', function(){
     VivInitLoopStart();
   });
   $('body').on('click', 'div.fav-filters,div.video-check-container,div.fav-action-fixtop', function(){

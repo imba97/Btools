@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+.Btools::before
+{
+  content: '';
+  position: absolute;
+  top: 125px; left: 21px;
+  width: 30px;
+  height: 30px;
+  background: transparent url('__MSG_logo__') no-repeat scroll 0 0 / 30px 30px;
+  transform: rotate(50deg);
+  -ms-transform: rotate(50deg);
+  -webkit-transform: rotate(50deg);
+  -o-transform: rotate(50deg);
+  -moz-transform: rotate(50deg);
+}
+.Btools::after
+{
+  content: '';
+  position: absolute;
+  top: 69px; left: 32px;
+  width: 1px;
+  height: 57px;
+  background-color: #029bcd;
+}

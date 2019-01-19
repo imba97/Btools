@@ -41,7 +41,7 @@ function completeLoading() {
         if($('#app div:last').length > 0 && Btools.Reg.mySpace.test(url)) {
           $('#app div:last').addClass('Btools');
         }
-      }, 1000);
+      }, 2000);
 
       // 其他
 
