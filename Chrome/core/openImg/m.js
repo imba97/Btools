@@ -53,7 +53,7 @@ openImgSet.timer = setInterval(function(){
 
     // 直播封面获取
   } else if($('#BtoolsLiveHelperOptions').length > 0) {
-    var openImgBtnHTML = '<p class="BtoolsOption"><a href="javascript:void(if(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover!==\'\') window.open(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover))">打开封面</a></p>';
+    var openImgBtnHTML = '<p class="BtoolsOption"><a href="javascript:if(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover!==\'\') void(window.open(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover))">打开封面</a></p>';
     $('#BtoolsLiveHelperMsg').before(openImgBtnHTML);
     clearInterval(openImgSet.timer);
 

@@ -71,7 +71,7 @@ function europeanShow()
     rePosition();
   });
 
-  browser.storage.sync.get({defaultAtNum: 0}, function(items) {
+  chrome.storage.sync.get({defaultAtNum: 0}, function(items) {
     europeanSet.defaultAtNum = items.defaultAtNum;
     $('.europeanAtSet input').val(items.defaultAtNum);
   });
@@ -85,7 +85,7 @@ function europeanShow()
       return false;
     }
     $(this).val(europeanSet.defaultAtNum);
-    browser.storage.sync.set({defaultAtNum: europeanSet.defaultAtNum}, function() {
+    chrome.storage.sync.set({defaultAtNum: europeanSet.defaultAtNum}, function() {
       // console.log('set ✔');
     });
   });
