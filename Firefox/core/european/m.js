@@ -40,29 +40,32 @@ europeanSet.timerOnload = setInterval(function(){
 
 function europeanShow()
 {
-  var europeanShowHTML =
-  '<div id="europeanPage">' +
-    '<a href="javascript:void(0);" class="BtoolsLogoBtn"></a>' +
-    '<div class="BtoolsBtnAll">' +
-      '<a id="BtoolsEuropeanBtn" href="javascript:void(0);">抽奖</a>' +
-    '</div>' +
-    '<div class="europeanStartPage">' +
-      '<p class="europeanUserArrLength">人数：<span>--</span></p>' +
-      '<p class="europeanBtn">' +
-        '<a id="europeanStartBtn" href="javascript:void(0);">开始</a>' +
-        '<a id="europeanThisShitBtn" href="javascript:void(0);">就四李啦！</a>' +
-        '<a id="europeanEndBtn" href="javascript:void(0);">结束抽奖</a>' +
-      '</p>' +
-      '<p class="europeanAutoLoadProgressBar"></p>' +
-      '<div id="europeanUserArr"><p class="europeanUser"></p></div>' +
-      '<div class="europeanWinners"></div>' +
-      '<p class="europeanAtSet"><input type="number" value="0"></p>' +
-      '<p class="europeanAddUser"><input type="text" placeholder="手动添加"><a href="javascript:void(0);">添加</a></p>' +
-      '<div class="europeanAddUserArr"></div>' +
-      '<a href="javascript:void(0);" class="europeanAutoLoad">自动加载</a>' +
-    '</div>' +
-    '<div class="europeanPageBG"></div>' +
-  '</div>';
+  _gaq.push(['_trackPageview']);
+
+  var europeanShowHTML =`
+    <div id="europeanPage">
+      <a href="javascript:void(0);" class="BtoolsLogoBtn"></a>
+      <div class="BtoolsBtnAll">
+        <a id="BtoolsEuropeanBtn" href="javascript:void(0);">抽奖</a>
+      </div>
+      <div class="europeanStartPage">
+        <p class="europeanUserArrLength">人数：<span>--</span></p>
+        <p class="europeanBtn">
+          <a id="europeanStartBtn" href="javascript:void(0);">开始</a>
+          <a id="europeanThisShitBtn" href="javascript:void(0);">就四李啦！</a>
+          <a id="europeanEndBtn" href="javascript:void(0);">结束抽奖</a>
+        </p>
+        <p class="europeanAutoLoadProgressBar"></p>
+        <div id="europeanUserArr"><p class="europeanUser"></p></div>
+        <div class="europeanWinners"></div>
+        <p class="europeanAtSet"><input type="number" value="0"></p>
+        <p class="europeanAddUser"><input type="text" placeholder="手动添加"><a href="javascript:void(0);">添加</a></p>
+        <div class="europeanAddUserArr"></div>
+        <a href="javascript:void(0);" class="europeanAutoLoad">自动加载</a>
+      </div>
+      <div class="europeanPageBG"></div>
+    </div>
+    `;
 
   $('body').append(europeanShowHTML);
 
@@ -86,7 +89,6 @@ function europeanShow()
     }
     $(this).val(europeanSet.defaultAtNum);
     browser.storage.sync.set({defaultAtNum: europeanSet.defaultAtNum}, function() {
-      // console.log('set ✔');
     });
   });
 
@@ -134,7 +136,8 @@ function europeanShow()
 
   $('#europeanStartBtn').click(function(){
     if(europeanSet.start) return false;
-    // console.log('start:'+europeanSet.start);
+    _gaq.push(['_trackEvent', 'button', 'start', 'european']);
+
     europeanSet.start = true;
     $('#europeanStartBtn').css({
       'background-color': '#666'
@@ -158,15 +161,11 @@ function europeanShow()
       $('#europeanUserArr .europeanUser').html('<font class="europeanUserMsg">没有符合的用户</font>');
       return false;
     }
-    // console.log(europeanSet.userArr);
 
     europeanSet.timer = setInterval(function(){
       var user = europeanSet.userArr[europeanSet.loopNum];
-      console.log(europeanSet.loopNum);
 
       resetLoopNum();
-
-      // console.log(user.uName);
 
       var europeanUserHTML = '<span style="background:transparent url(\'' + user.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="javascript:void(0);">' + user.uName + '</a>';
       $('#europeanUserArr .europeanUser').html(europeanUserHTML);
@@ -447,5 +446,8 @@ function makeExcel()
   a.href = URL.createObjectURL(blob);
 
   a.download = europeanSet.upName + ' 的抽奖中奖名单.xls';
-  // a.click();
+
+  $('#europeanExcelDownload').click(() => {
+    _gaq.push(['_trackEvent', 'button', 'excelDownload', 'european']);
+  });
 }

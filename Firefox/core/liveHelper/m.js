@@ -19,15 +19,16 @@ var BtoolsConfig = {
 // live助手初始化
 function liveHelperInit() {
   var liveHelperHTML =
-    '<div id="BtoolsLiveHelper">' +
-      '<a id="BtoolsHideCtrl" href="javascript:;" target="_self"></a>' +
-      '<div id="BtoolsLiveHelperOptions">' +
-        '<p class="BtoolsText BtoolsCenter BtoolsFirst">这么辣鸡的界面对不起</p>' +
-        '<p class="BtoolsOption"><a id="BtoolsLiveHelperPKPointHide" href="javascript:;" target="_self"><span>隐藏</span>PK分数值</a></p>' +
-        '<p class="BtoolsOption"><a id="BtoolsPlayerHide" href="javascript:;" target="_self"><span>开启盲人模式</span></a></p>' +
-        '<p id="BtoolsLiveHelperMsg"></p>' +
-      '</div>' +
-    '</div>'
+    `<div id="BtoolsLiveHelper">
+      <a id="BtoolsHideCtrl" href="javascript:;" target="_self"></a>
+      <div id="BtoolsLiveHelperOptions">
+        <p class="BtoolsText BtoolsCenter BtoolsFirst">这么辣鸡的界面对不起</p>
+        <p class="BtoolsOption"><a id="BtoolsLiveHelperPKPointHide" href="javascript:;" target="_self"><span>隐藏</span>PK分数值</a></p>
+        <p class="BtoolsOption"><a id="BtoolsPlayerHide" href="javascript:;" target="_self"><span>开启盲人模式</span></a></p>
+        <p id="BtoolsLiveHelperMsg"></p>
+      </div>
+    </div>
+    `;
   $('#gift-control-vm .gift-control-panel').append(liveHelperHTML);
   // console.log('liveHelper 运行');
 
