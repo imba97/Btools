@@ -54,3 +54,16 @@ function completeLoading() {
 
     }
 }
+
+$(document).mousedown((e) => {
+  alert()
+  HKM(e);
+});
+
+// hotKeyMenu
+function HKM(m)
+{
+  m.ev = m.ev || window.event;
+  var mousePos = mouseCoords(m.ev);
+  console.log(mousePos.x + ',' + mousePos.y);
+}
