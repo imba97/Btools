@@ -12,7 +12,10 @@ const VivSet = {
   eqNum: 0
 }
 
-_gaq.push(['_trackEvent', 'page', 'view', 'viv']);
+if(VivSet.init === true) {
+  VivSet.init = false;
+  _gaq.push(['_trackEvent', 'page', 'view', 'viv']);
+}
 
 $(document).ready(function(){
   $('body').on('click', '.be-scrollbar .fav-list .fav-item a.text', function(){
@@ -68,14 +71,22 @@ function VivInit() {
     $('.fav-video-list li.disabled').each(function() {
       var keyword = $(this).find('a:eq(0) img:eq(0)').attr('alt');
       $(this).find('a.title').html('<span class=\'Btools-viv-video-name\'>' + keyword + '</span>');
-      $(this).find('a').each(function() {
-        if ($(this).attr('href') == 'javascript:;') {
-          $(this).attr({
-            'href': 'https://www.baidu.com/s?ie=utf-8&wd=' + keyword,
-            'target': '_blank'
-          })
-        }
-      });
+
+      if(VivSet.loopNum === 1) {
+        var upNameText = $(this).find('.meta-mask .meta-info .author').text();
+        var upName = upNameText.substring(4,upNameText.length);
+        $(this).HKM({
+          83: {
+            'title': '搜索视频',
+            'url': 'https://www.baidu.com/s?ie=utf-8&wd=' + keyword
+          },
+          85: {
+            'title': '搜索UP主',
+            'url': 'https://search.bilibili.com/upuser?keyword=' + upName
+          }
+        });
+      }
+
       if ($(this).find('a.disabled').length > 0) {
         $(this).find('.disabled-cover').remove();
         $(this).find('a.disabled').attr('class', '').find('.length').remove();

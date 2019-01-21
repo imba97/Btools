@@ -114,17 +114,18 @@ $.fn.extend({
         $(document).unbind('keydown');
         $('#hotKeyMenu').remove();
         if(mo !== null) {
-          action(menu[mo]);
+          openUrl(menu[mo]);
         }
       });
-      $(document).one('keydown', (ev) => {
+      $(document).bind('keydown', (ev) => {
         ev = ev || window.event
-        action(menu[ev.keyCode])
+        openUrl(menu[ev.keyCode])
       });
 
-      function action(e)
+      function openUrl(e)
       {
         if(e !== undefined) {
+          $(document).unbind('keydown');
           window.open(e.url);
           $('#hotKeyMenu').remove();
           void(0);

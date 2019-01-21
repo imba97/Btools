@@ -55,15 +55,84 @@ function completeLoading() {
     }
 }
 
-$(document).mousedown((e) => {
-  alert()
-  HKM(e);
-});
+$.fn.extend({
+  // hotKeyMenu
+  'HKM': function(menu) {
+    $(this).bind('mousedown', (ev) => {
+      ev = ev || window.event;
+      if(ev.button !== 0) return true;
 
-// hotKeyMenu
-function HKM(m)
-{
-  m.ev = m.ev || window.event;
-  var mousePos = mouseCoords(m.ev);
-  console.log(mousePos.x + ',' + mousePos.y);
-}
+      var x = 0;
+      var y = 0;
+
+      if(ev.pageX || ev.pageY){
+        x = ev.pageX;
+        y = ev.pageY;
+      } else {
+        x = ev.clientX + document.body.scrollLeft - document.body.clientLeft;
+        y = ev.clientY + document.body.scrollTop - document.body.clientTop;
+      }
+
+      var menuBtnNum = 0;
+
+      var html = '<div id="hotKeyMenu"><p class="menuTitle">快捷键菜单</p>';
+
+      Object.keys(menu).forEach((k) => {
+        var key = String.fromCharCode(k);
+        html += `<p style="top: ${(menuBtnNum+1) * 35 + 5}px" data-is-key="true" data-key="${k}"><span class="key">${key}</span><span class="title">${menu[k].title}</span></p>`;
+        menuBtnNum++;
+      });
+
+      html += '<div class="bg"></div></div>';
+      $('body').append(html).find('#hotKeyMenu').css({
+        'width': 200,
+        'height': menuBtnNum * 60
+      });
+      $('#hotKeyMenu').css({
+        'top': y - ($('#hotKeyMenu').outerHeight() / 2),
+        'left': x - ($('#hotKeyMenu').outerWidth() / 2)
+      });
+
+      var mo = null;
+
+      $('#hotKeyMenu p[data-is-key=true]').mouseover(function(){
+        mo = Number($(this).attr('data-key'));
+        $(this).find('.key').css({
+          'color': '#FFF',
+          'background-color': '#F66'
+        });
+      });
+      $('#hotKeyMenu p[data-is-key=true]').mouseout(function(){
+        mo = null;
+        $(this).find('.key').css({
+          'color': '#666',
+          'background-color': '#FFF'
+        });
+      });
+
+      $(document).one('mouseup', () => {
+        $(document).unbind('keydown');
+        $('#hotKeyMenu').remove();
+        if(mo !== null) {
+          openUrl(menu[mo]);
+        }
+      });
+      $(document).bind('keydown', (ev) => {
+        ev = ev || window.event
+        openUrl(menu[ev.keyCode])
+      });
+
+      function openUrl(e)
+      {
+        if(e !== undefined) {
+          $(document).unbind('keydown');
+          window.open(e.url);
+          $('#hotKeyMenu').remove();
+          void(0);
+        }
+      }
+
+      // mousedown
+    });
+  }
+});

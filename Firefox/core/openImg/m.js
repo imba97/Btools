@@ -34,10 +34,10 @@ openImgSet.timer = setInterval(function(){
     });
 
     if(/[^\.]*\.bilibili\.com\/bangumi\//.test(window.location.href)) {
-      var href = 'javascript:void(window.open(window.__INITIAL_STATE__.epInfo.cover))';
-      $('.BtoolsBtnAll').append('<a href="javascript:void(window.open(window.__INITIAL_STATE__.mediaInfo.cover))">获取海报</a>');
+      var href = 'javascript:window.open(window.__INITIAL_STATE__.epInfo.cover);void(0);';
+      $('.BtoolsBtnAll').append('<a href="javascript:window.open(window.__INITIAL_STATE__.mediaInfo.cover);void(0);">获取海报</a>');
     } else {
-      var href = 'javascript:void(window.open(window.__INITIAL_STATE__.videoData.pic))';
+      var href = 'javascript:window.open(window.__INITIAL_STATE__.videoData.pic);void(0);';
     }
 
     $('#BtoolsOpenImg').click(function(){
@@ -48,13 +48,15 @@ openImgSet.timer = setInterval(function(){
           'href': href
         }).unbind('click').click();
       }
+      _gaq.push(['_trackEvent', 'button', 'open', 'openImg']);
     });
     clearInterval(openImgSet.timer);
 
     // 直播封面获取
   } else if($('#BtoolsLiveHelperOptions').length > 0) {
-    var openImgBtnHTML = '<p class="BtoolsOption"><a href="javascript:if(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover!==\'\') void(window.open(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover))">打开封面</a></p>';
+    var openImgBtnHTML = '<p class="BtoolsOption"><a id="BtoolsOpenLiveRoomImg" href="javascript:if(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover!==\'\') window.open(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover);void(0);">打开封面</a></p>';
     $('#BtoolsLiveHelperMsg').before(openImgBtnHTML);
+    $('#BtoolsOpenLiveRoomImg').click(() => {_gaq.push(['_trackEvent', 'button', 'open', 'openImg'])});
     clearInterval(openImgSet.timer);
 
     // 文章头图获取
@@ -70,6 +72,7 @@ openImgSet.timer = setInterval(function(){
     });
     $('#BtoolsOpenBannerImg').click(function(){
       window.open(openImgSet.bannerImgReg.exec($('.banner-img-holder').css('background-image'))[1]);
+      _gaq.push(['_trackEvent', 'button', 'open', 'openImg']);
     });
 
     clearInterval(openImgSet.timer);
