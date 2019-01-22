@@ -9,6 +9,8 @@ const LiveHelperSet = {
   hideTimerOff: true
 }
 
+chrome = chrome || browser;
+
 var BtoolsConfig = {
   PKPoint: 0,
   miniPlayerShow: 0,

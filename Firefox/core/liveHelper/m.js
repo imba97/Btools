@@ -9,6 +9,8 @@ const LiveHelperSet = {
   hideTimerOff: true
 }
 
+chrome = chrome || browser;
+
 var BtoolsConfig = {
   PKPoint: 0,
   miniPlayerShow: 0,
@@ -61,7 +63,7 @@ function liveHelperInit() {
     }
   });
 
-  browser.storage.sync.get(BtoolsConfig, function(items){
+  chrome.storage.sync.get(BtoolsConfig, function(items){
     BtoolsConfig = items;
     if(items.PKPoint !== 0) liveHelperHideTimer(1);
     if(items.playerShow !== 0) BtoolsPlayerHide(1);

@@ -78,11 +78,18 @@ function VivInit() {
         $(this).HKM({
           83: {
             'title': '搜索视频',
-            'url': 'https://www.baidu.com/s?ie=utf-8&wd=' + keyword
+            'action': () => {
+              // window.open(`https://www.baidu.com/s?ie=utf-8&wd=${keyword}`);
+              // void(0);
+              alert(keyword);
+            }
           },
           85: {
             'title': '搜索UP主',
-            'url': 'https://search.bilibili.com/upuser?keyword=' + upName
+            'action': () => {
+              window.open(`https://search.bilibili.com/upuser?keyword=${upName}`);
+              void(0);
+            }
           }
         });
       }

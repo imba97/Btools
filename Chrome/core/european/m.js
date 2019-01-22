@@ -23,6 +23,8 @@ const europeanSet = {
   atNumReg: eval(/<?a href="\/\/space\.bilibili\.com\/\d+\/dynamic"[^<>]*>\@([^<>@]*)<\/a>/ig)
 }
 
+chrome = chrome || browser;
+
 
 europeanSet.timerOnload = setInterval(function(){
   if($('.detail-card .card:eq(0)').length > 0) {

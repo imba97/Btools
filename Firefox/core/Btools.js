@@ -56,7 +56,7 @@ function completeLoading() {
 }
 
 $.fn.extend({
-  // hotKeyMenu
+  // hotKeyMenu --- START
   'HKM': function(menu) {
     $(this).bind('mousedown', (ev) => {
       ev = ev || window.event;
@@ -114,25 +114,17 @@ $.fn.extend({
         $(document).unbind('keydown');
         $('#hotKeyMenu').remove();
         if(mo !== null) {
-          openUrl(menu[mo]);
+          menu[mo].action();
         }
       });
       $(document).bind('keydown', (ev) => {
-        ev = ev || window.event
-        openUrl(menu[ev.keyCode])
+        ev = ev || window.event;
+        $('#hotKeyMenu').remove();
+        menu[ev.keyCode].action();
       });
-
-      function openUrl(e)
-      {
-        if(e !== undefined) {
-          $(document).unbind('keydown');
-          window.open(e.url);
-          $('#hotKeyMenu').remove();
-          void(0);
-        }
-      }
 
       // mousedown
     });
   }
+  // hotKeyMenu --- END
 });

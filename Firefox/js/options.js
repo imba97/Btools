@@ -1,3 +1,5 @@
+chrome = chrome || browser;
+
 var defaultSet = {
   PKPoint: 0,
   miniPlayerShow: 0,
@@ -16,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function showSet()
 {
-  browser.storage.sync.get(defaultSet, function(items) {
+  chrome.storage.sync.get(defaultSet, function(items) {
     defaultSet = items;
     // $('.whatTheFuck').text(defaultSet.playerShow);
     $.each(items, function(k, v){
@@ -33,7 +35,7 @@ $('#BtoolsSet p a').click(function(){
   if(defaultSet[setID] < max) ++defaultSet[setID];
   else defaultSet[setID] = 0;
 
-  browser.storage.sync.set(defaultSet, function() {
+  chrome.storage.sync.set(defaultSet, function() {
     // 注意新版的options页面alert不生效！
     // alert('保存成功！');
     showSet();

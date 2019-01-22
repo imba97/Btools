@@ -78,18 +78,28 @@ function VivInit() {
         $(this).HKM({
           83: {
             'title': '搜索视频',
-            'url': 'https://www.baidu.com/s?ie=utf-8&wd=' + keyword
+            'action': () => {
+              // window.open(`https://www.baidu.com/s?ie=utf-8&wd=${keyword}`);
+              // void(0);
+              alert(keyword);
+            }
           },
           85: {
             'title': '搜索UP主',
-            'url': 'https://search.bilibili.com/upuser?keyword=' + upName
+            'action': () => {
+              window.open(`https://search.bilibili.com/upuser?keyword=${upName}`);
+              void(0);
+            }
           }
         });
       }
 
       if ($(this).find('a.disabled').length > 0) {
+        $(this).find('img').attr('ondragstart', 'return false;');
         $(this).find('.disabled-cover').remove();
-        $(this).find('a.disabled').attr('class', '').find('.length').remove();
+        $(this).find('a.disabled').attr({
+          'class': 'Btools-user-select-none'
+        }).find('.length').remove();
       }
     });
   }

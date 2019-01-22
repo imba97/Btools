@@ -1,3 +1,5 @@
+chrome = chrome || browser;
+
 var defaultSet = {
   PKPoint: 0,
   miniPlayerShow: 0,
