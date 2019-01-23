@@ -8,8 +8,7 @@ var defaultSet = {
 
 var setText = {
   PKPoint: ['显示', '隐藏'],
-  miniPlayerShow: ['显示', '隐藏'],
-  playerShow: ['关闭盲人模式', '盲人模式']
+  miniPlayerShow: ['显示', '隐藏']
 }
 
 document.addEventListener('DOMContentLoaded', function() {

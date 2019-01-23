@@ -6,3 +6,10 @@
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-121985229-2']);
 _gaq.push(['_trackPageview']);
+
+// 安装完成后
+chrome.runtime.onInstalled.addListener(function(details) {
+  if (details.reason === 'install' || details.reason === 'update') {
+    chrome.storage.sync.remove('playerShow');
+  }
+});

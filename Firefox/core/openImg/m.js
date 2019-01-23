@@ -10,7 +10,8 @@ const openImgSet = {
   timerOff: false,
   urlReg: /([^\@]*)(?:\@.*\.webp)?/,
   bannerImgReg: /url\("((?:http|https):\/\/[^\@]*)(?:\@.*\.(?:webp|jpg|png|gif))?"\)/,
-  watchlaterUrlReg: /(?:http|https):\/\/www\.bilibili\.com\/watchlater\/.*/
+  watchlaterUrlReg: /(?:http|https):\/\/www\.bilibili\.com\/watchlater\/.*/,
+  liveRoomUrlReg: /(?:http|https):\/\/live\.bilibili\.com\/\d+\/.*/
 }
 
 openImgSet.timer = setInterval(function(){
@@ -53,8 +54,16 @@ openImgSet.timer = setInterval(function(){
     clearInterval(openImgSet.timer);
 
     // 直播封面获取
-  } else if($('#BtoolsLiveHelperOptions').length > 0) {
-    var openImgBtnHTML = '<p class="BtoolsOption"><a id="BtoolsOpenLiveRoomImg" href="javascript:if(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover!==\'\') window.open(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover);void(0);">打开封面</a></p>';
+  } else if($('#BtoolsLiveHelper').length > 0) {
+    $('#BtoolsHideCtrl')[0].BtoolsHKM.push({
+      key: 70,
+      title: '打开封面',
+      action: () => {
+        $('body').append('<a class="openLiveRoomImg" style="opacity:0" href="javascript:if(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover !== \'\') window.open(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover);void(0);">123</a>').find('.openLiveRoomImg')[0].click();
+        $('.openLiveRoomImg').remove();
+      }
+    });
+    var openImgBtnHTML = '<p class="BtoolsOption"><a id="BtoolsOpenLiveRoomImg" href="javascript:">打开封面</a></p>';
     $('#BtoolsLiveHelperMsg').before(openImgBtnHTML);
     $('#BtoolsOpenLiveRoomImg').click(() => {_gaq.push(['_trackEvent', 'button', 'open', 'openImg'])});
     clearInterval(openImgSet.timer);

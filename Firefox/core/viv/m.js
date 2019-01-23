@@ -36,10 +36,19 @@ $(document).ready(function(){
   $('body').on('click', 'div.fav-filters,div.video-check-container,div.fav-action-fixtop', function(){
     VivInitLoopStart();
   });
+  $('body').on('click', '.be-dropdown .be-dropdown-item-delimiter', function() {
+    VivInitLoopStart();
+  });
+  $('body').on('click', 'input.be-switch-input', function() {
+    VivInitLoopStart();
+  });
+  $('body').on('click', '.btn-container .default', function() {
+    VivInitLoopStart();
+  });
   window.onpopstate = function(event) {
     VivInitLoopStart();
   };
-  $(document).on('keyup', '.be-pager .be-pager-options-elevator input', function(e){
+  $(document).on('keyup', '.be-pager .be-pager-options-elevator input', function(e) {
     if(e.which === 13) {
       VivInitLoopStart();
     }
@@ -72,34 +81,31 @@ function VivInit() {
       var keyword = $(this).find('a:eq(0) img:eq(0)').attr('alt');
       $(this).find('a.title').html('<span class=\'Btools-viv-video-name\'>' + keyword + '</span>');
 
-      if(VivSet.loopNum === 1) {
-        var upNameText = $(this).find('.meta-mask .meta-info .author').text();
-        var upName = upNameText.substring(4,upNameText.length);
-        $(this).HKM({
-          83: {
-            'title': '搜索视频',
-            'action': () => {
-              // window.open(`https://www.baidu.com/s?ie=utf-8&wd=${keyword}`);
-              // void(0);
-              alert(keyword);
-            }
-          },
-          85: {
-            'title': '搜索UP主',
-            'action': () => {
-              window.open(`https://search.bilibili.com/upuser?keyword=${upName}`);
-              void(0);
-            }
+      var upNameText = $(this).find('.meta-mask .meta-info .author').text();
+      var upName = upNameText.substring(4,upNameText.length);
+
+      $(this).HKM([
+        {
+          'key': 83,
+          'title': '搜索视频',
+          'action': () => {
+            window.open(`https://www.baidu.com/s?ie=utf-8&wd=${keyword}`);
+            void(0);
           }
-        });
-      }
+        },
+        {
+          'key': 85,
+          'title': '搜索UP主',
+          'action': () => {
+            window.open(`https://search.bilibili.com/upuser?keyword=${upName}`);
+            void(0);
+          }
+        }
+      ]);
 
       if ($(this).find('a.disabled').length > 0) {
-        $(this).find('img').attr('ondragstart', 'return false;');
         $(this).find('.disabled-cover').remove();
-        $(this).find('a.disabled').attr({
-          'class': 'Btools-user-select-none'
-        }).find('.length').remove();
+        $(this).find('a.disabled').attr('class', '').find('.length').remove();
       }
     });
   }

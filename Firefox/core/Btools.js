@@ -58,9 +58,18 @@ function completeLoading() {
 $.fn.extend({
   // hotKeyMenu --- START
   'HKM': function(menu) {
+    if($(this).attr('data-mousedown') === 'true') return false;
+    $(this).attr('data-mousedown', 'true')
+    $(this).addClass('Btools-user-select-none').attr({
+      'ondragstart': 'return false;'
+    });
+    $(this)[0].BtoolsHKM = [];
+    $(this)[0].BtoolsHKM = $(this)[0].BtoolsHKM.concat(menu);
     $(this).bind('mousedown', (ev) => {
       ev = ev || window.event;
       if(ev.button !== 0) return true;
+
+      var hotKeyMenu = $(this)[0].BtoolsHKM;
 
       var x = 0;
       var y = 0;
@@ -73,30 +82,28 @@ $.fn.extend({
         y = ev.clientY + document.body.scrollTop - document.body.clientTop;
       }
 
-      var menuBtnNum = 0;
-
       var html = '<div id="hotKeyMenu"><p class="menuTitle">快捷键菜单</p>';
 
-      Object.keys(menu).forEach((k) => {
-        var key = String.fromCharCode(k);
-        html += `<p style="top: ${(menuBtnNum+1) * 35 + 5}px" data-is-key="true" data-key="${k}"><span class="key">${key}</span><span class="title">${menu[k].title}</span></p>`;
-        menuBtnNum++;
+      hotKeyMenu.forEach((item, index) => {
+        html += `<p style="top: ${(index+1) * 35 + 5}px" data-is-key="true" data-index="${index}" data-key="${item.key}"><span class="key">${String.fromCharCode(item.key)}</span><span class="title">${item.title}</span></p>`;
       });
+
+      console.log(hotKeyMenu.length);
 
       html += '<div class="bg"></div></div>';
       $('body').append(html).find('#hotKeyMenu').css({
         'width': 200,
-        'height': menuBtnNum * 60
+        'height': hotKeyMenu.length * 40 + 60
       });
       $('#hotKeyMenu').css({
-        'top': y - ($('#hotKeyMenu').outerHeight() / 2),
+        'top': y - 65,
         'left': x - ($('#hotKeyMenu').outerWidth() / 2)
       });
 
       var mo = null;
 
       $('#hotKeyMenu p[data-is-key=true]').mouseover(function(){
-        mo = Number($(this).attr('data-key'));
+        mo = Number($(this).attr('data-index'));
         $(this).find('.key').css({
           'color': '#FFF',
           'background-color': '#F66'
@@ -114,13 +121,20 @@ $.fn.extend({
         $(document).unbind('keydown');
         $('#hotKeyMenu').remove();
         if(mo !== null) {
-          menu[mo].action();
+          hotKeyMenu[mo].action();
         }
       });
       $(document).bind('keydown', (ev) => {
         ev = ev || window.event;
-        $('#hotKeyMenu').remove();
-        menu[ev.keyCode].action();
+        ev.preventDefault();
+        var key = hotKeyMenu[Number($(`#hotKeyMenu p[data-key=${ev.keyCode}]`).attr('data-index'))];
+        if(key !== undefined) {
+          key.action();
+          if(!key.continued) {
+            $(document).unbind('mouseup keydown');
+            $('#hotKeyMenu').remove();
+          }
+        }
       });
 
       // mousedown
