@@ -5,7 +5,7 @@
 	},
 	"manifest_version": 2,
 	"name": "Btools",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "__MSG_pluginDesc__",
 	"icons":
 	{
@@ -32,7 +32,7 @@
 			"run_at": "document_start"
 		},
 		{
-			"matches": ["*://*.bilibili.com/*", "*://*.weibo.com/*"],
+			"matches": ["*://*.bilibili.com/*", "*://*.weibo.com/*", "*://*.btools.cc/*"],
 			"js": ["core/Btools.js"],
 			"css": ["core/Btools.css"],
 			"run_at": "document_start"
@@ -80,7 +80,13 @@
 	"browser_specific_settings": {
 	  "gecko": {
 	    "id": "mail@imba97.cn",
-	    "strict_min_version": "42.0"
+	    "strict_min_version": "57.0"
+	  }
+	},
+	"applications": {
+	  "gecko": {
+	    "id": "mail@imba97.cn",
+	    "strict_min_version": "57.0"
 	  }
 	},
 	"homepage_url": "http://btools.cc",

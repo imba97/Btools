@@ -55,6 +55,11 @@ function liveHelperInit() {
       BtoolsLiveHelperMsg(false, '未检测到PK分数窗口');
     }
   });
+
+  chrome.storage.sync.get(BtoolsConfig, function(items){
+    BtoolsConfig = items;
+    if(items.PKPoint !== 0) liveHelperHideTimer(1);
+  });
 }
 
 // 用于第一次进入页面的默认隐藏或显示
@@ -92,7 +97,6 @@ function liveHelperHide(k)
 }
 
 LiveHelperSet.timer = setInterval(function() {
-  console.log(LiveHelperSet.loopNum);
   if(LiveHelperSet.loopNum >= LiveHelperSet.loopMax) clearInterval(LiveHelperSet.timer);
   if($('#gift-control-vm .gift-control-panel').length === 0) {
     LiveHelperSet.loopNum++;
