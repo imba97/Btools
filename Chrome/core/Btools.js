@@ -20,13 +20,13 @@ document.onreadystatechange = completeLoading;
 function completeLoading() {
     if (document.readyState === 'complete') {
       const Btools = {
-        'info': '%c ____     __                   ___\n/\\  _`\\  /\\ \\__               /\\_ \\\n\\ \\ \\L\\ \\\\ \\ ,_\\   ___     ___\\//\\ \\     ____\n \\ \\  _ <\'\\ \\ \\/  / __`\\  / __`\\\\ \\ \\   /\',__\\\n  \\ \\ \\L\\ \\\\ \\ \\_/\\ \\L\\ \\/\\ \\L\\ \\\\_\\ \\_/\\__, `\\ \n   \\ \\____/ \\ \\__\\ \\____/\\ \\____//\\____\\/\\____/\n    \\/___/   \\/__/\\/___/  \\/___/ \\/____/\\/___/\n\n                  version ' + BtoolsSet.version + '  Powered By imba久期',
-        'infoColor': 'color:#00a1d6',
-        'Reg': {
-          'weibo' : /(?:http|https)\:\/\/weibo\.com/i,
-          'weiboAutoLoadComment' : /(?:http|https)\:\/\/([^\/\?]*)\/\d+\/[a-zA-Z0-9]+\?([a-zA-Z0-9=_&]*)?type=comment/i,
-          'mySpace' : /https?\:\/\/space\.bilibili\.com\/2198461/i,
-          'BtoolsVerCheck' : /http?\:\/\/btools\.cc\/check\-for\-updates/i
+        info: '%c ____     __                   ___\n/\\  _`\\  /\\ \\__               /\\_ \\\n\\ \\ \\L\\ \\\\ \\ ,_\\   ___     ___\\//\\ \\     ____\n \\ \\  _ <\'\\ \\ \\/  / __`\\  / __`\\\\ \\ \\   /\',__\\\n  \\ \\ \\L\\ \\\\ \\ \\_/\\ \\L\\ \\/\\ \\L\\ \\\\_\\ \\_/\\__, `\\ \n   \\ \\____/ \\ \\__\\ \\____/\\ \\____//\\____\\/\\____/\n    \\/___/   \\/__/\\/___/  \\/___/ \\/____/\\/___/\n\n                  version ' + BtoolsSet.version + '  Powered By imba久期',
+        infoColor: 'color:#00a1d6',
+        Reg: {
+          weibo: /(?:http|https)\:\/\/weibo\.com/i,
+          weiboAutoLoadComment: /(?:http|https)\:\/\/([^\/\?]*)\/\d+\/[a-zA-Z0-9]+\?([a-zA-Z0-9=_&]*)?type=comment/i,
+          mySpace: /https?\:\/\/space\.bilibili\.com\/2198461/i,
+          BtoolsVerCheck: /http?\:\/\/btools\.cc\/check\-for\-updates/i
         }
       }
       console.log(Btools.info,Btools.infoColor);
@@ -98,88 +98,116 @@ function completeLoading() {
 $.fn.extend({
   // hotKeyMenu --- START
   'HKM': function(menu) {
-    if($(this).attr('data-mousedown') === 'true') return false;
-    $(this).attr('data-mousedown', 'true')
-    $(this).addClass('Btools-user-select-none').attr({
-      'ondragstart': 'return false;'
-    });
-    $(this)[0].BtoolsHKM = [];
-    $(this)[0].BtoolsHKM = $(this)[0].BtoolsHKM.concat(menu);
-    $(this).bind('mousedown', (ev) => {
-      ev = ev || window.event;
-      if(ev.button !== 0) return true;
+    return {
+      set: () => {
+        if($(this).attr('data-mousedown') === 'true') return false;
+        $(this).attr('data-mousedown', 'true');
 
-      var hotKeyMenu = $(this)[0].BtoolsHKM;
-
-      var x = 0;
-      var y = 0;
-
-      if(ev.pageX || ev.pageY){
-        x = ev.pageX;
-        y = ev.pageY;
-      } else {
-        x = ev.clientX + document.body.scrollLeft - document.body.clientLeft;
-        y = ev.clientY + document.body.scrollTop - document.body.clientTop;
-      }
-
-      var html = '<div id="hotKeyMenu"><p class="menuTitle">快捷键菜单</p>';
-
-      hotKeyMenu.forEach((item, index) => {
-        html += `<p style="top: ${(index+1) * 35 + 5}px" data-is-key="true" data-index="${index}" data-key="${item.key}"><span class="key">${String.fromCharCode(item.key)}</span><span class="title">${item.title}</span></p>`;
-      });
-
-      html += '<div class="bg"></div></div>';
-      $('body').append(html).find('#hotKeyMenu').css({
-        'width': 200,
-        'height': hotKeyMenu.length * 40 + 60
-      });
-      $('#hotKeyMenu').css({
-        'top': y - 65,
-        'left': x - ($('#hotKeyMenu').outerWidth() / 2)
-      });
-
-      var mo = null;
-      var isContinued = false;
-
-      $('#hotKeyMenu p[data-is-key=true]').mouseover(function(){
-        mo = Number($(this).attr('data-index'));
-        $(this).find('.key').css({
-          'color': '#FFF',
-          'background-color': '#F66'
+        $(this).addClass('Btools-user-select-none').attr({
+          'ondragstart': 'return false;'
         });
-      });
-      $('#hotKeyMenu p[data-is-key=true]').mouseout(function(){
-        mo = null;
-        $(this).find('.key').css({
-          'color': '#666',
-          'background-color': '#FFF'
-        });
-      });
+        $(this)[0].BtoolsHKM = menu;
+        $(this)[0].BtoolsHKMKeys = [];
+        $(this).bind('mousedown', (ev) => {
+          ev = ev || window.event;
+          if(ev.button !== 0) return true;
 
-      $(document).one('mouseup', () => {
-        $(document).unbind('keydown');
-        $('#hotKeyMenu').remove();
-        if(mo !== null && (!hotKeyMenu[mo].continued || !isContinued)) {
-          hotKeyMenu[mo].action();
-        }
-      });
-      $(document).bind('keydown', (ev) => {
-        ev = ev || window.event;
-        ev.preventDefault();
-        var key = hotKeyMenu[Number($(`#hotKeyMenu p[data-key=${ev.keyCode}]`).attr('data-index'))];
-        if(key !== undefined) {
-          key.action();
-          if(!key.continued) {
-            $(document).unbind('mouseup keydown');
-            $('#hotKeyMenu').remove();
+          var hotKeyMenu = $(this)[0].BtoolsHKM;
+          var hotKeys = $(this)[0].BtoolsHKMKeys;
+
+          var x = 0;
+          var y = 0;
+
+          if(ev.pageX || ev.pageY){
+            x = ev.pageX;
+            y = ev.pageY;
           } else {
-            isContinued = true;
+            x = ev.clientX + document.body.scrollLeft - document.body.clientLeft;
+            y = ev.clientY + document.body.scrollTop - document.body.clientTop;
           }
-        }
-      });
 
-      // mousedown
-    });
+          var html = '<div id="hotKeyMenu"><p class="menuTitle">快捷键菜单</p>';
+
+          hotKeyMenu.forEach((item, index) => {
+            html += `<p style="top: ${(index+1) * 35 + 5}px" data-is-key="true" data-index="${index}" data-key="${item.key}"><span class="key">${String.fromCharCode(item.key)}</span><span class="title">${item.title}</span></p>`;
+            if($.inArray(item.key, hotKeys) === -1) {
+              hotKeys.push(item.key);
+            }
+          });
+
+          $(this)[0].BtoolsHKMKeys = hotKeys;
+
+          html += '<div class="bg"></div></div>';
+          $('body').append(html).find('#hotKeyMenu').css({
+            'width': 200,
+            'height': hotKeyMenu.length * 40 + 60
+          });
+          $('#hotKeyMenu').css({
+            'top': y - 65,
+            'left': x - ($('#hotKeyMenu').outerWidth() / 2)
+          });
+
+          var mo = null;
+          var isContinued = false;
+
+          $('#hotKeyMenu p[data-is-key=true]').mouseover(function(){
+            mo = Number($(this).attr('data-index'));
+            $(this).find('.key').css({
+              'color': '#FFF',
+              'background-color': '#F66'
+            });
+          });
+          $('#hotKeyMenu p[data-is-key=true]').mouseout(function(){
+            mo = null;
+            $(this).find('.key').css({
+              'color': '#666',
+              'background-color': '#FFF'
+            });
+          });
+
+          $(document).one('mouseup', () => {
+            $(document).unbind('keydown');
+            $('#hotKeyMenu').remove();
+            if(mo !== null && (!hotKeyMenu[mo].continued || !isContinued)) {
+              hotKeyMenu[mo].action();
+            }
+          });
+          $(document).bind('keydown', (ev) => {
+            ev = ev || window.event;
+            ev.preventDefault();
+            var key = hotKeyMenu[Number($(`#hotKeyMenu p[data-key=${ev.keyCode}]`).attr('data-index'))];
+            if(key !== undefined) {
+              key.action();
+              if(!key.continued) {
+                $(document).unbind('mouseup keydown');
+                $('#hotKeyMenu').remove();
+              } else {
+                isContinued = true;
+              }
+            }
+          });
+
+          // mousedown
+        });
+      },
+      add: (where) => {
+        var hotKeys = $(this)[0].BtoolsHKMKeys;
+        menu.forEach((item, index) => {
+          if($.inArray(item.key, hotKeys) >= 0) return false;
+          $(this)[0].BtoolsHKMKeys.push(item.key);
+          switch(where) {
+            case 'first':
+              $(this)[0].BtoolsHKM.unshift(item);
+            break;
+            case 'last':
+            default:
+              $(this)[0].BtoolsHKM.push(item);
+            break;
+          }
+        });
+      }
+    }
+
   }
   // hotKeyMenu --- END
 });

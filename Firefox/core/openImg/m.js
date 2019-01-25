@@ -8,8 +8,8 @@ const openImgSet = {
   loopMax: 10,
   timer: null,
   timerOff: false,
-  urlReg: /([^\@]*)(?:\@.*\.webp)?/,
-  bannerImgReg: /url\("((?:http|https):\/\/[^\@]*)(?:\@.*\.(?:webp|jpg|png|gif))?"\)/,
+  urlReg: /([^\@]*\.(?:webp|jpg|png|gif))(?:\@|\_).*\.(?:webp|jpg|png|gif)?/,
+  bannerImgReg: /url\("((?:http|https):\/\/[^\@]*)(?:\@|\_)(?:.*\.(?:webp|jpg|png|gif))?"\)/,
   watchlaterUrlReg: /(?:http|https):\/\/www\.bilibili\.com\/watchlater\/.*/,
   liveRoomUrlReg: /(?:http|https):\/\/live\.bilibili\.com\/\d+\/.*/
 }

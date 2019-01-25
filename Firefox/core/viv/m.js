@@ -76,20 +76,17 @@ function VivInitLoop()
 }
 
 function VivInit() {
-  if($('.fav-video-list li.disabled').length > 0) {
-    $('.fav-video-list li.disabled').each(function() {
-      var keyword = $(this).find('a:eq(0) img:eq(0)').attr('alt');
-      $(this).find('a.title').html('<span class=\'Btools-viv-video-name\'>' + keyword + '</span>');
-
+  if($('.fav-video-list li').length > 0) {
+    $('.fav-video-list li').each(function() {
       var upNameText = $(this).find('.meta-mask .meta-info .author').text();
       var upName = upNameText.substring(4,upNameText.length);
-
+      var coverReg = /([^\@]*\.(?:webp|jpg|png|gif))(?:\@|\_).*\.(?:webp|jpg|png|gif)?/;
       $(this).HKM([
         {
-          'key': 83,
-          'title': '搜索视频',
+          'key': 67,
+          'title': '打开封面',
           'action': () => {
-            window.open(`https://www.baidu.com/s?ie=utf-8&wd=${keyword}`);
+            window.open(coverReg.exec($(this).find('a:eq(0) img:eq(0)').attr('src'))[1]);
             void(0);
           }
         },
@@ -101,12 +98,41 @@ function VivInit() {
             void(0);
           }
         }
-      ]);
+      ]).set();
 
-      if ($(this).find('a.disabled').length > 0) {
-        $(this).find('.disabled-cover').remove();
-        $(this).find('a.disabled').attr('class', '').find('.length').remove();
+      if($(this).attr('class').indexOf('disabled') === -1) {
+        var url = $(this).find('a.cover').attr('href');
+        $(this).HKM([
+          {
+            'key': 86,
+            'title': '打开视频',
+            'action': () => {
+              window.open(url);
+              void(0);
+            }
+          }
+        ]).add('first');
+      } else {
+        var keyword = $(this).find('a:eq(0) img:eq(0)').attr('alt');
+        $(this).find('a.title').html('<span class=\'Btools-viv-video-name\'>' + keyword + '</span>');
+
+        $(this).HKM([
+          {
+            'key': 83,
+            'title': '搜索视频',
+            'action': () => {
+              window.open(`https://www.baidu.com/s?ie=utf-8&wd=${keyword}`);
+              void(0);
+            }
+          }
+        ]).add('first');
+
+        if ($(this).find('a.disabled').length > 0) {
+          $(this).find('.disabled-cover').remove();
+          $(this).find('a.disabled').attr('class', '').find('.length').remove();
+        }
       }
+
     });
   }
   if(VivSet.loopNum >= VivSet.loopMax) {
