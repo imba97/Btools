@@ -11,7 +11,7 @@ function getUrlInit()
   getUrlSet.timer = setInterval(function(){
     if($('.page-container .nav-tab-bar').length > 0)
     {
-      var BtoolsBtnHTML ='<a id="BtoolsBtn" href="javascript:;" target="_self" class="tab-item"><span>Btools</span></a>';
+      var BtoolsBtnHTML =`<a id="BtoolsBtn" href="javascript:;" target="_self" class="tab-item">${BtoolsSet.logo}<span>Btools</span></a>`;
 
       var BtoolsAllBtnHTML =
         '<div id="BtoolsAllBtn">' +

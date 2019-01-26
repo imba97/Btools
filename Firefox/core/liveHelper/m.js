@@ -42,7 +42,7 @@ function liveHelperInit() {
         }
       }
     }
-  ]);
+  ]).set();
 
   $('#BtoolsLiveHelperPKPointHide').click(function(){
     if($('.process-box').length !== 0){

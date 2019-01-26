@@ -42,8 +42,6 @@ europeanSet.timerOnload = setInterval(function(){
 
 function europeanShow()
 {
-  _gaq.push(['_trackPageview']);
-
   var europeanShowHTML =`
     <div id="europeanPage">
       <a href="javascript:void(0);" class="BtoolsLogoBtn"></a>
@@ -138,7 +136,6 @@ function europeanShow()
 
   $('#europeanStartBtn').click(function(){
     if(europeanSet.start) return false;
-    _gaq.push(['_trackEvent', 'button', 'start', 'european']);
 
     europeanSet.start = true;
     $('#europeanStartBtn').css({
@@ -448,8 +445,4 @@ function makeExcel()
   a.href = URL.createObjectURL(blob);
 
   a.download = europeanSet.upName + ' 的抽奖中奖名单.xls';
-
-  $('#europeanExcelDownload').click(() => {
-    _gaq.push(['_trackEvent', 'button', 'excelDownload', 'european']);
-  });
 }

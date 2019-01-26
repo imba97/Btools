@@ -12,11 +12,6 @@ const VivSet = {
   eqNum: 0
 }
 
-if(VivSet.init === true) {
-  VivSet.init = false;
-  _gaq.push(['_trackEvent', 'page', 'view', 'viv']);
-}
-
 $(document).ready(function(){
   $('body').on('click', '.be-scrollbar .fav-list .fav-item a.text', function(){
     VivInitLoopStart();

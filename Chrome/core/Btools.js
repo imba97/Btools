@@ -2,7 +2,8 @@ chrome = chrome || browser;
 
 const BtoolsSet = {
   version: chrome.i18n.getMessage('version'),
-  releaseVersion: Number(chrome.i18n.getMessage('releaseVersion'))
+  releaseVersion: Number(chrome.i18n.getMessage('releaseVersion')),
+  logo: chrome.i18n.getMessage('logo')
 }
 
 $(document).ready(() => {

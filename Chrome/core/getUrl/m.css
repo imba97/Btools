@@ -1,14 +1,9 @@
 @charset "UTF-8";
 
-#BtoolsBtn::before
+#BtoolsLOGO
 {
-  content: '';
-  margin-right: 25px;
-  width: 28px;
-  height: 28px;
-  display: inline-block;
-  vertical-align: top;
-  background: transparent url('__MSG_logo__') no-repeat scroll 0 0 / 28px 28px;
+  width: 30px;
+  height: 30px;
 }
 
 #BtoolsAllBtn
