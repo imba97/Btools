@@ -18,7 +18,7 @@ openImgSet.timer = setInterval(function(){
   if($('#bofqi').length > 0) {
     var openImgBtnHTML =`
       <div class="BtoolsLogoBtn">
-        <a href="javascript:void(0);"></a>
+        <a href="javascript:void(0);">${BtoolsSet.logo}</a>
       </div>
     `;
     var bofqiTop = $('#bofqi').offset().top + 22;

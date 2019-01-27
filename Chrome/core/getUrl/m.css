@@ -1,61 +1,6 @@
 @charset "UTF-8";
 
-#BtoolsLOGO
+.BtoolsGetUrl
 {
-  width: 30px;
-  height: 30px;
-}
-
-#BtoolsAllBtn
-{
-  position: absolute;
-  padding: 5px;
-  width: 200px;
-  height: 300px;
-  border-radius: 10px;
-  background-color: #CCC;
-  border: 3px #666 solid;
-  border-radius: 10px;
-  overflow: hidden;
-  display: none;
-}
-#BtoolsAllBtn p
-{
-  text-align: center;
-}
-#BtoolsAllBtn p a
-{
-  padding: 5px;
-  font-size: 20px;
-  font-weight: 700;
-  color: #666;
-}
-
-#BtoolsGetUrlWindow
-{
-  position: fixed;
-  top: 50px;
-  left: 0;
-  width: 100%;
-}
-
-#BtoolsGetUrlWindow .I_getUrl
-{
-  position: absolute;
-  top: 0;
-  padding: 3px 5px;
-  background-color: #666;
-  color: #FFF;
-  font-size: 20px;
-  font-weight: 100px;
-  border-radius: 10px;
-  left: 20px;
-  opacity: 0;
-  display: none;
-}
-#BtoolsGetUrlWindow .I_getUrl a
-{
-  margin-right: 20px;
-  color: #FFF;
-  font-size: 18px;
+  color: #fb7299;
 }

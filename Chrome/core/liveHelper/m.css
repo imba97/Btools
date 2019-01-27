@@ -8,8 +8,6 @@
   width: 40px;
   height: 40px;
   text-decoration: none;
-  background: transparent url('__MSG_logo__') no-repeat scroll 0 0 / 40px 40px;
-  **background: transparent url('chrome-extension://__MSG_@@extension_id__/img/icon.png') no-repeat scroll 0 0 / 30px 30px;**
 }
 
 #BtoolsLiveHelper p

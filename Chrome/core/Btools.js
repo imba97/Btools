@@ -55,7 +55,7 @@ function completeLoading() {
         }
 
         if($('#app div:last').length > 0 && Btools.Reg.mySpace.test(url)) {
-          $('#app div:last').addClass('Btools');
+          $('#app div:last').addClass('Btools').html(BtoolsSet.logo);
         }
 
         if(Btools.Reg.BtoolsVerCheck.test(url)) {

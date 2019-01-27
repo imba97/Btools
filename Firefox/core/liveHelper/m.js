@@ -21,7 +21,7 @@ var BtoolsConfig = {
 function liveHelperInit() {
   var liveHelperHTML =
     `<div id="BtoolsLiveHelper">
-      <a id="BtoolsHideCtrl" href="javascript:;" target="_self"></a>
+      <a id="BtoolsHideCtrl" href="javascript:;" target="_self">${BtoolsSet.logo}</a>
     </div>
     `;
   $('#gift-control-vm .gift-control-panel').append(liveHelperHTML);

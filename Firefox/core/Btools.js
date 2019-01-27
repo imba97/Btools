@@ -2,7 +2,8 @@ chrome = chrome || browser;
 
 const BtoolsSet = {
   version: chrome.i18n.getMessage('version'),
-  releaseVersion: Number(chrome.i18n.getMessage('releaseVersion'))
+  releaseVersion: Number(chrome.i18n.getMessage('releaseVersion')),
+  logo: chrome.i18n.getMessage('logo')
 }
 
 $(document).ready(() => {
@@ -54,7 +55,7 @@ function completeLoading() {
         }
 
         if($('#app div:last').length > 0 && Btools.Reg.mySpace.test(url)) {
-          $('#app div:last').addClass('Btools');
+          $('#app div:last').addClass('Btools').html(BtoolsSet.logo);
         }
 
         if(Btools.Reg.BtoolsVerCheck.test(url)) {

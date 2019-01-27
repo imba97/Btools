@@ -44,7 +44,7 @@ function europeanShow()
 {
   var europeanShowHTML =`
     <div id="europeanPage">
-      <a href="javascript:void(0);" class="BtoolsLogoBtn"></a>
+      <a href="javascript:void(0);" class="BtoolsLogoBtn">${BtoolsSet.logo}</a>
       <div class="BtoolsBtnAll">
         <a id="BtoolsEuropeanBtn" href="javascript:void(0);">抽奖</a>
       </div>
