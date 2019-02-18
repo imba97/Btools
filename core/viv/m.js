@@ -34,6 +34,9 @@ $(document).ready(function(){
   $('body').on('click', '.be-dropdown .be-dropdown-item-delimiter', function() {
     VivInitLoopStart();
   });
+  $('body').on('click', '#page-index .fav .fav-item a', function() {
+    VivInitLoopStart();
+  });
   $('body').on('click', 'input.be-switch-input', function() {
     VivInitLoopStart();
   });
