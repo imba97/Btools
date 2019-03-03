@@ -13,27 +13,31 @@ const VivSet = {
 }
 
 $(document).ready(function(){
-  $('body').on('click', '.be-scrollbar .fav-list .fav-item a.text', function(){
-    VivInitLoopStart();
-  });
   $('body').on('click', '.be-pager li.be-pager-item', function(){
     VivInitLoopStart();
   });
-  $('body').on('click', 'li.be-pager-prev,.be-pager-next', function(){
-    VivInitLoopStart();
-  });
+  // 头部 收藏夹 按钮
   $('body').on('click', '.n-tab-links a.n-favlist', function(){
     VivInitLoopStart();
   });
-  $('body').on('click', '#fav-list-container .fav-item a', function(){
+  $('body').on('click', '.fav-item a.text', function(){
     VivInitLoopStart();
   });
+  // 批量操作 等 按钮
   $('body').on('click', 'div.fav-filters,div.video-check-container,div.fav-action-fixtop', function(){
     VivInitLoopStart();
   });
-  $('body').on('click', '.be-dropdown .be-dropdown-item-delimiter', function() {
+
+  // 移动、复制按钮
+  $('body').on('click', '.be-dropdown .be-dropdown-menu li', function() {
     VivInitLoopStart();
   });
+
+  // 上一页 下一页
+  $('body').on('click', 'li.be-pager-prev,.be-pager-next', function(){
+    VivInitLoopStart();
+  });
+  // 页数按钮
   $('body').on('click', '#page-index .fav .fav-item a', function() {
     VivInitLoopStart();
   });
@@ -43,9 +47,21 @@ $(document).ready(function(){
   $('body').on('click', '.btn-container .default', function() {
     VivInitLoopStart();
   });
+
+  $('body').on('click', '.modal-header-close,.icon-close', function() {
+    VivInitLoopStart();
+  });
+
+  // 拖拽排序
+  $('body').on('mouseup mousedown', '.fav-list .icon-cursor', function() {
+    VivInitLoopStart();
+  });
+
   window.onpopstate = function(event) {
     VivInitLoopStart();
   };
+
+  // 键盘回车翻页
   $(document).on('keyup', '.be-pager .be-pager-options-elevator input', function(e) {
     if(e.which === 13) {
       VivInitLoopStart();
@@ -74,12 +90,12 @@ function VivInitLoop()
 }
 
 function VivInit() {
-  if($('.fav-video-list li').length > 0) {
-    $('.fav-video-list li').each(function() {
+  if($('.fav-video-list li.small-item').length > 0) {
+    $('.fav-video-list li.small-item').each(function() {
       var upNameText = $(this).find('.meta-mask .meta-info .author').text();
       var upName = upNameText.substring(4,upNameText.length);
       var coverReg = /([^\@]*\.(?:webp|jpg|png|gif))(?:\@|\_).*\.(?:webp|jpg|png|gif)?/;
-      $(this).HKM([
+      $(this).find('a').HKM([
         {
           'key': 67,
           'title': '打开封面',
@@ -100,7 +116,7 @@ function VivInit() {
 
       if($(this).attr('class').indexOf('disabled') === -1) {
         var url = $(this).find('a.cover').attr('href');
-        $(this).HKM([
+        $(this).find('a').HKM([
           {
             'key': 86,
             'title': '打开视频',
@@ -115,7 +131,7 @@ function VivInit() {
         var keyword = $(this).find('a:eq(0) img:eq(0)').attr('alt');
         $(this).find('a.title').html('<span class=\'Btools-viv-video-name\'>' + keyword + '</span>');
 
-        $(this).HKM([
+        $(this).find('a').HKM([
           {
             'key': 83,
             'title': '搜索视频',

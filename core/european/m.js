@@ -20,7 +20,8 @@ const europeanSet = {
   Alleuropeans: 0,
   defaultAtNum: 0,
   atNumArr: [],
-  atNumReg: eval(/<?a href="\/\/space\.bilibili\.com\/\d+\/dynamic"[^<>]*>\@([^<>@]*)<\/a>/ig)
+  atNumReg: eval(/<?a href="\/\/space\.bilibili\.com\/\d+\/dynamic"[^<>]*>\@([^<>@]*)<\/a>/ig),
+  type: null
 }
 
 chrome = chrome || browser;
@@ -30,8 +31,7 @@ europeanSet.timerOnload = setInterval(function(){
   if($('.detail-card .card:eq(0)').length > 0) {
     europeanSet.cardW = $('.detail-card .card:eq(0)').outerWidth();
     if($('.content').children('.card').length === 0) europeanShow();
-    europeanSet.Alleuropeans = Number($('.button-bar span:eq(0) span:eq(0)').text());
-    // console.log(europeanSet.Alleuropeans);
+
     clearInterval(europeanSet.timerOnload);
   } else {
     europeanSet.loopNumOnload++;
@@ -127,6 +127,17 @@ function europeanShow()
     } else {
       $('.europeanStartPage,.europeanPageBG').hide();
     }
+
+    if($('.comm-list .dynamic-list-item-wrap').length > 0) {
+      europeanSet.type = 'comm';
+    } else if($('.forw-list .dynamic-list-item-wrap').length > 0) {
+      europeanSet.type = 'forw';
+    }
+
+    switch(europeanSet.type) {
+      case 'forw': europeanSet.Alleuropeans = Number($('.button-bar .single-button:eq(0) .text-bar .text-offset').text()); break;
+      case 'comm': europeanSet.Alleuropeans = Number($('.button-bar .single-button:eq(1) .text-bar .text-offset').text()); break;
+    }
   });
 
   $('.europeanAutoLoad').click(function(){
@@ -150,7 +161,7 @@ function europeanShow()
     $('.europeanAddUserArr').hide();
 
     europeanSet.upName = $('.main-content:eq(0) .user-name:eq(0) a.c-pointer').text();
-    $('.forw-list .dynamic-list-item-wrap').each(function() {
+    $(`.${europeanSet.type}-list .dynamic-list-item-wrap`).each(function() {
       europeanInArr($(this));
     });
     addUserInArr(europeanSet.addUser);
@@ -241,6 +252,12 @@ function europeanShow()
 
     makeExcel();
 
+    europeanSet.autoLoadFlag = true;
+    europeanSet.autoLoadTimerOff = true;
+    $('.europeanAutoLoad').text('自动加载');
+    $('.europeanAutoLoadProgressBar').css({'width': 0});
+    clearInterval(europeanSet.autoLoadTimer);
+
     clearInterval(europeanSet.timer);
   });
 }
@@ -303,11 +320,11 @@ function europeanInArr(ud) {
     // console.log('['+ud.find('.item-detail:eq(0) .item-user:eq(0) a.user-name:eq(0)').text() + '] At了 ' + europeanSet.atNumArr.length + '人，' + a);
   }
 
-  var userMid = /com\/(\d*)\//g.exec(ud.find('.forw-face:eq(0) .c-pointer:eq(0)').attr('href'))[1];
+  var userMid = /com\/(\d*)\//g.exec(ud.find(`.${europeanSet.type}-face:eq(0) .c-pointer:eq(0)`).attr('href'))[1];
 
 	var uData = {
 		uName: ud.find('.item-detail:eq(0) .item-user:eq(0) a.user-name:eq(0)').text(),
-		uFace: ud.find('.forw-face:eq(0) .c-pointer:eq(0) .forw-head:eq(0)').attr('src'),
+		uFace: ud.find(`.${europeanSet.type}-face:eq(0) .c-pointer:eq(0) .${europeanSet.type}-head:eq(0)`).attr('src'),
 		uSpace: 'https://space.bilibili.com/' + userMid,
     uMsg: 'https://message.bilibili.com/#/whisper/mid' + userMid
 	};
@@ -329,7 +346,8 @@ function autoLoad() {
     europeanSet.autoLoadTimerOff = false;
     $('.europeanAutoLoad').text('取消');
     europeanSet.autoLoadTimer = setInterval(function(){
-      var progressBarNum = Math.floor($('.forw-list .dynamic-list-item-wrap').length / europeanSet.Alleuropeans * 100);
+      var progressBarNum = Math.floor($(`.${europeanSet.type}-list .dynamic-list-item-wrap`).length / europeanSet.Alleuropeans * 100);
+      console.log($(`.${europeanSet.type}-list .dynamic-list-item-wrap`).length);
       $('.europeanAutoLoadProgressBar').css({'width': progressBarNum + '%'});
       $('.europeanAutoLoad').text(progressBarNum + '% 点击暂停');
       if($('.forw-more .nomore').length !== 0)
