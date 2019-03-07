@@ -5,3 +5,15 @@
   color:#F66;
   font-weight:700;
 }
+
+#vivWindow
+{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+.vivMediaInfoTitle
+{
+  
+}
