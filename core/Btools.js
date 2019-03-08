@@ -95,6 +95,12 @@ $.fn.extend({
   // hotKeyMenu --- START
   'HKM': function(menu) {
 
+    if(menu === 'clear') {
+      $(this)[0].BtoolsHKM = undefined;
+      $(this)[0].BtoolsHKMKeys = undefined;
+      return false;
+    }
+
     if(typeof $(this)[0].BtoolsHKM !== 'undefined') {
       var hotKeys = $(this)[0].BtoolsHKMKeys;
       menu.forEach((item, index) => {

@@ -8,12 +8,92 @@
 
 #vivWindow
 {
-  position: fixed;
-  top: 0;
+  position: absolute;
+  top: 100px;
   left: 0;
-  width: 100%;
+  padding: 30px 10px 10px 10px;
+  width: 500px;
+  min-height: 300px;
+
+  border-radius: 20px;
+  overflow: hidden;
+
+  z-index: 999999;
 }
+
+#vivWindow p
+{
+  color: #FFF;
+  font-size: 20px;
+}
+
 .vivMediaInfoTitle
 {
-  
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+}
+.vivMediaInfoContent
+{
+  padding: 10px 0;
+  width: 500px;
+  font-size: 14px !important;
+  color: #FFF;
+  border-top: 1px #FFF solid;
+  border-bottom: 1px #FFF solid;
+}
+
+.vivMediaCount
+{
+  width: 500px;
+}
+
+#vivWindow .vivP
+{
+  margin: 0 auto;
+  width: 500px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+#vivWindow .vivP p
+{
+  margin: 2px 0;
+}
+#vivWindow .vivP p span
+{
+  color: #CCC;
+}
+
+.vivBilibilijj a
+{
+  font-size: 18px;
+  color: #CCC;
+}
+.vivBilibilijj a:hover
+{
+  color: #CCC;
+}
+
+.vivClose
+{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 35px;
+  color: #FFF;
+}
+.vivClose:hover
+{
+  color: #F66;
+}
+
+.vivBG
+{
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: 0.75;
+  z-index: -1;
 }
