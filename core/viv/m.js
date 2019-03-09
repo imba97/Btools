@@ -207,11 +207,12 @@ function favJson(pn) {
   if(!VivSet.isKey) VivSet.pn = Number($('.be-pager-item-active').text()); else VivSet.isKey = false;
 
   if(fid !== null) {
-    $.getJSON(`http://api.bilibili.com/medialist/gateway/base/spaceDetail`, {
+    $.getJSON(`https://api.bilibili.com/medialist/gateway/base/spaceDetail`, {
       media_id: fid,
       pn: VivSet.pn,
       ps: 20,
-      order: VivSet.order
+      order: VivSet.order,
+      jsonp: 'jsonp'
     }, function(json){
       if(json && json.code === 0) {
         VivSet.fav = json.data.medias;
