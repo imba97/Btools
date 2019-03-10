@@ -20,7 +20,10 @@ const europeanSet = {
   autoLoadNum: 0,
   autoLoadMax: 20,
   Alleuropeans: 0,
-  defaultAtNum: 0
+  defaultAtNum: 0,
+  mod: true,
+  atNumArr: [],
+  atNumReg: eval(/<?a href="\/\/space\.bilibili\.com\/\d+\/dynamic"[^<>]*>\@([^<>@]*)<\/a>/ig)
 }
 
 chrome = chrome || browser;
@@ -33,6 +36,8 @@ europeanSet.timerOnload = setInterval(function(){
   if($('.detail-card .card:eq(0)').length > 0) {
     europeanSet.cardW = $('.detail-card .card:eq(0)').outerWidth();
     if($('.content').children('.card').length === 0) europeanShow();
+
+    europeanSet.Alleuropeans = Number($('.button-bar span:eq(0) span:eq(0)').text());
 
     clearInterval(europeanSet.timerOnload);
   } else {
@@ -83,12 +88,13 @@ function europeanShow()
             'height': $(window).height()
           });
 
+          if(europeanSet.userArr.length !== 0) return false;
           if(europeanSet.autoLoadTimer === null) {
             europeanSet.autoLoadTimer = setInterval(function(){
               autoLoad();
               europeanSet.autoLoadNum++;
 
-              if(europeanSet.autoLoadNum >= europeanSet.autoLoadMax) {
+              if(europeanSet.mod && europeanSet.autoLoadNum >= europeanSet.autoLoadMax) {
                 clearInterval(europeanSet.autoLoadTimer);
                 europeanSet.autoLoadTimer = null;
                 europeanSet.start = false;
@@ -157,11 +163,21 @@ function europeanShow()
     europeanSet.upName = $('.main-content:eq(0) .user-name:eq(0) a.c-pointer').text();
     addUserInArr(europeanSet.addUser);
 
-    europeanSet.userArr.forEach((item, index) => {
-      if(item.uAt >= europeanSet.defaultAtNum) {
-        europeanSet.userAtArr.push(item);
-      }
-    });
+    if(europeanSet.defaultAtNum === 0) {
+      europeanSet.userAtArr = europeanSet.userArr;
+    } else {
+      europeanSet.userArr.forEach((item, index) => {
+        if(europeanSet.mod) {
+          if(item.uAt >= europeanSet.defaultAtNum) {
+            europeanSet.userAtArr.push(item);
+          }
+        } else {
+          if(europeanIsAt(item.uCom)) {
+            europeanSet.userAtArr.push(item);
+          }
+        }
+      });
+    }
 
     if(europeanSet.userAtArr.length === 0) {
       $('#europeanEndBtn').click();
@@ -229,7 +245,7 @@ function europeanShow()
   });
 
   $('#europeanEndBtn').click(function(){
-    if(!europeanSet.start) return false;
+    if(!europeanSet.start || europeanSet.autoLoadTimer !== null) return false;
     europeanSet.start = false;
     europeanSet.userAtArr = [];
     btnCtrl(true, false, false);
@@ -278,6 +294,42 @@ function resetLoopNum()
 }
 
 function autoLoad() {
+  if(!europeanSet.mod) {
+    var loadNum = Math.floor($('.forw-list .dynamic-list-item-wrap').length);
+    var progressBarNum = loadNum / europeanSet.Alleuropeans * 100;
+    $('.europeanAutoLoadProgressBar').css({'width': progressBarNum + '%'});
+
+    if($('.forw-more .nomore').length !== 0)
+      {
+        if($('.forw-list .dynamic-list-item-wrap').length !== europeanSet.Alleuropeans) {
+          $('#europeanUserArr .europeanUser').html(`<font class="europeanUserMsg">到达加载极限，未全部加载完成</font>`);
+        } else {
+          $('#europeanUserArr .europeanUser').html('<font class="europeanUserMsg">加载完成！</font>');
+        }
+        $('.europeanAutoLoadProgressBar').css({'width': '100%'});
+        $('html,body').scrollTop('0');
+        europeanSet.start = false;
+        btnCtrl(true, false, false);
+        $('.forw-list .dynamic-list-item-wrap').each(function() {
+          var userMid = /com\/(\d*)\//g.exec($(this).find('.forw-face:eq(0) .c-pointer:eq(0)').attr('href'))[1];
+          var uData = {
+            uID: null,
+            uName: $(this).find('.item-detail:eq(0) .item-user:eq(0) a.user-name:eq(0)').text(),
+        		uFace: $(this).find('.forw-face:eq(0) .c-pointer:eq(0) .forw-head:eq(0)').attr('src'),
+        		uSpace: 'https://space.bilibili.com/' + userMid,
+            uMsg: 'https://message.bilibili.com/#/whisper/mid' + userMid,
+            uCom: $(this).find('.item-detail:eq(0) .text:eq(0)').html()
+        	};
+          europeanSet.userArr = uniqueArr(uData, europeanSet.userArr, true);
+        });
+        clearInterval(europeanSet.autoLoadTimer);
+        europeanSet.autoLoadTimer = null;
+      } else {
+        if($('.more').length > 0) $('.more')[0].click();
+      }
+
+    return false;
+  }
   var dynamic_id = /t\.bilibili\.com\/(\d+)\??/i.exec(window.location.href)[1];
   $.ajax({
     url: `https://api.vc.bilibili.com/dynamic_repost/v1/dynamic_repost/view_repost`,
@@ -335,8 +387,14 @@ function autoLoad() {
         }
       }
     },
-    error: function(e) {
-      console.log(e);
+    error: function() {
+      if(europeanSet.autoLoadNum / europeanSet.autoLoadMax < 0.5) {
+        $('#europeanUserArr .europeanUser').html(`<font class="europeanUserMsg">网络请求失败 重试 ${europeanSet.autoLoadNum}，请稍等</font>`);
+      } else {
+        europeanSet.mod = false;
+        europeanSet.userAtArr = [];
+        $('#europeanUserArr .europeanUser').html('<font class="europeanUserMsg">模式切换，正在从前台页面获取数据</font>');
+      }
     }
   });
 }
@@ -407,10 +465,31 @@ function addUserInArr(addUser)
   }
 }
 
+function europeanIsAt(com) {
+  var uTextArr = com.split('//<');
+  europeanSet.atNumArr = [];
+  if(uTextArr.length > 1) {
+    var text = uTextArr[0];
+  } else {
+    var text = uTextArr[0];
+  }
+  var atNumFlag = text.match(europeanSet.atNumReg);
+  // console.log(atNumFlag);
+  if(atNumFlag !== null) {
+    for(i = 0; i < atNumFlag.length; i++) {
+      europeanSet.atNumArr = uniqueArr(atNumFlag[i], europeanSet.atNumArr, false)
+    }
+  }
+
+  if(europeanSet.atNumArr.length < europeanSet.defaultAtNum) return false;
+
+  return true;
+}
+
 function makeExcel()
 {
   if(europeanSet.winArr.length === 0) return false;
-  var downloadBtn = '<p class="europeanUser"><span style="border-radius:0;" class="europeanExcelIcon"></span><a class="europeanUName" href="javascript:void(0);" target="_blank">中奖名单已保存到Excel表格</a><a id="europeanExcelDownload" class="europeanUMsg" href="javascript:void(0);" target="_blank">下载TA</a></p>';
+  var downloadBtn = '<p class="europeanUser"><span style="border-radius:0;" class="europeanExcelIcon"></span><a class="europeanUName" href="javascript:void(0);">中奖名单已保存到Excel表格</a><a id="europeanExcelDownload" class="europeanUMsg" href="javascript:void(0);" target="_blank">下载TA</a></p>';
   var table =
     '<table border="1" cellspacing="0" cellpadding="0">' +
       '<tr class="thead"><th colspan="4"><a href="' + window.location.href + '">' + europeanSet.upName + ' 的抽奖</a></th></tr>' +

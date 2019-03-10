@@ -10,7 +10,6 @@ const VivSet = {
   timer: null,
   timerOff: false,
   eqNum: 0,
-  fidRex: /\/\d+\/favlist\?fid=(\d+)/i,
   fav: null,
   count: 0,
   pn: 1,
@@ -140,28 +139,44 @@ function VivInitLoop()
 
 function VivInit() {
   if(VivSet.fav === null) favJson();
-  if($('.fav-video-list li.small-item').length > 0 && VivSet.fav !== null) {
+  if($('.fav-video-list li.small-item').length > 0) {
     $('.fav-video-list li.small-item').each(function(index) {
-      var upMid = VivSet.fav[index].upper.mid;
       var coverReg = /([^\@]*\.(?:webp|jpg|png|gif))(?:\@|\_).*\.(?:webp|jpg|png|gif)?/;
-      $(this).find('a').HKM([
-        {
-          'key': 85,
-          'title': '打开UP主空间',
-          'action': () => {
-            window.open(`http://space.bilibili.com/${upMid}`);
-            void(0);
+      var upNameText = $(this).find('.meta-mask .meta-info .author').text();
+      var upName = upNameText.substring(4,upNameText.length);
+
+      if(VivSet.fav !== null) {
+        var upMid = VivSet.fav[index].upper.mid;
+        $(this).find('a').HKM([
+          {
+            'key': 85,
+            'title': '打开UP主空间',
+            'action': () => {
+              window.open(`http://space.bilibili.com/${upMid}`);
+              void(0);
+            }
+          },
+          {
+            'key': 68,
+            'title': '详情信息',
+            'position': 'last',
+            'action': () => {
+              media_info(index);
+            }
           }
-        },
-        {
-          'key': 68,
-          'title': '详情信息',
-          'position': 'last',
-          'action': () => {
-            media_info(index);
+        ]);
+      } else {
+        $(this).find('a').HKM([
+          {
+            'key': 85,
+            'title': '搜索UP主',
+            'action': () => {
+              window.open(`https://search.bilibili.com/upuser?keyword=${upName}`);
+              void(0);
+            }
           }
-        }
-      ]);
+        ]);
+      }
 
       if($(this).attr('class').indexOf('disabled') === -1) {
         var url = $(this).find('a.cover').attr('href');
@@ -216,7 +231,6 @@ function favJson(pn) {
     }, function(json){
       if(json && json.code === 0) {
         VivSet.fav = json.data.medias;
-        console.log(json.data);
         VivSet.count = json.data.info.media_count;
       }
     });
@@ -225,7 +239,6 @@ function favJson(pn) {
 
 function media_info(mid) {
   if($('#vivWindow').length > 0) $('#vivWindow').remove();
-  console.log(VivSet.fav[mid]);
   var f = VivSet.fav[mid];
   if(f.page > 1) {
     var pagesHTML = '';
