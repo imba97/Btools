@@ -37,6 +37,7 @@ europeanSet.timerOnload = setInterval(function(){
     europeanSet.cardW = $('.detail-card .card:eq(0)').outerWidth();
     if($('.content').children('.card').length === 0) europeanShow();
 
+    europeanSet.upName = $('.main-content:eq(0) .user-name:eq(0) a.c-pointer').text();
     europeanSet.Alleuropeans = Number($('.button-bar span:eq(0) span:eq(0)').text());
 
     clearInterval(europeanSet.timerOnload);
@@ -90,14 +91,16 @@ function europeanShow()
 
           if(europeanSet.userArr.length !== 0) return false;
           if(europeanSet.autoLoadTimer === null) {
+            $('#europeanUserArr .europeanUser').html('<font class="europeanUserMsg">正在加载</font>');
             europeanSet.autoLoadTimer = setInterval(function(){
               autoLoad();
               europeanSet.autoLoadNum++;
 
               if(europeanSet.mod && europeanSet.autoLoadNum >= europeanSet.autoLoadMax) {
+                $('#europeanUserArr .europeanUser').html('');
                 clearInterval(europeanSet.autoLoadTimer);
                 europeanSet.autoLoadTimer = null;
-                europeanSet.start = false;
+                btnCtrl(true);
               }
             }, 500);
           }
@@ -156,11 +159,9 @@ function europeanShow()
 
   $('#europeanStartBtn').click(function(){
     if(europeanSet.start) return false;
-    europeanSet.start = true;
-    btnCtrl(false, true, true);
+    btnCtrl(false);
     $('.europeanAddUserArr').hide();
 
-    europeanSet.upName = $('.main-content:eq(0) .user-name:eq(0) a.c-pointer').text();
     addUserInArr(europeanSet.addUser);
 
     if(europeanSet.defaultAtNum === 0) {
@@ -246,9 +247,8 @@ function europeanShow()
 
   $('#europeanEndBtn').click(function(){
     if(!europeanSet.start || europeanSet.autoLoadTimer !== null) return false;
-    europeanSet.start = false;
     europeanSet.userAtArr = [];
-    btnCtrl(true, false, false);
+    btnCtrl(true);
 
     $('.europeanAddUserArr').show();
 
@@ -308,8 +308,7 @@ function autoLoad() {
         }
         $('.europeanAutoLoadProgressBar').css({'width': '100%'});
         $('html,body').scrollTop('0');
-        europeanSet.start = false;
-        btnCtrl(true, false, false);
+        btnCtrl(true);
         $('.forw-list .dynamic-list-item-wrap').each(function() {
           var userMid = /com\/(\d*)\//g.exec($(this).find('.forw-face:eq(0) .c-pointer:eq(0)').attr('href'))[1];
           var uData = {
@@ -355,26 +354,28 @@ function autoLoad() {
         if(com.length > 0) {
           json.data.comments.forEach((item, index) => {
             var atNum = 0;
-            var atArr = item.ctrl.split('},{');
-            if(atArr.length > 0 && atArr[0] !== '[]') {
+            var atArr = item.ctrl.match(/"data":"\d+","length":\d+,"location":\d+,"type":\d+/g);
+            var uCom = item.comment.split('//@')[0];
+
+            if(uCom !== '' && atArr !== null) {
               atArr.forEach((v, k) => {
-                if(/"data":"(\d+)","length":\d+,"location":\d+,"type":\d+/.exec(v).length > 1) {
+                var comReg = /"location":(\d+)/.exec(v);
+                var imgRex = /\[.*\]/.exec(uCom);
+                var imgNum = imgRex !== null ? imgRex.length * 3 : 0;
+                if(comReg.length > 1 && uCom.length - imgNum >= Number(comReg[1])) {
                   atNum++;
                 }
               });
             }
 
-            if(atArr !== null) {
-              var at = atArr.length - 1;
-            }
             var uData = {
               uID: item.uid,
-          		uName: item.uname,
-          		uFace: item.face_url,
+              uName: item.uname,
+              uFace: item.face_url,
               uAt: atNum,
-          		uSpace: `https://space.bilibili.com/${item.uid}`,
+              uSpace: `https://space.bilibili.com/${item.uid}`,
               uMsg: `https://message.bilibili.com/#/whisper/mid${item.uid}`
-          	};
+            };
             europeanSet.userArr = uniqueArr(uData, europeanSet.userArr, true);
             $('body').append(`<img class="european-read-face" style="width:0" src="${uData.uFace}">`);
           });
@@ -409,10 +410,11 @@ function makeUserHTML(u)
   return '<p class="europeanUser"><span style="background:transparent url(\'' + u.uFace + '\') no-repeat scroll 0 0 / 30px 30px;"></span><a class="europeanUName" href="' + u.uSpace + '" target="_blank">' + u.uName + '</a><a class="europeanUMsg" href="' + u.uMsg + '" target="_blank">' + btnText + '</a></p>';
 }
 
-function addUserArrFunc(k, uName)
+function addUserArrFunc(key, uName)
 {
-  switch(k){
+  switch(key){
     case 'isAdd':
+      if(uName === europeanSet.upName) return false;
       if(europeanSet.addUser.length === 0) return true;
       var isAdd = true;
       $.each(europeanSet.addUser, function(k, v){
@@ -520,15 +522,16 @@ function makeExcel()
   a.download = europeanSet.upName + ' 的抽奖中奖名单.xls';
 }
 
-function btnCtrl(start, thisShit, end)
+function btnCtrl(start)
 {
   $('#europeanStartBtn').css({
     'background-color': `#${start ? 'ff94b1' : '666'}`
   });
   $('#europeanThisShitBtn').css({
-    'background-color': `#${thisShit ? 'ff94b1' : '666'}`
+    'background-color': `#${!start ? 'ff94b1' : '666'}`
   });
   $('#europeanEndBtn').css({
-    'background-color': `#${end ? 'ff94b1' : '666'}`
+    'background-color': `#${!start ? 'ff94b1' : '666'}`
   });
+  europeanSet.start = !start;
 }

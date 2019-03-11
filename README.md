@@ -2,6 +2,8 @@
 
 [![LICENSE](https://img.shields.io/github/license/imba97/Btools.svg)](https://github.com/imba97/Btools/blob/master/LICENSE)
 [![chrome-web-store](https://img.shields.io/chrome-web-store/users/codgofkgobbmgglciccjabipdlgefnch.svg)](https://chrome.google.com/webstore/detail/btools/codgofkgobbmgglciccjabipdlgefnch)
+[![Mozilla Add-on](https://img.shields.io/amo/users/Btools.svg)](https://addons.mozilla.org/zh-CN/firefox/addon/btools)
+
 [![github-releases](https://img.shields.io/github/downloads/imba97/Btools/total.svg)](https://github.com/imba97/Btools/releases)
 [![website](https://img.shields.io/website-up-down-green-red/https/shields.io.svg?label=website)](http://btools.cc)
 
@@ -46,7 +48,6 @@ Btools(逼砣)，本插件主要目的是以B站为主的网站页面优化，�
    * 修复在主页下点击收藏夹不显示失效视频的BUG
 * `2019-03-02`
    * 修复点击收藏夹视频的操作按钮也会弹出快捷键菜单的BUG
-   * 添加评论抽奖功能
    * 优化显示失效视频
 * `2019-03-05`
    * 修复点击主页收藏夹链接第二次失效的BUG
@@ -57,6 +58,8 @@ Btools(逼砣)，本插件主要目的是以B站为主的网站页面优化，�
 * `2019-03-10`
    * 增加收藏夹视频查看详情和打开UP主空间功能只能在API请求成功后才会出现的判断
    * 转发抽奖添加两种模式，如果API请求获取失败，自动从前台页面获取转发用户的数据
+* `2019-03-11`
+   * 添加API请求方式的At人数判断
 
 * #### [关于“快捷键菜单”](http://btools.cc/hot-key-menu/)
 
