@@ -1,5 +1,5 @@
 {
-	"version": {"message": "v1.0.3"},
-	"releaseVersion": {"message": "4"},
+	"version": {"message": "v1.0.4"},
+	"releaseVersion": {"message": "5"},
 	"pluginDesc": {"message": "ビリビリ ツールズ、Bilibili動画を主に、ウェーブサイトの機能を強化し、ユーザー体験を最適化する。簡潔、実用、便利にさせたいと思います。"}
 }

@@ -1,5 +1,5 @@
 {
-	"version": {"message": "v1.0.3"},
-	"releaseVersion": {"message": "4"},
+	"version": {"message": "v1.0.4"},
+	"releaseVersion": {"message": "5"},
 	"pluginDesc": {"message": "Bilibili tools,increase user experience"}
 }

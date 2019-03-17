@@ -14,12 +14,12 @@ const VivSet = {
   count: 0,
   pn: 1,
   isKey: false,
-  order: 'mtime'
+  order: 'mtime',
+  tid: 0
 }
 
 $(document).ready(function(){
   $('body').on('click', '.be-pager li.be-pager-item', function(){
-    VivSet.fav = null;
     VivInitLoopStart();
   });
   // 头部 收藏夹 按钮
@@ -27,8 +27,6 @@ $(document).ready(function(){
     VivInitLoopStart();
   });
   $('body').on('click', '.fav-item a.text', function(){
-    VivSet.order = 'mtime';
-    VivSet.fav = null;
     VivInitLoopStart();
   });
   // 批量操作 等 按钮
@@ -36,41 +34,21 @@ $(document).ready(function(){
     VivInitLoopStart();
   });
 
-  // 移动、复制按钮
+  // 移动、复制按钮、分区按钮
   $('body').on('click', '.be-dropdown .be-dropdown-menu li', function() {
     VivInitLoopStart();
   });
 
   $('body').on('click', '.fav-filters .be-dropdown-menu:eq(1) .be-dropdown-item', function(){
-    $('.fav-video-list li.small-item').each(function(){
-      $(this).find('a').HKM('clear');
-    });
-    switch($(this).text()) {
-      case '最近收藏':
-        VivSet.order = 'mtime';
-      break;
-      case '最新投稿':
-        VivSet.order = 'pubtime';
-      break;
-      case '最多播放':
-        VivSet.order = 'view';
-      break;
-      default:
-        VivSet.order = 'mtime';
-      break;
-    }
-    VivSet.fav = null;
     VivInitLoopStart();
   });
 
   // 上一页 下一页
   $('body').on('click', 'li.be-pager-prev,.be-pager-next', function(){
-    VivSet.fav = null;
     VivInitLoopStart();
   });
   // 收藏夹链接
   $(document).on('click', '#page-index .fav .fav-item a', function() {
-    VivSet.fav = null;
     VivInitLoopStart();
   });
   $('body').on('click', 'input.be-switch-input', function() {
@@ -120,6 +98,10 @@ $(document).ready(function(){
 function VivInitLoopStart() {
   VivSet.eqNum = 0;
   VivSet.loopNum = 0;
+  VivSet.fav = null;
+  $('.fav-video-list li.small-item').each(function(index) {
+    $(this).find('a:eq(1),.meta-mask,a.disabled').HKM('clear');
+  });
   if(VivSet.timerOff) {
     VivInitLoop();
   }
@@ -138,8 +120,9 @@ function VivInitLoop()
 }
 
 function VivInit() {
-  if(VivSet.fav === null) favJson();
-  if($('.fav-video-list li.small-item').length > 0) {
+  if(VivSet.fav === null) {
+    favJson();
+  } else {
     $('.fav-video-list li.small-item').each(function(index) {
       var coverReg = /([^\@]*\.(?:webp|jpg|png|gif))(?:\@|\_).*\.(?:webp|jpg|png|gif)?/;
       var upNameText = $(this).find('.meta-mask .meta-info .author').text();
@@ -147,7 +130,7 @@ function VivInit() {
 
       if(VivSet.fav !== null) {
         var upMid = VivSet.fav[index].upper.mid;
-        $(this).find('a').HKM([
+        $(this).find('a:eq(1),.meta-mask,a.disabled').HKM([
           {
             'key': 85,
             'title': '打开UP主空间',
@@ -166,7 +149,7 @@ function VivInit() {
           }
         ]);
       } else {
-        $(this).find('a').HKM([
+        $(this).find('a:eq(1),.meta-mask,a.disabled').HKM([
           {
             'key': 85,
             'title': '搜索UP主',
@@ -180,7 +163,7 @@ function VivInit() {
 
       if($(this).attr('class').indexOf('disabled') === -1) {
         var url = $(this).find('a.cover').attr('href');
-        $(this).find('a').HKM([
+        $(this).find('a:eq(1),.meta-mask,a.disabled').HKM([
           {
             'key': 67,
             'title': '打开封面',
@@ -221,23 +204,62 @@ function favJson(pn) {
 
   if(!VivSet.isKey) VivSet.pn = Number($('.be-pager-item-active').text()); else VivSet.isKey = false;
 
-  if(fid !== null) {
-    $.getJSON(`https://api.bilibili.com/medialist/gateway/base/spaceDetail`, {
-      media_id: fid,
-      pn: VivSet.pn,
-      ps: 20,
-      order: VivSet.order,
-      jsonp: 'jsonp'
-    }, function(json){
-      if(json && json.code === 0) {
-        VivSet.fav = json.data.medias;
-        VivSet.count = json.data.info.media_count;
-      }
-    });
+  switch($('.fav-info .fav-filters div:eq(1) span:eq(0)').text().trim()) {
+    case '全部分区': VivSet.tid = 0; break;
+    case '动画': VivSet.tid = 1; break;
+    case '音乐': VivSet.tid = 3; break;
+    case '游戏': VivSet.tid = 4; break;
+    case '娱乐': VivSet.tid = 5; break;
+    case '番剧': VivSet.tid = 13; break;
+    case '电影': VivSet.tid = 23; break;
+    case '科技': VivSet.tid = 36; break;
+    case '鬼畜': VivSet.tid = 119; break;
+    case '舞蹈': VivSet.tid = 129; break;
+    case '生活': VivSet.tid = 160; break;
+    case '纪录片': VivSet.tid = 177; break;
+    case '影视': VivSet.tid = 181; break;
+    case '数码': VivSet.tid = 188; break;
+    default: VivSet.tid = 0;
+  };
+
+  switch($('.fav-info .fav-filters div:eq(2) span:eq(0)').text().trim()) {
+    case '最近收藏':
+      VivSet.order = 'mtime';
+    break;
+    case '最新投稿':
+      VivSet.order = 'pubtime';
+    break;
+    case '最多播放':
+      VivSet.order = 'view';
+    break;
+    default:
+      VivSet.order = 'mtime';
+    break;
   }
+
+  var data = `media_id=${fid}&pn=${VivSet.pn}&ps=20&order=${VivSet.order}&tid=${VivSet.tid}&type=0&jsonp=jsonp`;
+  fetch(`https://api.bilibili.com/medialist/gateway/base/spaceDetail?${data}`, {
+    credentials: 'include',
+    mode: 'cors',
+    cache: 'no-cache',
+    method: 'GET',
+    headers: {
+      'content-type': 'text/plain'
+    }
+  })
+  .then(response => response.json())
+  .then(json => {
+    if(json && json.code === 0) {
+      VivSet.fav = json.data.medias;
+      VivSet.count = json.data.info.media_count;
+    }
+  }).catch(function(ex) {
+    console.log('Error:', ex)
+  });
 }
 
 function media_info(mid) {
+  if(VivSet.fav === null) return false;
   if($('#vivWindow').length > 0) $('#vivWindow').remove();
   var f = VivSet.fav[mid];
   if(f.page > 1) {
@@ -250,7 +272,7 @@ function media_info(mid) {
   }
   var avNum = /video\/(\d+)/i.exec(f.link)[1];
   if(f.title === '已失效视频') {
-    var videoName = f.page > 1 ? '已失效视频，希望通过分P名帮你想起来' : f.title;
+    var videoName = f.page > 1 ? '希望通过简介和分P名帮你想起来' : f.title;
     var bilibilijjText = '去哔哩哔哩唧唧看看有没有资源？';
   } else {
     var bilibilijjText = '跳转到哔哩哔哩唧唧下载？';

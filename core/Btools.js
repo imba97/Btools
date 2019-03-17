@@ -101,7 +101,7 @@ $.fn.extend({
       return false;
     }
 
-    if(typeof $(this)[0].BtoolsHKM !== 'undefined') {
+    if($(this)[0].BtoolsHKM !== undefined) {
       var hotKeys = $(this)[0].BtoolsHKMKeys;
       menu.forEach((item, index) => {
         if($.inArray(item.key, hotKeys) >= 0) return false;
@@ -127,7 +127,6 @@ $.fn.extend({
       $(this)[0].BtoolsHKMKeys = hotKeys;
     }
 
-    // if()
     if($(this).attr('data-mousedown') === 'true') return false;
     $(this).attr('data-mousedown', 'true');
 
@@ -138,6 +137,8 @@ $.fn.extend({
     $(this).bind('mousedown', (ev) => {
       ev = ev || window.event;
       if(ev.button !== 0) return true;
+
+      if($(this)[0].BtoolsHKM === undefined) return false;
 
       var hotKeyMenu = $(this)[0].BtoolsHKM;
       var hotKeys = $(this)[0].BtoolsHKMKeys;

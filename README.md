@@ -3,7 +3,6 @@
 [![LICENSE](https://img.shields.io/github/license/imba97/Btools.svg)](https://github.com/imba97/Btools/blob/master/LICENSE)
 [![chrome-web-store](https://img.shields.io/chrome-web-store/users/codgofkgobbmgglciccjabipdlgefnch.svg)](https://chrome.google.com/webstore/detail/btools/codgofkgobbmgglciccjabipdlgefnch)
 [![Mozilla Add-on](https://img.shields.io/amo/users/Btools.svg)](https://addons.mozilla.org/zh-CN/firefox/addon/btools)
-
 [![github-releases](https://img.shields.io/github/downloads/imba97/Btools/total.svg)](https://github.com/imba97/Btools/releases)
 [![website](https://img.shields.io/website-up-down-green-red/https/shields.io.svg?label=website)](http://btools.cc)
 
@@ -16,10 +15,8 @@ Btools(逼砣)，本插件主要目的是以B站为主的网站页面优化，�
 
 ## 功能介绍
 
-### 查看B站收藏夹失效视频
-插件开启后查看收藏夹，会自动将失效视频显示出来，点击失效视频会自动根据视频标题搜索视频。
-这个方法并不能还原B站的视频，因为B站已经将视频文件删除、或者设置了不可访问的权限。
-你可以长按鼠标左键召唤快捷键菜单搜索视频或搜索UP主。
+### 增强B站收藏夹
+原“查看失效视频”功能，B站更新了收藏夹，页面数据中及后台请求数据中删除了视频封面和标题，因此原功能失效。改为增强B站收藏夹，你依然可以用这个功能查看失效视频的简介、分P名以及UP主，可能会帮你想起这个失效视频。没失效的视频则可以快速的打开封面、打开UP主空间。
 
 ### 直播助手
 
@@ -30,7 +27,7 @@ Btools(逼砣)，本插件主要目的是以B站为主的网站页面优化，�
 顾名思义×2，有时候迷你播放器有点烦。
 
 ### 转发抽奖
-至于为什么要做这个，如果想用B站的转发抽奖，首先你得是1万粉丝以上的认证用户。这个的话可以让所有人都能用，虽然功能方面不如官方的（目前完善的距离官方还差两步，一是Btools还不能判断转发者是否关注了你，二是不支持人数太多，500以上可能加载的时候会出问题，大概吧）
+至于为什么要做这个，如果想用B站的转发抽奖，首先你得是1万粉丝以上的认证用户。这个的话可以让所有人都能用，虽然功能方面不如官方的（目前完善的距离官方还差两步，一是Btools不能判断转发者是否关注了你，二是不支持人数太多，500以上可能加载的时候会出问题，大概吧）
 
 ### 获取专题文章中的URL
 发布专栏文章时如果作者选了禁止转载，文章内的文字是不能被选中的，加上文章内的超链接只能链接B站站内的地址，所以外部链接不能选中又不能点击，打开这些链接就很困难。只能用“审查元素”这种办法，通过网页代码找到超链接打开。
@@ -44,29 +41,14 @@ Btools(逼砣)，本插件主要目的是以B站为主的网站页面优化，�
 ## 更新介绍
 
 ### v1.0.3
-* `2019-02-14`
-   * 修复在主页下点击收藏夹不显示失效视频的BUG
-* `2019-03-02`
-   * 修复点击收藏夹视频的操作按钮也会弹出快捷键菜单的BUG
-   * 优化显示失效视频
-* `2019-03-05`
-   * 修复点击主页收藏夹链接第二次失效的BUG
-* `2019-03-07`
-   * 因B站更新收藏夹，获取不到信息，重做显示收藏夹失效视频功能
-* `2019-03-09`
-   * 转发抽奖获取用户信息方式变为后台获取
-* `2019-03-10`
-   * 增加收藏夹视频查看详情和打开UP主空间功能只能在API请求成功后才会出现的判断
-   * 转发抽奖添加两种模式，如果API请求获取失败，自动从前台页面获取转发用户的数据
-* `2019-03-11`
-   * 添加API请求方式的At人数判断
+* `2019-02-17`
+   * 修复已获取UP主ID但仍显示搜索UP主的BUG
+   * 修复点击收藏夹视频的稍后再看会出现快捷键菜单的BUG
+   * 优化收藏夹列表使其兼容了按分区分类
 
 * #### [关于“快捷键菜单”](http://btools.cc/hot-key-menu/)
 
-* #### 历史更新
-   * [v1.0.0](http://btools.cc/1-0-0/)
-   * [v1.0.1](http://btools.cc/1-0-1/)
-   * [v1.0.2](http://btools.cc/1-0-2/)
+* #### [历史更新](http://btools.cc/tag/%E6%9B%B4%E6%96%B0/)
 
 ## 反馈
 * 随时TJ的官网：[btools.cc](http://btools.cc)
