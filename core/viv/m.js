@@ -210,6 +210,7 @@ function favJson(pn) {
     case '音乐': VivSet.tid = 3; break;
     case '游戏': VivSet.tid = 4; break;
     case '娱乐': VivSet.tid = 5; break;
+    case '电视剧': VivSet.tid = 11; break;
     case '番剧': VivSet.tid = 13; break;
     case '电影': VivSet.tid = 23; break;
     case '科技': VivSet.tid = 36; break;
@@ -239,13 +240,14 @@ function favJson(pn) {
 
   var data = `media_id=${fid}&pn=${VivSet.pn}&ps=20&order=${VivSet.order}&tid=${VivSet.tid}&type=0&jsonp=jsonp`;
   fetch(`https://api.bilibili.com/medialist/gateway/base/spaceDetail?${data}`, {
-    credentials: 'include',
     mode: 'cors',
-    cache: 'no-cache',
     method: 'GET',
     headers: {
-      'content-type': 'text/plain'
-    }
+      'Accept': 'application/json, text/plain, */*',
+      'Access-Control-Request-Headers': 'range',
+      'Access-Control-Request-Method': 'GET',
+    },
+    referrerPolicy: 'no-referrer-when-downgrade',
   })
   .then(response => response.json())
   .then(json => {

@@ -47,3 +47,8 @@
    * pn [页数] [1]
    * ps [每页显示个数] [20]
 * [http://api.vc.bilibili.com/dynamic_repost/v1/dynamic_repost/view_repost?dynamic_id=227011488571075494](http://api.vc.bilibili.com/dynamic_repost/v1/dynamic_repost/view_repost?dynamic_id=227011488571075494)
+
+### 用户信息
+* https://api.bilibili.com/x/web-interface/card
+   * `mid` [用户ID] [2198461]
+* https://api.bilibili.com/x/web-interface/card?mid=2198461
