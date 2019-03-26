@@ -86,18 +86,19 @@ document.onreadystatechange = () => {
 $.fn.extend({
   // hotKeyMenu --- START
   'HKM': function(menu) {
+    var hkm = $(this);
 
     if(menu === 'clear') {
-      $(this)[0].BtoolsHKM = undefined;
-      $(this)[0].BtoolsHKMKeys = undefined;
+      hkm[0].BtoolsHKM = undefined;
+      hkm[0].BtoolsHKMKeys = undefined;
       return false;
     }
 
     if($(this)[0].BtoolsHKM !== undefined) {
-      var hotKeys = $(this)[0].BtoolsHKMKeys;
+      var hotKeys = hkm[0].BtoolsHKMKeys;
       menu.forEach((item, index) => {
         if($.inArray(item.key, hotKeys) >= 0) return false;
-        $(this)[0].BtoolsHKMKeys.push(item.key);
+        hkm[0].BtoolsHKMKeys.push(item.key);
         switch(item.position) {
           case 'first':
             $(this)[0].BtoolsHKM.unshift(item);
@@ -115,34 +116,36 @@ $.fn.extend({
         if($.inArray(item.key, hotKeys) === -1) {
           hotKeys.push(item.key);
         }
+        if(item.parent) {
+          var attrClass = hkm.parent(item.parent).attr('class') || '';
+          if(attrClass.indexOf('Btools-user-select-none') === -1) {
+            hkm.parent(item.parent).addClass('Btools-user-select-none').attr({
+              'ondragstart': 'return false;'
+            });
+          }
+        } else {
+          var attrClass = hkm.attr('class') || '';
+          if(attrClass.indexOf('Btools-user-select-none') === -1) {
+            hkm.addClass('Btools-user-select-none').attr({
+              'ondragstart': 'return false;'
+            });
+          }
+        }
       });
-      $(this)[0].BtoolsHKMKeys = hotKeys;
+      hkm[0].BtoolsHKMKeys = hotKeys;
     }
 
-    if($(this).attr('data-mousedown') === 'true') return false;
-    $(this).attr('data-mousedown', 'true');
+    if(hkm.attr('data-mousedown') === 'true') return false;
+    hkm.attr('data-mousedown', 'true');
 
-    var attrClass = $(this).parent(menu.parent).attr('class') || '';
-
-    if(menu.parent && attrClass.indexOf('Btools-user-select-none') === -1) {
-      $(this).parent(menu.parent).addClass('Btools-user-select-none').attr({
-        'ondragstart': 'return false;'
-      });
-    } else {
-      $(this).addClass('Btools-user-select-none').attr({
-        'ondragstart': 'return false;'
-      });
-    }
-
-
-    $(this).bind('mousedown', (ev) => {
+    hkm.bind('mousedown', (ev) => {
       ev = ev || window.event;
       if(ev.button !== 0) return true;
 
-      if($(this)[0].BtoolsHKM === undefined) return false;
+      if(hkm[0].BtoolsHKM === undefined) return false;
 
-      var hotKeyMenu = $(this)[0].BtoolsHKM;
-      var hotKeys = $(this)[0].BtoolsHKMKeys;
+      var hotKeyMenu = hkm[0].BtoolsHKM;
+      var hotKeys = hkm[0].BtoolsHKMKeys;
 
       var x = 0;
       var y = 0;
@@ -160,7 +163,7 @@ $.fn.extend({
         html += `<p style="top: ${(index+1) * 35 + 5}px" data-is-key="true" data-index="${index}" data-key="${item.key}"><span class="key">${String.fromCharCode(item.key)}</span><span class="title">${item.title}</span></p>`;
       });
 
-      $(this)[0].BtoolsHKMKeys = hotKeys;
+      hkm[0].BtoolsHKMKeys = hotKeys;
 
       html += '<div class="bg"></div></div>';
       $('body').append(html).find('#hotKeyMenu').css({
