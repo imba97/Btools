@@ -330,18 +330,17 @@ function autoLoad() {
     return false;
   }
   var dynamic_id = /t\.bilibili\.com\/(\d+)\??/i.exec(window.location.href)[1];
-  fetch(`https://api.vc.bilibili.com/dynamic_repost/v1/dynamic_repost/view_repost?dynamic_id=${dynamic_id}&offset=${europeanSet.autoLoadOffset}`, {
-    credentials: 'include',
-    mode: 'cors',
-    cache: 'no-cache',
-    method: 'GET',
-    headers: {
-      'content-type': 'text/plain'
-    }
-  })
-  .then(response => response.json())
-  .then(json => {
-    if(json && json.code === 0) {
+  var url = `https://api.vc.bilibili.com/dynamic_repost/v1/dynamic_repost/view_repost?dynamic_id=${dynamic_id}&offset=${europeanSet.autoLoadOffset}`;
+
+  chrome.runtime.sendMessage({
+    type: 'fetch',
+    url: url
+  },
+  response => {
+    if(response === undefined) return false;
+    var json = JSON.parse(response);
+
+    if(json.code === 0) {
       if(europeanSet.autoLoadOffset === 0) {
         europeanSet.autoLoadMax = json.data.total_count / 20 * 2;
         europeanSet.Alleuropeans = json.data.total_count;
@@ -388,8 +387,6 @@ function autoLoad() {
         europeanSet.autoLoadOffset += 20;
       }
     }
-  }).catch(function(ex) {
-    console.log('Error:', ex)
   });
 
 }

@@ -74,8 +74,8 @@
 		"notifications",
 		"storage",
 		"tabs",
-		"http://*/*",
-		"https://*/*"
+		"http://api.bilibili.com/*",
+		"https://api.bilibili.com/*"
 	],
 	"browser_specific_settings": {
 	  "gecko": {

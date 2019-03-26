@@ -76,8 +76,8 @@
 		"notifications",
 		"storage",
 		"tabs",
-		"http://*/*",
-		"https://*/*"
+		"http://api.bilibili.com/*",
+		"https://api.bilibili.com/*"
 	],
 	"homepage_url": "http://btools.cc",
 	"default_locale": "zh_CN"

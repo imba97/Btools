@@ -73,6 +73,10 @@ $(document).ready(function(){
     VivInitLoopStart();
   };
 
+  $('body').on('keydown', '.search .search-input input', function(e) {
+
+  });
+
   // 键盘回车翻页
   $('body').on('keydown', '.be-pager .be-pager-options-elevator input', function(e) {
     if(e.which === 13) {
@@ -99,9 +103,6 @@ function VivInitLoopStart() {
   VivSet.eqNum = 0;
   VivSet.loopNum = 0;
   VivSet.fav = null;
-  $('.fav-video-list li.small-item').each(function(index) {
-    $(this).find('a:eq(1),.meta-mask,a.disabled').HKM('clear');
-  });
   if(VivSet.timerOff) {
     VivInitLoop();
   }
@@ -120,75 +121,75 @@ function VivInitLoop()
 }
 
 function VivInit() {
-  if(VivSet.fav === null) {
-    favJson();
-  } else {
-    $('.fav-video-list li.small-item').each(function(index) {
-      var coverReg = /([^\@]*\.(?:webp|jpg|png|gif))(?:\@|\_).*\.(?:webp|jpg|png|gif)?/;
-      var upNameText = $(this).find('.meta-mask .meta-info .author').text();
-      var upName = upNameText.substring(4,upNameText.length);
+  favJson();
+  $('.fav-video-list li.small-item').each(function(index) {
+    var coverReg = /([^\@]*\.(?:webp|jpg|png|gif))(?:\@|\_).*\.(?:webp|jpg|png|gif)?/;
+    var upNameText = $(this).find('.meta-mask .meta-info .author').text();
+    var upName = upNameText.substring(4,upNameText.length);
 
-      if(VivSet.fav !== null) {
-        var upMid = VivSet.fav[index].upper.mid;
-        $(this).find('a:eq(1),.meta-mask,a.disabled').HKM([
-          {
-            'key': 85,
-            'title': '打开UP主空间',
-            'action': () => {
-              window.open(`http://space.bilibili.com/${upMid}`);
-              void(0);
-            }
+    if(VivSet.fav !== null) {
+      $(this).find('a:eq(1),.meta-mask,a.disabled').HKM('clear');
+      var upMid = VivSet.fav[index].upper.mid;
+      $(this).find('a:eq(1),.meta-mask,a.disabled').HKM([
+        {
+          'key': 85,
+          'title': '打开UP主空间',
+          'action': () => {
+            window.open(`http://space.bilibili.com/${upMid}`);
+            void(0);
+          }
+        },
+        {
+          'key': 68,
+          'title': '详情信息',
+          'position': 'last',
+          'action': () => {
+            media_info(index);
           },
-          {
-            'key': 68,
-            'title': '详情信息',
-            'position': 'last',
-            'action': () => {
-              media_info(index);
-            }
-          }
-        ]);
-      } else {
-        $(this).find('a:eq(1),.meta-mask,a.disabled').HKM([
-          {
-            'key': 85,
-            'title': '搜索UP主',
-            'action': () => {
-              window.open(`https://search.bilibili.com/upuser?keyword=${upName}`);
-              void(0);
-            }
-          }
-        ]);
-      }
-
-      if($(this).attr('class').indexOf('disabled') === -1) {
-        var url = $(this).find('a.cover').attr('href');
-        $(this).find('a:eq(1),.meta-mask,a.disabled').HKM([
-          {
-            'key': 67,
-            'title': '打开封面',
-            'position': 'first',
-            'action': () => {
-              window.open(coverReg.exec($(this).find('a:eq(0) img:eq(0)').attr('src'))[1]);
-              void(0);
-            }
+          'parent': '.small-item'
+        }
+      ]);
+    } else {
+      $(this).find('a:eq(1),.meta-mask,a.disabled').HKM([
+        {
+          'key': 85,
+          'title': '搜索UP主',
+          'action': () => {
+            window.open(`https://search.bilibili.com/upuser?keyword=${upName}`);
+            void(0);
           },
-          {
-            'key': 86,
-            'title': '打开视频',
-            'position': 'first',
-            'action': () => {
-              window.open(url);
-              void(0);
-            }
+          'parent': '.small-item'
+        }
+      ]);
+    }
+
+    if($(this).attr('class').indexOf('disabled') === -1) {
+      var url = $(this).find('a.cover').attr('href');
+      $(this).find('a:eq(1),.meta-mask,a.disabled').HKM([
+        {
+          'key': 67,
+          'title': '打开封面',
+          'position': 'first',
+          'action': () => {
+            window.open(coverReg.exec($(this).find('img:eq(0)').attr('src'))[1]);
+            void(0);
           }
-        ]);
-      } else {
+        },
+        {
+          'key': 86,
+          'title': '打开视频',
+          'position': 'first',
+          'action': () => {
+            window.open(url);
+            void(0);
+          }
+        }
+      ]);
+    } else {
 
-      }
+    }
 
-    });
-  }
+  });
 
   if(VivSet.loopNum >= VivSet.loopMax) {
     VivSet.timerOff = true;
@@ -239,24 +240,19 @@ function favJson(pn) {
   }
 
   var data = `media_id=${fid}&pn=${VivSet.pn}&ps=20&order=${VivSet.order}&tid=${VivSet.tid}&type=0&jsonp=jsonp`;
-  fetch(`https://api.bilibili.com/medialist/gateway/base/spaceDetail?${data}`, {
-    mode: 'cors',
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Access-Control-Request-Headers': 'range',
-      'Access-Control-Request-Method': 'GET',
-    },
-    referrerPolicy: 'no-referrer-when-downgrade',
-  })
-  .then(response => response.json())
-  .then(json => {
-    if(json && json.code === 0) {
+  var url = `https://api.bilibili.com/medialist/gateway/base/spaceDetail?${data}`;
+
+  chrome.runtime.sendMessage({
+    type: 'fetch',
+    url: url
+  },
+  response => {
+    if(response === undefined) return false;
+    var json = JSON.parse(response);
+    if(json.code === 0) {
       VivSet.fav = json.data.medias;
       VivSet.count = json.data.info.media_count;
     }
-  }).catch(function(ex) {
-    console.log('Error:', ex)
   });
 }
 
