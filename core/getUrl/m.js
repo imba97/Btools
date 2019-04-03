@@ -11,11 +11,13 @@ function getUrlInit()
   getUrlSet.timer = setInterval(function(){
     if($('.page-container .nav-tab-bar').length > 0)
     {
-      var regexp = /([^'"])((?:http|https):\/\/(?:[\w\-]+\.)+[\w\-]+(?:[\/|\?][\w\u4e00-\u9fa5\-\.\/?\@\%\!\&=\+\~\:\#\;\,]*)?)/ig;
+      var regexp = /((?:http|https):\/\/(?:[\w\-]+\.)+[\w\-]+(?:[\/|\?][\w\u4e00-\u9fa5\-\.\/?\@\%\!\&=\+\~\:\#\;\,]*)?)/ig;
       $('.article-holder p').each(function() {
-        var html = $(this).html();
-        html = html.replace(regexp, '$1<a href="$2" class="BtoolsGetUrl" target="_blank">$2</a>');
-        $(this).html(html);
+        var text = $(this).text();
+        if(regexp.exec(text) !== null) {
+          text = text.replace(regexp, '<a href="$1" class="BtoolsGetUrl" target="_blank">$1</a>');
+          $(this).html(text);
+        }
       });
 
       clearInterval(getUrlSet.timer);

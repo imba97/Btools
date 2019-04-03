@@ -20,11 +20,11 @@ var BtoolsConfig = {
 // live助手初始化
 function liveHelperInit() {
   var liveHelperHTML =
-    `<div id="BtoolsLiveHelper">
+    `<div id="BtoolsLiveHelper" class="item pointer">
       <a id="BtoolsHideCtrl" href="javascript:;" target="_self">${Btools.logo()}</a>
     </div>
     `;
-  $('#gift-control-vm .gift-control-panel').append(liveHelperHTML);
+  $('.supporting-info .live-skin-coloration-area:eq(0)').prepend(liveHelperHTML);
   // console.log('liveHelper 运行');
 
   $('#BtoolsLiveHelper #BtoolsHideCtrl').HKM([
@@ -98,7 +98,7 @@ function liveHelperHide(k)
 
 LiveHelperSet.timer = setInterval(function() {
   if(LiveHelperSet.loopNum >= LiveHelperSet.loopMax) clearInterval(LiveHelperSet.timer);
-  if($('#gift-control-vm .gift-control-panel').length === 0) {
+  if($('.supporting-info').length === 0) {
     LiveHelperSet.loopNum++;
   } else {
     liveHelperInit();

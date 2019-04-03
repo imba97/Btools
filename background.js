@@ -1,6 +1,11 @@
 var isChrome = !!chrome;
 chrome = chrome || browser;
 
+var BtoolsInfo = {
+  version: '1.0.5',
+  releaseVersion: 6
+}
+
 if(isChrome) {
   (function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -19,11 +24,16 @@ chrome.runtime.onInstalled.addListener(function(details) {
 
 chrome.runtime.onMessage.addListener(
 function(request, sender, sendResponse) {
-  if (request.type == 'fetch') {
-    fetch(request.url)
-      .then(response => response.text())
-      .then(text => sendResponse(text))
-      .catch(error => console.log(error))
-    return true;  // Will respond asynchronously.
+  switch(request.type) {
+    case 'fetch':
+      fetch(request.url)
+        .then(response => response.json())
+        .then(json => sendResponse(json))
+        .catch(error => sendResponse(null))
+      return true;  // Will respond asynchronously.
+    break;
+    case 'getInfo':
+      sendResponse(BtoolsInfo)
+    break;
   }
 });

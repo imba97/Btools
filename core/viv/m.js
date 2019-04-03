@@ -246,9 +246,12 @@ function favJson(pn) {
     type: 'fetch',
     url: url
   },
-  response => {
-    if(response === undefined) return false;
-    var json = JSON.parse(response);
+  json => {
+    if(json === null) {
+      VivSet.fav = null;
+      return false;
+    }
+
     if(json.code === 0) {
       VivSet.fav = json.data.medias;
       VivSet.count = json.data.info.media_count;

@@ -5,7 +5,7 @@
 	},
 	"manifest_version": 2,
 	"name": "Btools",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "__MSG_pluginDesc__",
 	"icons":
 	{
@@ -28,7 +28,8 @@
 	[
 		{
 			"matches": ["<all_urls>"],
-			"js": ["js/jq.js"],
+			"js": ["js/jq.js", "core/jpInput/m.js"],
+			"css": ["core/jpInput/m.css"],
 			"run_at": "document_start"
 		},
 		{
@@ -74,8 +75,8 @@
 		"notifications",
 		"storage",
 		"tabs",
-		"http://api.bilibili.com/*",
-		"https://api.bilibili.com/*"
+		"http://*/*",
+		"https://*/*"
 	],
 	"browser_specific_settings": {
 	  "gecko": {

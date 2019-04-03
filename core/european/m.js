@@ -336,9 +336,17 @@ function autoLoad() {
     type: 'fetch',
     url: url
   },
-  response => {
-    if(response === undefined) return false;
-    var json = JSON.parse(response);
+  json => {
+    if(json === null) {
+      if(europeanSet.autoLoadNum / europeanSet.autoLoadMax < 0.5) {
+          $('#europeanUserArr .europeanUser').html(`<font class="europeanUserMsg">网络请求失败 重试 ${europeanSet.autoLoadNum}，请稍等</font>`);
+        } else {
+          europeanSet.mod = false;
+          europeanSet.userAtArr = [];
+          $('#europeanUserArr .europeanUser').html('<font class="europeanUserMsg">模式切换，正在从前台页面获取数据</font>');
+        }
+      return false;
+    }
 
     if(json.code === 0) {
       if(europeanSet.autoLoadOffset === 0) {
