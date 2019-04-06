@@ -1,4 +1,6 @@
 const nihongo = {
+  item: null,
+  val: '',
   arufa: '',
   hiragana: ''
 }
@@ -66,35 +68,53 @@ document.onreadystatechange = () => {
 
     if(text.length !== 0) {
       text.forEach((item, index) => {
-        item.addEventListener('focus', () => {
-          hajime(item)
-        });
+        item.addEventListener('focus', inputInit(item));
       });
     }
 
     if(textarea.length !== 0) {
       textarea.forEach((item, index) => {
-        item.addEventListener('focus', () => {
-          hajime(item)
-        });
+        item.addEventListener('focus', inputInit(item));
       });
     }
   }
 }
 
-function hajime(item) {
-  // item.blur();
-  item.nihongo = item.nihongo || nihongo;
-  var bokkusu = document.querySelector('.nihongo-bokkusu') || document.createElement('div');
-  var pointaa = document.querySelector('.nihongo-pointaa') || document.createElement('div');
-  var mein = document.querySelector('#nihongo');
-  if(!mein) {
-    mein = document.createElement('div');
-    mein.setAttribute('id', 'nihongo');
-    bokkusu.setAttribute('class', 'nihongo-bokkusu');
-    pointaa.setAttribute('class', 'nihongo-pointaa');
-    bokkusu.appendChild(pointaa);
-    mein.appendChild(bokkusu);
+function inputInit(item) {
+  nihongo.item = item;
+  nihongo.item.addEventListener('blur', () => {
+    nihongo.item = null;
+    nihongo.item.removeEventListener('blur', inputInit);
+  });
+
+  if(nihongo.item !== null) {
+    nihongo.item.addEventListener('onkeydown', e => {
+      console.log(e.keyCode);
+    });
+    // nihongo.item.onkeydown = e => {
+    //   console.log(e.keyCode);
+    // }
+
+    nihongo.item.onkeyup = e => {
+
+    }
   }
 
+
+  console.log(`height: ${item.offsetHeight}`);
+  console.log(`width: ${item.offsetWidth}`);
+
+  console.log(`top: ${item.offsetTop}`);
+  console.log(`left: ${item.offsetLeft}`);
+}
+
+function inputKeyDown(e) {
+  e = e || window.event || arguments.callee.caller.arguments[0];
+
+  nihongo.val = item.value;
+  console.log(e.keyCode);
+
+  if(e.keyCode === 27) {
+    console.log('233');
+  }
 }

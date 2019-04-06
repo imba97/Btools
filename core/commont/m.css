@@ -1,0 +1,34 @@
+@charset "UTF-8";
+
+#btools-history-emoji-box {
+  position: absolute;
+  width: 450px;
+  height: 30px;
+}
+#btools-history-emoji-scroll {
+  position: absolute;
+  top: 0; left: 0;
+}
+.btools-history-emoji {
+  margin: 0 5px;
+  font-size: 12px !important;
+  color: #666 !important;
+  float: left;
+  height: 30px;
+  line-height: 40px;
+  cursor: pointer;
+
+  transition: all .2s;
+  -webkit-transition: all .2s;
+
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+.btools-history-emoji:hover {
+  transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+}
+.btools-history-emoji img {
+  width: 30px;
+  height: 30px;
+}

@@ -68,6 +68,12 @@
 			"js": ["core/openImg/m.js"],
 			"css": ["core/openImg/m.css"],
 			"run_at": "document_end"
+		},
+		{
+			"matches": ["*://*.bilibili.com/video/*"],
+			"js": ["core/commont/m.js"],
+			"css": ["core/commont/m.css"],
+			"run_at": "document_end"
 		}
 	],
 	"content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
