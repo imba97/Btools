@@ -69,7 +69,7 @@
 			"run_at": "document_end"
 		},
 		{
-			"matches": ["*://*.bilibili.com/video/*"],
+			"matches": ["*://*.bilibili.com/video/*", "*://*.bilibili.com/watchlater/*", "*://h.bilibili.com/*"],
 			"js": ["core/commont/m.js"],
 			"css": ["core/commont/m.css"],
 			"run_at": "document_end"

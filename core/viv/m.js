@@ -1,8 +1,11 @@
 /*
 
-  viv 失效视频显示工具
+  增强B站收藏夹
 
 */
+
+chrome = chrome || browser;
+
 const VivSet = {
   init: true,
   loopNum: 0,
@@ -242,21 +245,23 @@ function favJson(pn) {
   var data = `media_id=${fid}&pn=${VivSet.pn}&ps=20&order=${VivSet.order}&tid=${VivSet.tid}&type=0&jsonp=jsonp`;
   var url = `https://api.bilibili.com/medialist/gateway/base/spaceDetail?${data}`;
 
-  chrome.runtime.sendMessage({
-    type: 'fetch',
-    url: url
-  },
-  json => {
-    if(json === null) {
-      VivSet.fav = null;
-      return false;
-    }
+  if(typeof chrome.app.isInstalled!=='undefined'){
+    chrome.runtime.sendMessage({
+      type: 'fetch',
+      url: url
+    },
+    json => {
+      if(json === null) {
+        VivSet.fav = null;
+        return false;
+      }
 
-    if(json.code === 0) {
-      VivSet.fav = json.data.medias;
-      VivSet.count = json.data.info.media_count;
-    }
-  });
+      if(json.code === 0) {
+        VivSet.fav = json.data.medias;
+        VivSet.count = json.data.info.media_count;
+      }
+    });
+  }
 }
 
 function media_info(mid) {

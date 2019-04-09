@@ -1,11 +1,13 @@
 @charset "UTF-8";
 
-#btools-history-emoji-box {
+.btools-history-emoji-box {
   position: absolute;
+  top: 175px;
+  left: 160px;
   width: 450px;
   height: 30px;
 }
-#btools-history-emoji-scroll {
+.btools-history-emoji-scroll {
   position: absolute;
   top: 0; left: 0;
 }

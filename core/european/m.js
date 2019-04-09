@@ -1,3 +1,8 @@
+/*
+
+  增强B站收藏夹
+
+*/
 const europeanSet = {
   loopNumOnload: 0,
   loopNumOnloadMax: 20,
@@ -332,20 +337,22 @@ function autoLoad() {
   var dynamic_id = /t\.bilibili\.com\/(\d+)\??/i.exec(window.location.href)[1];
   var url = `https://api.vc.bilibili.com/dynamic_repost/v1/dynamic_repost/view_repost?dynamic_id=${dynamic_id}&offset=${europeanSet.autoLoadOffset}`;
 
-  chrome.runtime.sendMessage({
-    type: 'fetch',
-    url: url
-  },
-  json => {
-    if(json === null) {
-      if(europeanSet.autoLoadNum / europeanSet.autoLoadMax < 0.5) {
-          $('#europeanUserArr .europeanUser').html(`<font class="europeanUserMsg">网络请求失败 重试 ${europeanSet.autoLoadNum}，请稍等</font>`);
-        } else {
-          europeanSet.mod = false;
-          europeanSet.userAtArr = [];
-          $('#europeanUserArr .europeanUser').html('<font class="europeanUserMsg">模式切换，正在从前台页面获取数据</font>');
-        }
-      return false;
+  if(typeof chrome.app.isInstalled!=='undefined'){
+    chrome.runtime.sendMessage({
+      type: 'fetch',
+      url: url
+    },
+    json => {
+      if(json === null) {
+        if(europeanSet.autoLoadNum / europeanSet.autoLoadMax < 0.5) {
+            $('#europeanUserArr .europeanUser').html(`<font class="europeanUserMsg">网络请求失败 重试 ${europeanSet.autoLoadNum}，请稍等</font>`);
+          } else {
+            europeanSet.mod = false;
+            europeanSet.userAtArr = [];
+            $('#europeanUserArr .europeanUser').html('<font class="europeanUserMsg">模式切换，正在从前台页面获取数据</font>');
+          }
+        return false;
+      }
     }
 
     if(json.code === 0) {
