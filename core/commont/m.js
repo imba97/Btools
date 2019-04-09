@@ -4,15 +4,17 @@ var CommontSet = {
   timer: null,
   loopNum: 0,
   loopMax: 20,
+  sep: '~',
   config: {
     emoji: null
   },
-  textarea: null
+  textarea: null,
+  topTextarea: null
 }
 
-// clearSet();
-
 $(document).ready(function(){
+  if(/^(t)\.bilibili\.com$/.test(window.location.host) || /^\/(p|d)?\/?$/.test(window.location.pathname)) return false;
+
   $('body').on('click', '.emoji-list', function(){
     var doc = $(this);
 
@@ -29,14 +31,13 @@ $(document).ready(function(){
     }
   });
 
-  $('body').on('focus', '.bb-comment .comment-send:eq(0) .textarea-container textarea', function(){
-    CommontSet.textarea = $(this);
-    createDom();
-  });
+  CommontInit();
+  window.onpopstate = function() {
+    CommontInit();
+  }
 
-  $('body').on('focus', '.con .comment-send .textarea-container textarea', function(){
-    $('.btools-history-emoji-box').remove();
-    CommontSet.textarea = $(this);
+  $('body').on('click', '.comment-list .reply', function() {
+    CommontSet.textarea = $(this).parents('.con').find('.textarea-container textarea');
     createDom({
       isReply: true,
       top: 65,
@@ -70,7 +71,12 @@ $(document).ready(function(){
     });
 
     $('body').on('click', '.btools-history-emoji', function() {
-      CommontSet.textarea.insertAtCaret($(this).attr('data-emoji-text'));
+      if(CommontSet.timer !== null) return false;
+      if($(this).parent().parent().attr('class') === 'btools-history-emoji-box') {
+        CommontSet.topTextarea.insertAtCaret($(this).attr('data-emoji-text'));
+      } else {
+        CommontSet.textarea.insertAtCaret($(this).attr('data-emoji-text'));
+      }
       reorder(`${$(this).attr('data-emoji-text')},${$(this).html()}`);
       $(this).one('mouseout' ,function(){
         createHTML();
@@ -78,9 +84,36 @@ $(document).ready(function(){
     });
 });
 
+function CommontInit() {
+  CommontSet.timer = setInterval(function() {
+    if($('.bb-comment .comment-send:eq(0)').length > 0) {
+      CommontSet.topTextarea = $('.bb-comment .comment-send:eq(0) textarea');
+      CommontSet.textarea = $('.bb-comment .comment-send:eq(0) textarea');
+      createDom();
+
+      clearInterval(CommontSet.timer);
+      CommontSet.timer = null;
+    }
+  }, 500);
+
+  $('body').on('click', '.bb-comment .comment-send:eq(0) textarea', function(){
+    createDom();
+  });
+
+  $('body').on('click', '.con .comment-send .textarea-container textarea', function(){
+    CommontSet.textarea = $(this);
+    createDom({
+      isReply: true,
+      top: 65,
+      left: 80
+    });
+  });
+
+}
+
 function reorder(key) {
   if(CommontSet.config.emoji !== null) {
-    var newEmoji = CommontSet.config.emoji.split('|');
+    var newEmoji = CommontSet.config.emoji.split(CommontSet.sep);
     var newArr = new Array;
     if(key !== newEmoji[0]) {
       newEmoji.forEach((item, index) => {
@@ -90,8 +123,7 @@ function reorder(key) {
           }
         }
       });
-      CommontSet.config.emoji = `${key}|${newArr.join('|')}`;
-      return CommontSet.config.emoji;
+      CommontSet.config.emoji = key + CommontSet.sep + newArr.join(CommontSet.sep);
       saveSet();
     }
   }
@@ -100,7 +132,7 @@ function reorder(key) {
 function createHTML() {
   if(CommontSet.config.emoji !== null) {
     var html = '';
-    var emoji = CommontSet.config.emoji.split('|');
+    var emoji = CommontSet.config.emoji.split(CommontSet.sep);
     emoji.forEach((item, index) => {
       var val = item.split(',');
       html += `<li class='btools-history-emoji' data-emoji-text='${val[0]}'>${val[1]}</li>`;
@@ -110,7 +142,6 @@ function createHTML() {
 }
 
 function createDom(f_info) {
-  $('.btools-history-emoji-box').remove();
 
   f_info = f_info || {
     isReply: false,
@@ -118,29 +149,19 @@ function createDom(f_info) {
     left: 80
   }
 
-  if(!f_info.isReply) {
-    switch(window.location.host) {
-      case 'h.bilibili.com':
-        f_info.top = 123;
-      break;
-      case 'bilibili.com':
-      case 'www.bilibili.com':
-        if(window.location.pathname.indexOf('watchlater') === 1) {
-          f_info.top = 63;
-        }
-      break;
-    }
-  }
+  var reply = f_info.isReply ? 'reply' : 'box';
+
+  if($(`.btools-history-emoji-${reply}`).length > 0) return false;
 
   CommontSet.textarea.parent('.textarea-container').css({
     'position': 'relative'
   }).append(`
-    <div class="btools-history-emoji-box">
+    <div class="btools-history-emoji-${reply}">
       <ul class="btools-history-emoji-scroll"></ul>
     </div>
   `);
 
-  $('.btools-history-emoji-box').css({
+  $(`.btools-history-emoji-${reply}`).css({
     'top': f_info.top,
     'left': f_info.left
   });
@@ -157,6 +178,12 @@ function saveSet() {
 }
 
 function clearSet() {
-  chrome.storage.sync.set({emoji: null}, function() {
+  $('body').append(`
+    <a id="clearSet" href="javascript:void(0);" style="position: fixed; top: 50px; left: 50px; font-size: 50px; z-index: 9999999999;">一键清空</a>
+  `).find('#clearSet').click(function() {
+    chrome.storage.sync.set({emoji: null}, function() {
+    });
   });
 }
+
+// clearSet();
