@@ -4,7 +4,7 @@ var CommontSet = {
   timer: null,
   loopNum: 0,
   loopMax: 20,
-  sep: '~',
+  sep: '|!|',
   config: {
     emoji: null
   },
@@ -37,6 +37,7 @@ $(document).ready(function(){
   }
 
   $('body').on('click', '.comment-list .reply', function() {
+    console.log(233);
     CommontSet.textarea = $(this).parents('.con').find('.textarea-container textarea');
     createDom({
       isReply: true,
@@ -71,7 +72,6 @@ $(document).ready(function(){
     });
 
     $('body').on('click', '.btools-history-emoji', function() {
-      if(CommontSet.timer !== null) return false;
       if($(this).parent().parent().attr('class') === 'btools-history-emoji-box') {
         CommontSet.topTextarea.insertAtCaret($(this).attr('data-emoji-text'));
       } else {
@@ -82,33 +82,23 @@ $(document).ready(function(){
         createHTML();
       });
     });
+
+    $('body').on('click', '.bb-comment .comment-send:eq(0) textarea', function(){
+      CommontInit();
+    });
 });
 
 function CommontInit() {
   CommontSet.timer = setInterval(function() {
-    if($('.bb-comment .comment-send:eq(0)').length > 0) {
+    if($('.bb-comment .comment-send:eq(0) textarea').length > 0) {
       CommontSet.topTextarea = $('.bb-comment .comment-send:eq(0) textarea');
-      CommontSet.textarea = $('.bb-comment .comment-send:eq(0) textarea');
+      CommontSet.textarea = CommontSet.textarea || $('.bb-comment .comment-send:eq(0) textarea');
       createDom();
 
       clearInterval(CommontSet.timer);
       CommontSet.timer = null;
     }
   }, 500);
-
-  $('body').on('click', '.bb-comment .comment-send:eq(0) textarea', function(){
-    createDom();
-  });
-
-  $('body').on('click', '.con .comment-send .textarea-container textarea', function(){
-    CommontSet.textarea = $(this);
-    createDom({
-      isReply: true,
-      top: 65,
-      left: 80
-    });
-  });
-
 }
 
 function reorder(key) {
