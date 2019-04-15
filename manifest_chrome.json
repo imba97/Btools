@@ -70,7 +70,7 @@
 			"run_at": "document_end"
 		},
 		{
-			"matches": ["*://*.bilibili.com/video/*"],
+			"matches": ["*://www.bilibili.com/*", "*://h.bilibili.com/*"],
 			"js": ["core/commont/m.js"],
 			"css": ["core/commont/m.css"],
 			"run_at": "document_end"

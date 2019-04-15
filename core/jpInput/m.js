@@ -1,10 +1,3 @@
-const nihongo = {
-  item: null,
-  val: '',
-  arufa: '',
-  hiragana: ''
-}
-
 const K = {
   /* 五十音 */
   /* A */ 65: ['あ', 'ア'], /* I */　73: ['い', 'イ'], /* U */　85: ['う', 'ウ'], /* E */　69: ['え', 'エ'], /* O */　79: ['お', 'オ'],
@@ -14,7 +7,10 @@ const K = {
     /* Y */ 89: { 65: ['しゃ', 'シャ'], 73: ['ぎぃ', 'ギィ'], 85: ['ぎゅ', 'ギュ'], 69: ['ぎぇ', 'ギェ'], 79: ['ぎょ', 'ギョ'] },
     /* H */ 72: { 65: ['しゃ', 'シャ'], 73: ['し', 'シ'], 85: ['しゅ', 'シュ'], 69: ['しぇ', 'シェ'], 79: ['しょ', 'ショ'] }
   /*****/ },
-  /* T */ 84: { 65: ['た', 'タ'], 73: ['ち', 'チ'], 85: ['つ', 'ツ'], 69: ['て', 'テ'], 79: ['と', 'ト'] },
+  /* T */ 84: { 65: ['た', 'タ'], 73: ['ち', 'チ'], 85: ['つ', 'ツ'], 69: ['て', 'テ'], 79: ['と', 'ト'],
+    /* S */ 83: { 85: ['つ', 'ツ'] },
+  /*****/ },
+  /* C */ 67: { 72: { 73: ['ち', 'チ'] } },
   /* N */ 78: {
     /* A */ 65: ['な', 'ナ'], 73: ['に', 'ニ'], 85: ['ぬ', 'ヌ'], 69: ['ね', 'ネ'], 79: ['の', 'ノ'],
     /* Y */ 89: { 65: ['にゃ', 'ニャ'], 73: ['にぃ', 'ニィ'], 85: ['にゅ', 'ニュ'], 69: ['にぇ', 'ニェ'], 79: ['にょ', 'ニョ'] },
@@ -43,7 +39,7 @@ const K = {
 
   /* 拗音 */
   /* J */ 74: {
-    /* A */ 65: ['じゃ', 'ジャ'], 73: ['じぃ', 'ジィ'], 85: ['じゅ', 'ジュ'], 69: ['じぇ', 'ジェ'], 79: ['じょ', 'ジョ'],
+    /* A */ 65: ['じゃ', 'ジャ'], 73: ['じ', 'ジ'], 85: ['じゅ', 'ジュ'], 69: ['じぇ', 'ジェ'], 79: ['じょ', 'ジョ'],
     /* Y */ 89: { 65: ['じゃ', 'ジャ'], 73: ['じぃ', 'ジィ'], 85: ['じゅ', 'ジュ'], 69: ['じぇ', 'ジェ'], 79: ['じょ', 'ジョ'] }
   /*****/ },
 
@@ -52,69 +48,90 @@ const K = {
   /* F */ 70: { 65: ['ふぁ', 'ファ'], 73: ['ふぃ', 'フィ'], 85: ['ふ', 'フ'], 69: ['ふぇ', 'フェ'], 79: ['ふぉ', 'フォ'] },
 
   /* 小字符 */
-  /* L */ 77: { 65: ['ぁ', 'ァ'], 73: ['ぃ', 'ィ'], 85: ['ぅ', 'ゥ'], 69: ['ぇ', 'ェ'], 79: ['ぉ', 'ォ'] },
+  /* L */ 76: { 65: ['ぁ', 'ァ'], 73: ['ぃ', 'ィ'], 85: ['ぅ', 'ゥ'], 69: ['ぇ', 'ェ'], 79: ['ぉ', 'ォ'] },
 
   /* 长音 */
   189: ['ー']
 }
 
-document.onreadystatechange = () => {
-  if (document.readyState === 'complete') {
-    var text = document.querySelectorAll('input[type=text]');
-    var textarea = document.querySelectorAll('textarea');
-
-    // console.log(`text:${text.length}`);
-    // console.log(`textarea:${textarea.length}`);
-
-    if(text.length !== 0) {
-      text.forEach((item, index) => {
-        item.addEventListener('focus', inputInit(item));
-      });
-    }
-
-    if(textarea.length !== 0) {
-      textarea.forEach((item, index) => {
-        item.addEventListener('focus', inputInit(item));
-      });
-    }
-  }
+const nihongo = {
+  on: false,
+  text: null,
+  key: K,
+  keyList: [],
+  val: '',
+  arufa: '',
+  hiragana: '',
+  isKatagana: false,
+  pos: 0,
+  range: null,
+  isComKey: false
 }
 
-function inputInit(item) {
-  nihongo.item = item;
-  nihongo.item.addEventListener('blur', () => {
-    nihongo.item = null;
-    nihongo.item.removeEventListener('blur', inputInit);
+$(document).ready(function(){
+  $('body').on('keydown', 'textarea,:text',function(e) {
+    e = e || window.event || arguments.callee.caller.arguments[0];
+    if(e.keyCode >= 16 && e.keyCode <= 18) {
+      nihongo.isComKey = true;
+    }
+    if(e.keyCode === 8) {
+      nihongo.key = K;
+      nihongo.arufa = '';
+    }
   });
+  $('body').on('keyup', 'textarea,:text',function(e) {
+    e = e || window.event || arguments.callee.caller.arguments[0];
+    nihongo.text = $(this);
 
-  if(nihongo.item !== null) {
-    nihongo.item.addEventListener('onkeydown', e => {
-      console.log(e.keyCode);
-    });
-    // nihongo.item.onkeydown = e => {
-    //   console.log(e.keyCode);
-    // }
+    if(e.keyCode === 27 && nihongo.isComKey) {
+      nihongo.on = !nihongo.on;
+    }
+    if(e.keyCode === 81 && nihongo.isComKey) {
+      nihongo.isKatagana = !nihongo.isKatagana;
+    }
 
-    nihongo.item.onkeyup = e => {
+    var el = nihongo.text.get(0);
+    if ('selectionStart' in el) {
+        nihongo.pos = el.selectionStart;
+    }
+    if(e.keyCode >= 16 && e.keyCode <= 18) {
+      nihongo.isComKey = false;
+    }
+    if(nihongo.on && !nihongo.isComKey && ((e.keyCode >= 65 && e.keyCode <= 90) || e.keyCode === 189)) {
+      nihongo.key = getKey(e.keyCode);
+    }
+  });
+});
 
+function getKey(e) {
+  var char = String.fromCharCode(e).toLowerCase();
+  var val = nihongo.text.val();
+  if(nihongo.arufa.length > 0 && char !== 'n') {
+    if(nihongo.arufa[nihongo.arufa.length - 1] === char) {
+      nihongo.text.val(val.substring(0, nihongo.pos - 2) + (nihongo.isKatagana ? 'ッ' : 'っ') + char + val.substring(nihongo.pos, val.length));
+      nihongo.text.get(0).setSelectionRange(nihongo.pos, nihongo.pos);
+      nihongo.arufa = char;
+      return K[e] || nihongo.key;
     }
   }
+  nihongo.arufa += char;
+  if(nihongo.key[e] !== undefined) {
+    if(Array.isArray(nihongo.key[e])) {
+      var hira = nihongo.isKatagana ? nihongo.key[e][1] || nihongo.key[e][0] : nihongo.key[e][0];
+      var str_l = val.substring(0, nihongo.pos - nihongo.arufa.length);
+      var str_r = val.substring(nihongo.pos, val.length);
+      nihongo.hiragana = str_l + hira + str_r;
 
-
-  console.log(`height: ${item.offsetHeight}`);
-  console.log(`width: ${item.offsetWidth}`);
-
-  console.log(`top: ${item.offsetTop}`);
-  console.log(`left: ${item.offsetLeft}`);
-}
-
-function inputKeyDown(e) {
-  e = e || window.event || arguments.callee.caller.arguments[0];
-
-  nihongo.val = item.value;
-  console.log(e.keyCode);
-
-  if(e.keyCode === 27) {
-    console.log('233');
+      nihongo.text.val(nihongo.hiragana);
+      var pos = nihongo.pos + hira.length - nihongo.arufa.length;
+      nihongo.text.get(0).setSelectionRange(pos, pos);
+      nihongo.arufa = '';
+      return K;
+    }
+    nihongo.keyList.push(e);
+    return nihongo.key[e];
+  } else {
+    nihongo.arufa = nihongo.arufa.substring(nihongo.arufa.length - 1, nihongo.arufa.length);
+    return K[e] || nihongo.key;
   }
 }

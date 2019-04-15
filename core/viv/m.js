@@ -179,15 +179,6 @@ function VivInit() {
           }
         },
         {
-          'key': 66,
-          'title': '单独打开',
-          'position': 'first',
-          'action': () => {
-            window.open(`//www.bilibili.com/${/(av\d+)/.exec(url)[1]}`);
-            void(0);
-          }
-        },
-        {
           'key': 86,
           'title': '打开视频',
           'position': 'first',

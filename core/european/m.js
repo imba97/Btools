@@ -337,7 +337,7 @@ function autoLoad() {
   var dynamic_id = /t\.bilibili\.com\/(\d+)\??/i.exec(window.location.href)[1];
   var url = `https://api.vc.bilibili.com/dynamic_repost/v1/dynamic_repost/view_repost?dynamic_id=${dynamic_id}&offset=${europeanSet.autoLoadOffset}`;
 
-  if(typeof chrome.app.isInstalled!=='undefined'){
+  if(typeof chrome.app.isInstalled !== 'undefined'){
     chrome.runtime.sendMessage({
       type: 'fetch',
       url: url
@@ -353,57 +353,56 @@ function autoLoad() {
           }
         return false;
       }
-    }
 
-    if(json.code === 0) {
-      if(europeanSet.autoLoadOffset === 0) {
-        europeanSet.autoLoadMax = json.data.total_count / 20 * 2;
-        europeanSet.Alleuropeans = json.data.total_count;
-      }
+      if(json.code === 0) {
+        if(europeanSet.autoLoadOffset === 0) {
+          europeanSet.autoLoadMax = json.data.total_count / 20 * 2;
+          europeanSet.Alleuropeans = json.data.total_count;
+        }
 
-      $('.europeanAutoLoadProgressBar').css({
-        'width': (europeanSet.autoLoadNum / europeanSet.autoLoadMax) * 100 + '%'
-      });
-
-      var com = json.data.comments;
-      if(com.length > 0) {
-        json.data.comments.forEach((item, index) => {
-          var atNum = 0;
-          var atArr = item.ctrl.match(/"data":"\d+","length":\d+,"location":\d+,"type":\d+/g);
-          var uCom = item.comment.split('//@')[0];
-
-          if(uCom !== '' && atArr !== null) {
-            atArr.forEach((v, k) => {
-              var comReg = /"location":(\d+)/.exec(v);
-              var imgRex = /\[.*\]/.exec(uCom);
-              var imgNum = imgRex !== null ? imgRex.length * 3 : 0;
-              if(comReg.length > 1 && uCom.length - imgNum >= Number(comReg[1])) {
-                atNum++;
-              }
-            });
-          }
-
-          var uData = {
-            uID: item.uid,
-            uName: item.uname,
-            uFace: item.face_url,
-            uAt: atNum,
-            uSpace: `https://space.bilibili.com/${item.uid}`,
-            uMsg: `https://message.bilibili.com/#/whisper/mid${item.uid}`
-          };
-          europeanSet.userArr = uniqueArr(uData, europeanSet.userArr, true);
-          $('body').append(`<img class="european-read-face" style="width:0" src="${uData.uFace}">`);
+        $('.europeanAutoLoadProgressBar').css({
+          'width': (europeanSet.autoLoadNum / europeanSet.autoLoadMax) * 100 + '%'
         });
-      } else {
-        return false;
-      }
 
-      if(com.length === 20) {
-        europeanSet.autoLoadOffset += 20;
-      }
-    }
-  });
+        var com = json.data.comments;
+        if(com.length > 0) {
+          json.data.comments.forEach((item, index) => {
+            var atNum = 0;
+            var atArr = item.ctrl.match(/"data":"\d+","length":\d+,"location":\d+,"type":\d+/g);
+            var uCom = item.comment.split('//@')[0];
 
+            if(uCom !== '' && atArr !== null) {
+              atArr.forEach((v, k) => {
+                var comReg = /"location":(\d+)/.exec(v);
+                var imgRex = /\[.*\]/.exec(uCom);
+                var imgNum = imgRex !== null ? imgRex.length * 3 : 0;
+                if(comReg.length > 1 && uCom.length - imgNum >= Number(comReg[1])) {
+                  atNum++;
+                }
+              });
+            }
+
+            var uData = {
+              uID: item.uid,
+              uName: item.uname,
+              uFace: item.face_url,
+              uAt: atNum,
+              uSpace: `https://space.bilibili.com/${item.uid}`,
+              uMsg: `https://message.bilibili.com/#/whisper/mid${item.uid}`
+            };
+            europeanSet.userArr = uniqueArr(uData, europeanSet.userArr, true);
+            $('body').append(`<img class="european-read-face" style="width:0" src="${uData.uFace}">`);
+          });
+        } else {
+          return false;
+        }
+
+        if(com.length === 20) {
+          europeanSet.autoLoadOffset += 20;
+        }
+      }
+    });
+  }
 }
 
 function makeUserHTML(u)
