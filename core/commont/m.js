@@ -9,7 +9,11 @@ var CommontSet = {
     emoji: null
   },
   textarea: null,
-  topTextarea: null
+  topTextarea: null,
+  loadTimer: null,
+  loadPage: 1,
+  comments: [],
+  count: -1
 }
 
 $(document).ready(function(){
@@ -37,7 +41,6 @@ $(document).ready(function(){
   }
 
   $('body').on('click', '.comment-list .reply', function() {
-    console.log(233);
     CommontSet.textarea = $(this).parents('.con').find('.textarea-container textarea');
     createDom({
       isReply: true,
@@ -94,6 +97,51 @@ function CommontInit() {
       CommontSet.topTextarea = $('.bb-comment .comment-send:eq(0) textarea');
       CommontSet.textarea = CommontSet.textarea || $('.bb-comment .comment-send:eq(0) textarea');
       createDom();
+
+      if($('#commentBtoolsBtn').length === 0) {
+        $('.bb-comment .comment-header:eq(0)').append(`
+          <li class="commentBtoolsLogo"><a id="commentBtoolsBtn" href="javascript:void(0);">${Btools.logo()}</a></li>
+        `);
+
+        CommontSet.loadTimer = setInterval(function() {
+          chrome.runtime.sendMessage({
+            type: 'fetch',
+            url: `https://api.bilibili.com/x/v2/reply?pn=${CommontSet.loadPage}&type=1&oid=${Btools.av}&sort=0`
+          },
+          json => {
+            if(json.code === 0) {
+              CommontSet.loadPage++;
+
+              if(CommontSet.count === -1) {
+                CommontSet.count = json.data.page.count;
+              }
+              json.data.replies.forEach((item, index) => {
+                CommontSet.comments.push(item);
+              });
+
+              console.log(Math.floor(CommontSet.comments.length / CommontSet.count * 100));
+
+              if(json.data.replies.length < 20) {
+                console.log(CommontSet.comments);
+                $('#commentBtoolsBtn').HKM([
+                  {
+                    key: 83,
+                    title: '搜索评论',
+                    action: () => {
+                      searchComments();
+                    }
+                  }
+                ]);
+
+                CommontSet.loadPage = 1;
+                CommontSet.count = -1;
+                clearInterval(CommontSet.loadTimer);
+                CommontSet.loadTimer = null;
+              }
+            }
+          });
+        }, 500);
+      }
 
       clearInterval(CommontSet.timer);
       CommontSet.timer = null;
@@ -177,3 +225,26 @@ function clearSet() {
 }
 
 // clearSet();
+
+function searchComments() {
+  if($('#BtoolsSearchComments').length !== 0) return false;
+  $('body').append(`
+    <div id="BtoolsSearchComments">
+      <a id="BtoolsSearchClose" href="javascript:void(0);">×</a>
+      <input type="text" id="BtoolsSearchText" placeholder="请输入关键词按下回车键" />
+      <div class="BtoolsBg"></div>
+    </div>
+  `);
+  $('#BtoolsSearchClose').click(function() {
+    $('#BtoolsSearchComments').remove();
+  });
+  $('#BtoolsSearchText').keydown(e => {
+    if(e.keyCode === 13) {
+      console.log($('#BtoolsSearchText').val());
+    }
+  });
+  $('#BtoolsSearchComments').css({
+    'top': $(window).height() / 2 - $('#BtoolsSearchComments').outerHeight() / 2,
+    'left': $(window).width() / 2 - $('#BtoolsSearchComments').outerWidth() / 2
+  });
+}
