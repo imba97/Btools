@@ -83,7 +83,80 @@
   color: #FFF;
 }
 
+.BtoolsSearchListBox {
+  margin-top: 10px;
+  padding: 0 5px;
+  width: 100%;
+  height: 300px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  overflow-y: auto;
+}
+
 #BtoolsSearchClose:hover
 {
   color: #F66;
+}
+
+#BtoolsSearchList {
+  z-index: 1;
+}
+#BtoolsSearchList li {
+  margin: 10px 0;
+  color: #FFF;
+  font-size: 18px;
+  list-style: none;
+}
+
+.BtoolsUserInfo {
+  position: relative;
+}
+
+.BtoolsUserHead,
+.BtoolsUserNickname,
+.BtoolsFloor {
+  position: absolute;
+  top: -40px;
+}
+
+.BtoolsUserHead {
+  left: 10px;
+  width: 30px; height: 30px;
+  border-radius: 100%;
+}
+
+.BtoolsUserNickname {
+  left: 50px;
+  font-weight: 700;
+  height: 30px;
+  line-height: 30px;
+  color: #FFF;
+  cursor: pointer;
+}
+.BtoolsUserNickname:hover {
+  color: #FFF;
+}
+
+.BtoolsVipName {
+  color: #FB7299 !important;
+}
+.BtoolsVipName:hover {
+  color: #FB7299 !important;
+}
+
+.BtoolsFloor {
+  color: #FFF;
+  right: 10px;
+}
+
+.BtoolsUserComment {
+  margin-top: 40px;
+  font-size: 16px;
+  text-align: left;
+  border-bottom: 1px #CCC solid;
+}
+
+.BtoolsCommentKeyword {
+  background-color: #FF0 !important;
+  color: #666 !important;
 }

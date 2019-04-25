@@ -51,43 +51,17 @@ document.onreadystatechange = () => {
         if($('#app div:last').length > 0 && Btools.Reg.mySpace.test(url)) {
           $('#app div:last').addClass('Btools').html(Btools.logo);
         }
-
-        if(Btools.Reg.BtoolsVerCheck.test(url)) {
-          verCheck();
-        }
-
       }, 2000);
-
-      // 版本检查
-      const verCheckSet = {
-        timer: null,
-        time: 0
-      };
-
-      function verCheck()
-      {
-        verCheckSet.timer = setInterval(() => {
-          if($('#version').length > 0 && $('#msg').length > 0) {
-            var v = $('#version').val();
-            var rv = Number($('#version').attr('releaseVersion'));
-            var url = $('#version').attr('data-url');
-            $('#version').attr('data-complete', 'true');
-            if(Btools.releaseVersion < rv) {
-              $('#msg').html(`你的版本：${Btools.version}，最新版本：<strong><a href="${url}">${v}</a></strong>`);
-            } else {
-              $('#msg').html(`你的版本：<strong><a href="${url}">${v}</a></strong>，是最新版本。`);
-            }
-
-            clearInterval(verCheckSet.timer);
-          }
-          if(verCheckSet.time >= 10) {
-            clearInterval(verCheckSet.timer);
-          }
-          verCheckSet.time++;
-        },500);
-      }
-
     }
+}
+
+if(Btools.Reg.BtoolsVerCheck.test(window.location.href)) {
+  // 版本检查
+  var verCheckSet = {
+    timer: null,
+    time: 0
+  };
+  verCheck();
 }
 
 $.fn.extend({
@@ -227,3 +201,25 @@ $.fn.extend({
   }
   // hotKeyMenu --- END
 });
+
+function verCheck() {
+  verCheckSet.timer = setInterval(() => {
+    if($('#version').length > 0 && $('#msg').length > 0) {
+      var v = $('#version').val();
+      var rv = Number($('#version').attr('releaseVersion'));
+      var url = $('#version').attr('data-url');
+      $('#version').attr('data-complete', 'true');
+      if(Btools.releaseVersion < rv) {
+        $('#msg').html(`你的版本：${Btools.version}，最新版本：<strong><a href="${url}">${v}</a></strong>`);
+      } else {
+        $('#msg').html(`你的版本：<strong><a href="${url}">${v}</a></strong>，是最新版本。`);
+      }
+
+      clearInterval(verCheckSet.timer);
+    }
+    if(verCheckSet.time >= 10) {
+      clearInterval(verCheckSet.timer);
+    }
+    verCheckSet.time++;
+  },500);
+}

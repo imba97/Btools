@@ -103,44 +103,15 @@ function CommontInit() {
           <li class="commentBtoolsLogo"><a id="commentBtoolsBtn" href="javascript:void(0);">${Btools.logo()}</a></li>
         `);
 
-        CommontSet.loadTimer = setInterval(function() {
-          chrome.runtime.sendMessage({
-            type: 'fetch',
-            url: `https://api.bilibili.com/x/v2/reply?pn=${CommontSet.loadPage}&type=1&oid=${Btools.av}&sort=0`
-          },
-          json => {
-            if(json.code === 0) {
-              CommontSet.loadPage++;
-
-              if(CommontSet.count === -1) {
-                CommontSet.count = json.data.page.count;
-              }
-              json.data.replies.forEach((item, index) => {
-                CommontSet.comments.push(item);
-              });
-
-              console.log(Math.floor(CommontSet.comments.length / CommontSet.count * 100));
-
-              if(json.data.replies.length < 20) {
-                console.log(CommontSet.comments);
-                $('#commentBtoolsBtn').HKM([
-                  {
-                    key: 83,
-                    title: '搜索评论',
-                    action: () => {
-                      searchComments();
-                    }
-                  }
-                ]);
-
-                CommontSet.loadPage = 1;
-                CommontSet.count = -1;
-                clearInterval(CommontSet.loadTimer);
-                CommontSet.loadTimer = null;
-              }
+        $('#commentBtoolsBtn').HKM([
+          {
+            key: 83,
+            title: '搜索评论',
+            action: () => {
+              searchShow();
             }
-          });
-        }, 500);
+          }
+        ]);
       }
 
       clearInterval(CommontSet.timer);
@@ -226,12 +197,17 @@ function clearSet() {
 
 // clearSet();
 
-function searchComments() {
+function searchShow() {
   if($('#BtoolsSearchComments').length !== 0) return false;
   $('body').append(`
     <div id="BtoolsSearchComments">
       <a id="BtoolsSearchClose" href="javascript:void(0);">×</a>
-      <input type="text" id="BtoolsSearchText" placeholder="请输入关键词按下回车键" />
+      <input type="text" id="BtoolsSearchText" placeholder="请输入关键词按下回车键" autocomplete="off" >
+      <div class="BtoolsSearchListBox">
+        <ul id="BtoolsSearchList">
+
+        </ul>
+      </div>
       <div class="BtoolsBg"></div>
     </div>
   `);
@@ -239,12 +215,66 @@ function searchComments() {
     $('#BtoolsSearchComments').remove();
   });
   $('#BtoolsSearchText').keydown(e => {
-    if(e.keyCode === 13) {
-      console.log($('#BtoolsSearchText').val());
+    if(e.keyCode === 13 && $('#BtoolsSearchText').attr('readonly') !== '' && $('#BtoolsSearchText').val() !== '') {
+      searchComments($('#BtoolsSearchText').val());
     }
-  });
+  }).focus();
   $('#BtoolsSearchComments').css({
     'top': $(window).height() / 2 - $('#BtoolsSearchComments').outerHeight() / 2,
     'left': $(window).width() / 2 - $('#BtoolsSearchComments').outerWidth() / 2
+  });
+
+  if(CommontSet.loadTimer === null && CommontSet.comments.length !== CommontSet.count) {
+    CommontSet.loadTimer = setInterval(function() {
+      chrome.runtime.sendMessage({
+        type: 'fetch',
+        url: `https://api.bilibili.com/x/v2/reply?pn=${CommontSet.loadPage}&type=1&oid=${Btools.av}&sort=0`
+      },
+      json => {
+        if(json.code === 0) {
+          CommontSet.loadPage++;
+
+          if(CommontSet.count === -1) {
+            CommontSet.count = json.data.page.count;
+          }
+          json.data.replies.forEach((item, index) => {
+            CommontSet.comments.push(item);
+          });
+
+          $('#BtoolsSearchText').css({'color': '#999'}).attr('readonly', '').val(`加载评论中...${Math.floor(CommontSet.comments.length / CommontSet.count * 100)}%`);
+
+          if(json.data.replies.length < 20) {
+            $('#BtoolsSearchText').css({'color': '#FFF'}).removeAttr('readonly').val('');
+            CommontSet.loadPage = 1;
+            clearInterval(CommontSet.loadTimer);
+            CommontSet.loadTimer = null;
+          }
+        }
+      });
+    }, 500);
+  }
+}
+
+function searchComments(text) {
+  var reg = new RegExp(`(${text})`, 'ig');
+  if(CommontSet.comments.length === 0) return false;
+  $('#BtoolsSearchList').html('');
+  CommontSet.comments.forEach((item, index) => {
+    var isShow = false;
+    if(reg.test(item.content.message) || reg.test(item.member.uname)) {
+      var message = item.content.message.replace(reg, '<span class="BtoolsCommentKeyword">$1</span>');
+      var userName = item.member.uname.replace(reg, '<span class="BtoolsCommentKeyword">$1</span>');
+      isShow = true;
+    }
+
+    if(isShow) {
+      var html = `
+        <li>
+          <p class="BtoolsUserInfo"><img class="BtoolsUserHead" src="${item.member.avatar}${!/noface\.gif/.test(item.member.avatar) ? '@50w_50h.webp':''}"><a href="http://space.bilibili.com/${item.member.mid}" class="BtoolsUserNickname ${item.member.vip.vipStatus === 1 ? 'BtoolsVipName' : ''}" target="_blank">${userName}</a><a href="javascript:void(0);" class="BtoolsFloor">#${item.floor}</a></p>
+          <p class="BtoolsUserComment">${message}</p>
+        </li>
+      `;
+      $('#BtoolsSearchList').append(html);
+    }
   });
 }
