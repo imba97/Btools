@@ -1,6 +1,6 @@
 chrome = chrome || browser;
 
-var CommontSet = {
+var CommentSet = {
   timer: null,
   loopNum: 0,
   loopMax: 20,
@@ -24,8 +24,8 @@ $(document).ready(function(){
 
     var data = `${doc.attr('data-emoji-text')},${doc.html()}`;
 
-    if(CommontSet.config.emoji === null) {
-      CommontSet.config.emoji = data;
+    if(CommentSet.config.emoji === null) {
+      CommentSet.config.emoji = data;
       saveSet();
       createHTML();
     } else {
@@ -41,7 +41,7 @@ $(document).ready(function(){
   }
 
   $('body').on('click', '.comment-list .reply', function() {
-    CommontSet.textarea = $(this).parents('.con').find('.textarea-container textarea');
+    CommentSet.textarea = $(this).parents('.con').find('.textarea-container textarea');
     createDom({
       isReply: true,
       top: 65,
@@ -76,9 +76,9 @@ $(document).ready(function(){
 
     $('body').on('click', '.btools-history-emoji', function() {
       if($(this).parent().parent().attr('class') === 'btools-history-emoji-box') {
-        CommontSet.topTextarea.insertAtCaret($(this).attr('data-emoji-text'));
+        CommentSet.topTextarea.insertAtCaret($(this).attr('data-emoji-text'));
       } else {
-        CommontSet.textarea.insertAtCaret($(this).attr('data-emoji-text'));
+        CommentSet.textarea.insertAtCaret($(this).attr('data-emoji-text'));
       }
       reorder(`${$(this).attr('data-emoji-text')},${$(this).html()}`);
       $(this).one('mouseout' ,function(){
@@ -92,10 +92,10 @@ $(document).ready(function(){
 });
 
 function CommontInit() {
-  CommontSet.timer = setInterval(function() {
+  CommentSet.timer = setInterval(function() {
     if($('.bb-comment .comment-send:eq(0) textarea').length > 0) {
-      CommontSet.topTextarea = $('.bb-comment .comment-send:eq(0) textarea');
-      CommontSet.textarea = CommontSet.textarea || $('.bb-comment .comment-send:eq(0) textarea');
+      CommentSet.topTextarea = $('.bb-comment .comment-send:eq(0) textarea');
+      CommentSet.textarea = CommentSet.textarea || $('.bb-comment .comment-send:eq(0) textarea');
       createDom();
 
       if($('#commentBtoolsBtn').length === 0) {
@@ -114,15 +114,15 @@ function CommontInit() {
         ]);
       }
 
-      clearInterval(CommontSet.timer);
-      CommontSet.timer = null;
+      clearInterval(CommentSet.timer);
+      CommentSet.timer = null;
     }
   }, 500);
 }
 
 function reorder(key) {
-  if(CommontSet.config.emoji !== null) {
-    var newEmoji = CommontSet.config.emoji.split(CommontSet.sep);
+  if(CommentSet.config.emoji !== null) {
+    var newEmoji = CommentSet.config.emoji.split(CommentSet.sep);
     var newArr = new Array;
     if(key !== newEmoji[0]) {
       newEmoji.forEach((item, index) => {
@@ -132,16 +132,16 @@ function reorder(key) {
           }
         }
       });
-      CommontSet.config.emoji = key + CommontSet.sep + newArr.join(CommontSet.sep);
+      CommentSet.config.emoji = key + CommentSet.sep + newArr.join(CommentSet.sep);
       saveSet();
     }
   }
 }
 
 function createHTML() {
-  if(CommontSet.config.emoji !== null) {
+  if(CommentSet.config.emoji !== null) {
     var html = '';
-    var emoji = CommontSet.config.emoji.split(CommontSet.sep);
+    var emoji = CommentSet.config.emoji.split(CommentSet.sep);
     emoji.forEach((item, index) => {
       var val = item.split(',');
       html += `<li class='btools-history-emoji' data-emoji-text='${val[0]}'>${val[1]}</li>`;
@@ -162,7 +162,7 @@ function createDom(f_info) {
 
   if($(`.btools-history-emoji-${reply}`).length > 0) return false;
 
-  CommontSet.textarea.parent('.textarea-container').css({
+  CommentSet.textarea.parent('.textarea-container').css({
     'position': 'relative'
   }).append(`
     <div class="btools-history-emoji-${reply}">
@@ -175,14 +175,14 @@ function createDom(f_info) {
     'left': f_info.left
   });
 
-  chrome.storage.sync.get(CommontSet.config, function(items){
-    CommontSet.config = items;
+  chrome.storage.sync.get(CommentSet.config, function(items){
+    CommentSet.config = items;
     createHTML();
   });
 }
 
 function saveSet() {
-  chrome.storage.sync.set(CommontSet.config, function() {
+  chrome.storage.sync.set(CommentSet.config, function() {
   });
 }
 
@@ -212,6 +212,7 @@ function searchShow() {
     </div>
   `);
   $('#BtoolsSearchClose').click(function() {
+    CommentSet.comments = [];
     $('#BtoolsSearchComments').remove();
   });
   $('#BtoolsSearchText').keydown(e => {
@@ -224,30 +225,30 @@ function searchShow() {
     'left': $(window).width() / 2 - $('#BtoolsSearchComments').outerWidth() / 2
   });
 
-  if(CommontSet.loadTimer === null && CommontSet.comments.length !== CommontSet.count) {
-    CommontSet.loadTimer = setInterval(function() {
+  if(CommentSet.loadTimer === null && CommentSet.comments.length !== CommentSet.count) {
+    CommentSet.loadTimer = setInterval(function() {
       chrome.runtime.sendMessage({
         type: 'fetch',
-        url: `https://api.bilibili.com/x/v2/reply?pn=${CommontSet.loadPage}&type=1&oid=${Btools.av}&sort=0`
+        url: `https://api.bilibili.com/x/v2/reply?pn=${CommentSet.loadPage}&type=1&oid=${Btools.av()}&sort=0`
       },
       json => {
         if(json.code === 0) {
-          CommontSet.loadPage++;
+          CommentSet.loadPage++;
 
-          if(CommontSet.count === -1) {
-            CommontSet.count = json.data.page.count;
+          if(CommentSet.count === -1) {
+            CommentSet.count = json.data.page.count;
           }
           json.data.replies.forEach((item, index) => {
-            CommontSet.comments.push(item);
+            CommentSet.comments.push(item);
           });
 
-          $('#BtoolsSearchText').css({'color': '#999'}).attr('readonly', '').val(`加载评论中...${Math.floor(CommontSet.comments.length / CommontSet.count * 100)}%`);
+          $('#BtoolsSearchText').css({'color': '#999'}).attr('readonly', '').val(`加载评论中...${Math.floor(CommentSet.comments.length / CommentSet.count * 100)}%`);
 
           if(json.data.replies.length < 20) {
             $('#BtoolsSearchText').css({'color': '#FFF'}).removeAttr('readonly').val('');
-            CommontSet.loadPage = 1;
-            clearInterval(CommontSet.loadTimer);
-            CommontSet.loadTimer = null;
+            CommentSet.loadPage = 1;
+            clearInterval(CommentSet.loadTimer);
+            CommentSet.loadTimer = null;
           }
         }
       });
@@ -257,9 +258,9 @@ function searchShow() {
 
 function searchComments(text) {
   var reg = new RegExp(`(${text})`, 'ig');
-  if(CommontSet.comments.length === 0) return false;
+  if(CommentSet.comments.length === 0) return false;
   $('#BtoolsSearchList').html('');
-  CommontSet.comments.forEach((item, index) => {
+  CommentSet.comments.forEach((item, index) => {
     var isShow = false;
     if(reg.test(item.content.message) || reg.test(item.member.uname)) {
       var message = item.content.message.replace(reg, '<span class="BtoolsCommentKeyword">$1</span>');
