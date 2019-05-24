@@ -28,7 +28,7 @@ const europeanSet = {
   defaultAtNum: 0,
   mod: true,
   atNumArr: [],
-  atNumReg: eval(/<?a href="\/\/space\.bilibili\.com\/\d+\/dynamic"[^<>]*>\@([^<>@]*)<\/a>/ig)
+  atNumReg: /<?a href="\/\/space\.bilibili\.com\/\d+\/dynamic"[^<>]*>\@([^<>@]*)<\/a>/ig
 }
 
 chrome = chrome || browser;
@@ -474,19 +474,24 @@ function addUserInArr(addUser)
 
 function europeanIsAt(com) {
   var uTextArr = com.split('//<');
+  console.log(uTextArr);
   europeanSet.atNumArr = [];
   if(uTextArr.length > 1) {
     var text = uTextArr[0];
   } else {
     var text = uTextArr[0];
   }
-  var atNumFlag = text.match(europeanSet.atNumReg);
-  // console.log(atNumFlag);
-  if(atNumFlag !== null) {
-    for(i = 0; i < atNumFlag.length; i++) {
-      europeanSet.atNumArr = uniqueArr(atNumFlag[i], europeanSet.atNumArr, false)
+  // 未完待续
+  console.log(text);
+  while(atNumArr = europeanSet.atNumReg.exec(text)) {
+    if(atNumArr) {
+      console.log(atNumArr);
+      // europeanSet.atNumArr = uniqueArr(atNumFlag[i], europeanSet.atNumArr, false)
+    } else {
+      break;
     }
   }
+  // console.log(atNumFlag);
 
   if(europeanSet.atNumArr.length < europeanSet.defaultAtNum) return false;
 

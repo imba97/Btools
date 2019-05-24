@@ -225,11 +225,24 @@ function searchShow() {
     'left': $(window).width() / 2 - $('#BtoolsSearchComments').outerWidth() / 2
   });
 
+  var apiType = '1';
+  var oid = Btools.bilibili.av();
+
+  switch(Btools.bilibili.getApiType()) {
+    case 'read':
+      oid = Btools.bilibili.readID();
+      apiType = '12';
+    break;
+  }
+
+  // 未完待续
+  console.log(`https://api.bilibili.com/x/v2/reply?pn=${CommentSet.loadPage}&type=${apiType}&oid=${oid}&sort=0`);
+
   if(CommentSet.loadTimer === null && CommentSet.comments.length !== CommentSet.count) {
     CommentSet.loadTimer = setInterval(function() {
       chrome.runtime.sendMessage({
         type: 'fetch',
-        url: `https://api.bilibili.com/x/v2/reply?pn=${CommentSet.loadPage}&type=1&oid=${Btools.av()}&sort=0`
+        url: `https://api.bilibili.com/x/v2/reply?pn=${CommentSet.loadPage}&type=${apiType}&oid=${oid}&sort=0`
       },
       json => {
         if(json.code === 0) {

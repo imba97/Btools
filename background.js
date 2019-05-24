@@ -2,8 +2,8 @@ var isChrome = !!chrome;
 chrome = chrome || browser;
 
 var BtoolsInfo = {
-  version: '1.0.6',
-  releaseVersion: 7
+  version: '1.0.7',
+  releaseVersion: 8
 }
 
 if(isChrome) {
