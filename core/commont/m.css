@@ -113,8 +113,7 @@
 }
 
 .BtoolsUserHead,
-.BtoolsUserNickname,
-.BtoolsFloor {
+.BtoolsUserNickname {
   position: absolute;
   top: -40px;
 }
@@ -144,11 +143,6 @@
   color: #FB7299 !important;
 }
 
-.BtoolsFloor {
-  color: #FFF;
-  right: 10px;
-}
-
 .BtoolsUserComment {
   margin-top: 40px;
   font-size: 16px;
@@ -159,4 +153,14 @@
 .BtoolsCommentKeyword {
   background-color: #FF0 !important;
   color: #666 !important;
+}
+
+#btoolsAddEmojiText {
+  position: absolute;
+  top: -4px;
+  left: 50px;
+  padding-left: 3px;
+  width: 160px;
+  height: 20px;
+  font-size: 12px;
 }

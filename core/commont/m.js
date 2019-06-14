@@ -6,7 +6,8 @@ var CommentSet = {
   loopMax: 20,
   sep: '|!|',
   config: {
-    emoji: null
+    emoji: null,
+    addText: null
   },
   textarea: null,
   topTextarea: null,
@@ -20,19 +21,13 @@ $(document).ready(function(){
   if(/^(t)\.bilibili\.com$/.test(window.location.host) || /^\/(p|d)?\/?$/.test(window.location.pathname)) return false;
 
   $('body').on('click', '.emoji-list', function(){
+
     var doc = $(this);
 
     var data = `${doc.attr('data-emoji-text')},${doc.html()}`;
 
-    if(CommentSet.config.emoji === null) {
-      CommentSet.config.emoji = data;
-      saveSet();
-      createHTML();
-    } else {
-      reorder(data);
-      saveSet();
-      createHTML();
-    }
+    reorder(data);
+    createHTML();
   });
 
   CommontInit();
@@ -86,16 +81,46 @@ $(document).ready(function(){
       });
     });
 
-    $('body').on('click', '.bb-comment .comment-send:eq(0) textarea', function(){
-      CommontInit();
+    $('body').on('focus', '.bb-comment > .comment-send:eq(0) textarea', function(){
+      reDisplayEmojiSaveList();
+    });
+
+    $('body').on('click', '.emoji-container .emoji-tab-wrap a', function(){
+      if($(this).attr('data-index') == 1) {
+        if($('#btoolsAddEmojiText').length > 0) {
+          $('#btoolsAddEmojiText').show();
+        } else {
+          $('.emoji-box .emoji-title').css({
+            'position': 'relative'
+          }).append('<input id="btoolsAddEmojiText" placeholder="输入颜文字/字符（回车添加）">');
+          $('#btoolsAddEmojiText').keydown(function(e) {
+            if(e.keyCode === 13) {
+              var val = $(this).val();
+              var html = `<a class="emoji-list emoji-text emoji-default" data-emoji-text="${val}" data-index="1">${val}</a>`;
+              $(this).val('');
+            }
+          });
+        }
+      } else {
+        if($('#btoolsAddEmojiText').is(':hidden')) return;
+        $('#btoolsAddEmojiText').hide();
+      }
+
     });
 });
 
+function reDisplayEmojiSaveList() {
+  if($('.bb-comment > .comment-send:eq(0) .textarea-container .btools-history-emoji-box').length === 0) {
+    CommentSet.textarea = null;
+    CommontInit();
+  }
+}
+
 function CommontInit() {
   CommentSet.timer = setInterval(function() {
-    if($('.bb-comment .comment-send:eq(0) textarea').length > 0) {
-      CommentSet.topTextarea = $('.bb-comment .comment-send:eq(0) textarea');
-      CommentSet.textarea = CommentSet.textarea || $('.bb-comment .comment-send:eq(0) textarea');
+    if($('.bb-comment > .comment-send:eq(0) textarea').length > 0) {
+      CommentSet.topTextarea = $('.bb-comment > .comment-send:eq(0) textarea');
+
       createDom();
 
       if($('#commentBtoolsBtn').length === 0) {
@@ -133,9 +158,11 @@ function reorder(key) {
         }
       });
       CommentSet.config.emoji = key + CommentSet.sep + newArr.join(CommentSet.sep);
-      saveSet();
     }
+  } else {
+    CommentSet.config.emoji = key;
   }
+  saveSet();
 }
 
 function createHTML() {
@@ -161,6 +188,8 @@ function createDom(f_info) {
   var reply = f_info.isReply ? 'reply' : 'box';
 
   if($(`.btools-history-emoji-${reply}`).length > 0) return false;
+
+  CommentSet.textarea = CommentSet.textarea !== null ? CommentSet.textarea : CommentSet.topTextarea;
 
   CommentSet.textarea.parent('.textarea-container').css({
     'position': 'relative'
@@ -284,7 +313,7 @@ function searchComments(text) {
     if(isShow) {
       var html = `
         <li>
-          <p class="BtoolsUserInfo"><img class="BtoolsUserHead" src="${item.member.avatar}${!/noface\.gif/.test(item.member.avatar) ? '@50w_50h.webp':''}"><a href="http://space.bilibili.com/${item.member.mid}" class="BtoolsUserNickname ${item.member.vip.vipStatus === 1 ? 'BtoolsVipName' : ''}" target="_blank">${userName}</a><a href="javascript:void(0);" class="BtoolsFloor">#${item.floor}</a></p>
+          <p class="BtoolsUserInfo"><img class="BtoolsUserHead" src="${item.member.avatar}${!/noface\.gif/.test(item.member.avatar) ? '@50w_50h.webp':''}"><a href="http://space.bilibili.com/${item.member.mid}" class="BtoolsUserNickname ${item.member.vip.vipStatus === 1 ? 'BtoolsVipName' : ''}" target="_blank">${userName}</a></p>
           <p class="BtoolsUserComment">${message}</p>
         </li>
       `;
