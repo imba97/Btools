@@ -7,33 +7,25 @@
 ### 说明/作用
 其他说明
 * `请求网址` `GET/POST`
-   * `必须参数` [参数作用/说明] [实例值]
-   * 可选参数 [参数作用/说明] [实例值]
+   * `必须参数` [参数作用/说明] [实例值/说明|实例值2/说明2]
+   * 可选参数 [参数作用/说明] [实例值/说明|实例值2/说明2]
 * 请求示例
 
 # 正式开始
 
-### 动态评论
+### 评论
 * `https://api.bilibili.com/x/v2/reply` `GET`
-   * `type` [类型] [11]
-   * `oid` [动态ID] [11041156]
-   * pn [页数] [1]
-   * ps [每页显示个数] [20]
-   * sort [?]
-* [https://api.bilibili.com/x/v2/reply?pn=1&type=11&oid=11041156](https://api.bilibili.com/x/v2/reply?pn=1&type=11&oid=11041156)
-
-### 视频评论
-* `https://api.bilibili.com/x/v2/reply` `GET`
-   * `type` [类型] [1]
+   * `type` [类型] [1/视频、番剧评论|4/活动页评论|11/动态、相册评论|12/专栏评论]
    * `oid` [AV号] [40905080]
    * pn [页数] [1]
    * ps [每页显示个数] [20]
    * sort [?]
 * [https://api.bilibili.com/x/v2/reply?pn=1&type=11&oid=11041156](https://api.bilibili.com/x/v2/reply?pn=1&type=1&oid=40905080)
+* [https://api.bilibili.com/x/v2/reply?pn=1&type=11&oid=11041156](https://api.bilibili.com/x/v2/reply?pn=1&type=11&oid=11041156)
 
 ### 评论楼中楼
 * `https://api.bilibili.com/x/v2/reply/reply` `GET`
-   * `type` [类型] [1] [同上]
+   * `type` [类型] [1|4|11|12/同上]
    * `oid` [AV号] [40905080]
    * `root` [主楼ID] [1273276036] [这个是获取评论中返回的rpid]
    * pn [页数] [1]

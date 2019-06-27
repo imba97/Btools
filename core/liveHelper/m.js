@@ -16,6 +16,14 @@ var BtoolsConfig = {
   miniPlayerShow: 0
 }
 
+$(document).ready(function() {
+  $('body').on('click', '.lottery-box', function() {
+    var msg = $('.link-popup-ctnr .link-popup-ctnr .link-popup-panel .popup-content-ctnr p').text();
+    setTimeout(function() {
+      $('.close-btn').click();
+    }, 1000);
+  });
+});
 
 // live助手初始化
 function liveHelperInit() {

@@ -243,6 +243,10 @@ function searchShow() {
   $('#BtoolsSearchClose').click(function() {
     CommentSet.comments = [];
     $('#BtoolsSearchComments').remove();
+    if(CommentSet.loadTimer !== null) {
+      clearInterval(CommentSet.loadTimer);
+      CommentSet.loadTimer = null;
+    }
   });
   $('#BtoolsSearchText').keydown(e => {
     if(e.keyCode === 13 && $('#BtoolsSearchText').attr('readonly') !== '' && $('#BtoolsSearchText').val() !== '') {
@@ -257,11 +261,28 @@ function searchShow() {
   var apiType = '1';
   var oid = Btools.bilibili.av();
 
-  switch(Btools.bilibili.getApiType()) {
-    case 'read':
-      oid = Btools.bilibili.readID();
-      apiType = '12';
-    break;
+  if(/h\.bilibili\.com/.test(window.location.href)) {
+    oid = Btools.bilibili.albumID();
+    apiType = '11';
+  } else {
+    switch(Btools.bilibili.getApiType()) {
+      case 'bangumi':
+        oid = Btools.bilibili.bangumiID();
+      break;
+      case 'read':
+        oid = Btools.bilibili.readID();
+        apiType = '12';
+      break;
+      case 'blackboard':
+        oid = Btools.bilibili.activeID();
+        apiType = '4';
+      break;
+    }
+  }
+
+  if(oid === null) {
+    $('#BtoolsSearchText').css({'color': '#F66'}).attr('readonly', '').val('加载失败，请关闭该窗口，重新尝试');
+    return;
   }
 
   // 未完待续
