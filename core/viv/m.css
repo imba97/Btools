@@ -8,7 +8,7 @@
 
 #vivWindow
 {
-  position: absolute;
+  position: fixed;
   top: 100px;
   left: 0;
   padding: 30px 10px 10px 10px;

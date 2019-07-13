@@ -304,7 +304,7 @@ function media_info(mid) {
     </div>
   `;
   $('body').append(html).find('#vivWindow').css({
-    'top': $(document).scrollTop() + 50,
+    'top': ($(document).height() / 2) - ($('#vivWindow').outerHeight() / 2),
     'left': ($(document).width() / 2) - ($('#vivWindow').outerWidth() / 2)
   });
   $('#vivWindow .vivClose').click(function(){

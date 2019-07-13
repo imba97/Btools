@@ -5,28 +5,40 @@ const getUrlSet = {
 }
 
 getUrlInit();
+var regexp = /.{0,2}(https?:\/\/(?:[\w\-]+\.)+[\w\-]+(?:[\/|\?][\w\u4e00-\u9fa5\-\.\/?\@\%\!\&=\+\~\:\#\;\,]*)?)/ig;
 function getUrlInit()
 {
   getUrlSet.timer = setInterval(function(){
     if($('.page-container .nav-tab-bar').length > 0)
     {
-      var regexp = /.{2}(https?:\/\/(?:[\w\-]+\.)+[\w\-]+(?:[\/|\?][\w\u4e00-\u9fa5\-\.\/?\@\%\!\&=\+\~\:\#\;\,]*)?)/ig;
       $('.article-holder p').each(function() {
-        var html = $(this).html();
-        var n = 0;
-        while(regUrl = regexp.exec(html)) {
-          n++; if(n>100) break;
-          if(regUrl) {
-            if(!/(=\")[^"]*/.test(regUrl[0])) {
-              $(this).html(html.replace(regUrl[1], `<a href="${regUrl[1]}" class="BtoolsGetUrl" target="_blank">${regUrl[1]}</a>`));
-            }
-          } else {
-            break;
-          }
-        }
+        var html = getRealUrl($(this).html());
+        $(this).html(html);
       });
-
       clearInterval(getUrlSet.timer);
     }
   }, 200);
+}
+
+$(document).ready(function() {
+  $('body').one('DOMNodeInserted', '#v_desc .info', function() {
+    $('#v_desc .info').html(getRealUrl($('#v_desc .info').html()));
+  })
+});
+
+
+function getRealUrl(html) {
+  var n = 0;
+  var realUrl = html;
+  while(regUrl = regexp.exec(html)) {
+    n++; if(n>100) break;
+    if(regUrl) {
+      if(!/(=\")[^"]*/.test(regUrl[0])) {
+        realUrl = html.replace(regUrl[1], `<a href="${regUrl[1]}" class="BtoolsGetUrl" target="_blank">${regUrl[1]}</a>`);
+      }
+    } else {
+      break;
+    }
+  }
+  return realUrl;
 }

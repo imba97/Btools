@@ -58,7 +58,7 @@
 			"run_at": "document_end"
 		},
 		{
-			"matches": ["*://*.bilibili.com/read/*"],
+			"matches": ["*://*.bilibili.com/read/*", "*://*.bilibili.com/video/*"],
 			"js": ["core/getUrl/m.js"],
 			"css": ["core/getUrl/m.css"],
 			"run_at": "document_end"
@@ -71,8 +71,8 @@
 		},
 		{
 			"matches": ["*://www.bilibili.com/*", "*://h.bilibili.com/*"],
-			"js": ["core/commont/m.js"],
-			"css": ["core/commont/m.css"],
+			"js": ["core/comment/m.js"],
+			"css": ["core/comment/m.css"],
 			"run_at": "document_end"
 		}
 	],

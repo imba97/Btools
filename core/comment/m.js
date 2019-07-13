@@ -26,7 +26,7 @@ $(document).ready(function(){
 
     var data = `${doc.attr('data-emoji-text')},${doc.html()}`;
 
-    reorder(data);
+    reorder('emoji', data);
     createHTML();
   });
 
@@ -75,7 +75,7 @@ $(document).ready(function(){
       } else {
         CommentSet.textarea.insertAtCaret($(this).attr('data-emoji-text'));
       }
-      reorder(`${$(this).attr('data-emoji-text')},${$(this).html()}`);
+      reorder('emoji', `${$(this).attr('data-emoji-text')},${$(this).html()}`);
       $(this).one('mouseout' ,function(){
         createHTML();
       });
@@ -87,6 +87,7 @@ $(document).ready(function(){
 
     $('body').on('click', '.emoji-container .emoji-tab-wrap a', function(){
       if($(this).attr('data-index') == 1) {
+        createAddTextHTML();
         if($('#btoolsAddEmojiText').length > 0) {
           $('#btoolsAddEmojiText').show();
         } else {
@@ -96,8 +97,22 @@ $(document).ready(function(){
           $('#btoolsAddEmojiText').keydown(function(e) {
             if(e.keyCode === 13) {
               var val = $(this).val();
-              var html = `<a class="emoji-list emoji-text emoji-default" data-emoji-text="${val}" data-index="1">${val}</a>`;
+              if(val === '' || val.length > 20) return;
+              if(CommentSet.config.addText === null) {
+                CommentSet.config.addText = val;
+              } else {
+                var addText = CommentSet.config.addText.split(CommentSet.sep);
+                if(addText.indexOf(val) === -1) {
+                  addText.push(val);
+                  CommentSet.config.addText = addText.join(CommentSet.sep);
+                } else {
+                  return;
+                }
+              }
+              var html = `<a class="emoji-list emoji-text emoji-default btools-add-text" data-emoji-text="${val}">${val}</a>`;
+              $('.emoji-box .emoji-wrap a:first').before(html);
               $(this).val('');
+              saveSet();
             }
           });
         }
@@ -106,6 +121,27 @@ $(document).ready(function(){
         $('#btoolsAddEmojiText').hide();
       }
 
+    });
+
+    $('body').on('mousedown', '.btools-history-emoji', function(e) {
+      if(e.button === 1) {
+        var val = $(this).attr('data-emoji-text') + ',' + $(this).html();
+        e.preventDefault();
+        deleteItem('emoji', val);
+      }
+    });
+
+    $('body').on('mousedown', '.btools-add-text', function(e) {
+      var val = $(this).attr('data-emoji-text');
+      if(e.button === 0) {
+        reorder('addText', val);
+        setTimeout(function() {
+          createAddTextHTML();
+        }, 100);
+      } else if(e.button === 1) {
+        e.preventDefault();
+        deleteItem('addText', val);
+      }
     });
 });
 
@@ -145,9 +181,9 @@ function CommontInit() {
   }, 500);
 }
 
-function reorder(key) {
-  if(CommentSet.config.emoji !== null) {
-    var newEmoji = CommentSet.config.emoji.split(CommentSet.sep);
+function reorder(id, key) {
+  if(CommentSet.config[id] !== null) {
+    var newEmoji = CommentSet.config[id].split(CommentSet.sep);
     var newArr = new Array;
     if(key !== newEmoji[0]) {
       newEmoji.forEach((item, index) => {
@@ -157,10 +193,31 @@ function reorder(key) {
           }
         }
       });
-      CommentSet.config.emoji = key + CommentSet.sep + newArr.join(CommentSet.sep);
+      CommentSet.config[id] = key + CommentSet.sep + newArr.join(CommentSet.sep);
     }
   } else {
-    CommentSet.config.emoji = key;
+    CommentSet.config[id] = key;
+  }
+  saveSet();
+}
+
+function deleteItem(id, val) {
+  var arr = CommentSet.config[id].split(CommentSet.sep);
+  var index = 0;
+  if(arr.length === 1) {
+    CommentSet.config[id] = null;
+  } else {
+    index = arr.indexOf(val);
+    arr.splice(index, 1);
+    CommentSet.config[id] = arr.join(CommentSet.sep);
+  }
+  switch(id) {
+    case 'emoji':
+      $(`.btools-history-emoji:eq(${index})`).remove();
+    break;
+    case 'addText':
+      $(`.btools-add-text:eq(${index})`).remove();
+    break;
   }
   saveSet();
 }
@@ -174,6 +231,20 @@ function createHTML() {
       html += `<li class='btools-history-emoji' data-emoji-text='${val[0]}'>${val[1]}</li>`;
     });
     $('.btools-history-emoji-scroll').html(html);
+  }
+}
+
+function createAddTextHTML() {
+  if(CommentSet.config.addText !== null) {
+    $('.btools-add-text').remove();
+    var text = CommentSet.config.addText.split(CommentSet.sep);
+    if(text.length !== $('.btools-add-text').length) {
+      var html = '';
+      text.forEach(function(item, index) {
+        html += `<a class="emoji-list emoji-text emoji-default btools-add-text" data-emoji-text="${item}">${item}</a>`;
+      });
+      $('.emoji-box .emoji-wrap a:first').before(html);
+    }
   }
 }
 

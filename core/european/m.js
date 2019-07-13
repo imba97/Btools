@@ -260,7 +260,7 @@ function europeanShow()
     $('.europeanUserArrLength span').text('--');
     $('#europeanUserArr .europeanUser').html('');
 
-    makeExcel();
+    makeCSV();
 
     clearInterval(europeanSet.timer);
   });
@@ -498,38 +498,34 @@ function europeanIsAt(com) {
   return true;
 }
 
-function makeExcel()
+function makeCSV()
 {
   if(europeanSet.winArr.length === 0) return false;
-  var downloadBtn = '<p class="europeanUser"><span style="border-radius:0;" class="europeanExcelIcon"></span><a class="europeanUName" href="javascript:void(0);">中奖名单已保存到Excel表格</a><a id="europeanExcelDownload" class="europeanUMsg" href="javascript:void(0);" target="_blank">下载TA</a></p>';
-  var table =
-    '<table border="1" cellspacing="0" cellpadding="0">' +
-      '<tr class="thead"><th colspan="4"><a href="' + window.location.href + '">' + europeanSet.upName + ' 的抽奖</a></th></tr>' +
-      '<tr class="theadTitle"><th>排序</th><th>用户ID</th><th>用户名</th><th>空间链接</th><th>联系</th></tr>';
-      $.each(europeanSet.winArr, function(k, v){
-        if(v.uID === null) {
-          var uID = '无(手动添加)';
-          var spaceText = '无(手动添加)';
-          var msgText = '点击搜索';
-        } else {
-          var uID = k.uID;
-          var spaceText = '<a href="' + v.uSpace + '">打开空间</a>';
-          var msgText = '点击私信';
-        }
-        table += `<tr class="theadContent"><td>${k+1}</td><td>${uID}</td><td>${v.uName}</td><td>${spaceText}</td><td><a href="${v.uMsg}">${msgText}</a></td></tr>`;
-      });
-
-  table += '</table>';
-  var html = "<html><head><meta charset='utf-8' /><style>a{text-decoration:none;font-size:20px;font-weight:700;}th,td{text-align:center}.thead th,.thead th a{color:#999;} .theadTitle td{font-weight:700;font-size:26px;color:#666} .theadContent td,.theadContent td a{font-size:20px;color:#666}</style></head><body>" + table + "</body></html>";
+  var downloadBtn = '<p class="europeanUser"><span style="border-radius:0;" class="europeanExcelIcon"></span><a class="europeanUName" href="javascript:void(0);">中奖名单已保存到CSV表格</a><a id="europeanExcelDownload" class="europeanUMsg" href="javascript:void(0);" target="_blank">下载TA</a></p>';
+  var data =
+    '\ufeff' +
+    '抽奖动态：' + window.location.href + '\n' +
+    'UP主：' + europeanSet.upName + ' 的抽奖\n' +
+    '排序,用户ID,用户名,空间链接,联系\n';
+  $.each(europeanSet.winArr, function(k, v){
+    if(v.uID === null) {
+      var uID = '无(手动添加)';
+      var spaceText = '无(手动添加)';
+    } else {
+      var uID = v.uID;
+      var spaceText = v.uSpace;
+    }
+    data += `${k+1},${uID},${v.uName},${spaceText},${v.uMsg}\n`;
+  });
 
   $('#europeanUserArr .europeanUser').html(downloadBtn);
 
-  var blob = new Blob([html], { type: "application/vnd.ms-excel" });
+  var blob = new Blob([data], { type: 'text/csv,charset=UTF-8'});
   var a = document.getElementById('europeanExcelDownload');
 
   a.href = URL.createObjectURL(blob);
 
-  a.download = europeanSet.upName + ' 的抽奖中奖名单.xls';
+  a.download = europeanSet.upName + ' 的抽奖中奖名单.csv';
 }
 
 function btnCtrl(start)

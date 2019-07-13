@@ -12,7 +12,7 @@ const Btools = {
   bilibili: {
     getApiType: () => /^\/([^\/]*)\//.exec(window.location.pathname) !== null ? /^\/([^\/]*)\//.exec(window.location.pathname)[1] : null,
     av: () => /video\/av(\d+)/.exec(window.location.pathname) !== null ? /video\/av(\d+)/.exec(window.location.pathname)[1] : null,
-    bangumiID: () => /video\/av(\d+)/.exec($('.info-second a:last').attr('href')) !== null ? /video\/av(\d+)/.exec($('.info-second a:last').attr('href'))[1] : null,
+    bangumiID: () => /AV(\d+)/.exec($('.pub-wrapper .av-link').text()) !== null ? /AV(\d+)/.exec($('.pub-wrapper .av-link').text())[1] : null,
     readID: () => /read\/cv(\d+)/.exec(window.location.pathname) !== null ? /read\/cv(\d+)/.exec(window.location.pathname)[1] : null,
     activeID: () => /\/activity(\d+)\//.exec($('script[crossorigin=anonymous]:last').attr('src')) !== null ? /\/activity(\d+)\//.exec($('script[crossorigin=anonymous]:last').attr('src'))[1] : null,
     albumID: () => /h\.bilibili\.com\/(\d+)/.exec(window.location.href) !== null ? /h\.bilibili\.com\/(\d+)/.exec(window.location.href)[1] : null
