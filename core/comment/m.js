@@ -374,10 +374,10 @@ function searchComments(text) {
     }
 
     var vipName = item.member.vip.vipStatus === 1 ? 'BtoolsVipName' : '';
-    var userFace = item.member.avatar}${!/noface\.gif/.test(item.member.avatar) ? '@50w_50h.webp':'';
+    var userFace = !/noface\.gif/.test(item.member.avatar) ? '@50w_50h.webp':'';
 
     if(isShow) {
-      var html = '<li><p class="BtoolsUserInfo"><img class="BtoolsUserHead" src="' + userFace + '"><a href="http://space.bilibili.com/${item.member.mid}" class="BtoolsUserNickname ' + vipName + '" target="_blank">' + userName + '</a></p><p class="BtoolsUserComment">' + message + '</p></li>';
+      var html = '<li><p class="BtoolsUserInfo"><img class="BtoolsUserHead" src="' + item.member.avatar + userFace + '"><a href="http://space.bilibili.com/' + item.member.mid + '" class="BtoolsUserNickname ' + vipName + '" target="_blank">' + userName + '</a></p><p class="BtoolsUserComment">' + message + '</p></li>';
       $('#BtoolsSearchList').append(html);
     }
   });
