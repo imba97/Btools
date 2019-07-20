@@ -24,7 +24,7 @@ $(document).ready(function(){
 
     var doc = $(this);
 
-    var data = `${doc.attr('data-emoji-text')},${doc.html()}`;
+    var data = doc.attr('data-emoji-text') + ',' + doc.html();
 
     reorder('emoji', data);
     createHTML();
@@ -75,7 +75,7 @@ $(document).ready(function(){
       } else {
         CommentSet.textarea.insertAtCaret($(this).attr('data-emoji-text'));
       }
-      reorder('emoji', `${$(this).attr('data-emoji-text')},${$(this).html()}`);
+      reorder('emoji', $(this).attr('data-emoji-text') + ',' + $(this).html());
       $(this).one('mouseout' ,function(){
         createHTML();
       });
@@ -109,7 +109,7 @@ $(document).ready(function(){
                   return;
                 }
               }
-              var html = `<a class="emoji-list emoji-text emoji-default btools-add-text" data-emoji-text="${val}">${val}</a>`;
+              var html = '<a class="emoji-list emoji-text emoji-default btools-add-text" data-emoji-text="' + val + '">' + val + '</a>';
               $('.emoji-box .emoji-wrap a:first').before(html);
               $(this).val('');
               saveSet();
@@ -135,9 +135,11 @@ $(document).ready(function(){
       var val = $(this).attr('data-emoji-text');
       if(e.button === 0) {
         reorder('addText', val);
-        setTimeout(function() {
-          createAddTextHTML();
-        }, 100);
+        $(this).one('mouseup', function() {
+          setTimeout(function() {
+            createAddTextHTML();
+          }, 100);
+        });
       } else if(e.button === 1) {
         e.preventDefault();
         deleteItem('addText', val);
@@ -160,15 +162,13 @@ function CommontInit() {
       createDom();
 
       if($('#commentBtoolsBtn').length === 0) {
-        $('.bb-comment .comment-header:eq(0)').append(`
-          <li class="commentBtoolsLogo"><a id="commentBtoolsBtn" href="javascript:void(0);">${Btools.logo()}</a></li>
-        `);
+        $('.bb-comment .comment-header:eq(0)').append('<li class="commentBtoolsLogo"><a id="commentBtoolsBtn" href="javascript:void(0);">' + Btools.logo() + '</a></li>');
 
         $('#commentBtoolsBtn').HKM([
           {
             key: 83,
             title: '搜索评论',
-            action: () => {
+            action: function() {
               searchShow();
             }
           }
@@ -186,7 +186,7 @@ function reorder(id, key) {
     var newEmoji = CommentSet.config[id].split(CommentSet.sep);
     var newArr = new Array;
     if(key !== newEmoji[0]) {
-      newEmoji.forEach((item, index) => {
+      newEmoji.forEach(function(item, index) {
         if(key != item) {
           if(newArr.length < 4) {
             newArr.push(item);
@@ -213,10 +213,10 @@ function deleteItem(id, val) {
   }
   switch(id) {
     case 'emoji':
-      $(`.btools-history-emoji:eq(${index})`).remove();
+      $('.btools-history-emoji:eq(' + index + ')').remove();
     break;
     case 'addText':
-      $(`.btools-add-text:eq(${index})`).remove();
+      $('.btools-add-text:eq(' + index + ')').remove();
     break;
   }
   saveSet();
@@ -226,9 +226,9 @@ function createHTML() {
   if(CommentSet.config.emoji !== null) {
     var html = '';
     var emoji = CommentSet.config.emoji.split(CommentSet.sep);
-    emoji.forEach((item, index) => {
+    emoji.forEach(function(item, index) {
       var val = item.split(',');
-      html += `<li class='btools-history-emoji' data-emoji-text='${val[0]}'>${val[1]}</li>`;
+      html += '<li class="btools-history-emoji" data-emoji-text="' + val[0] + '">' + val[1] + '</li>';
     });
     $('.btools-history-emoji-scroll').html(html);
   }
@@ -241,7 +241,7 @@ function createAddTextHTML() {
     if(text.length !== $('.btools-add-text').length) {
       var html = '';
       text.forEach(function(item, index) {
-        html += `<a class="emoji-list emoji-text emoji-default btools-add-text" data-emoji-text="${item}">${item}</a>`;
+        html += '<a class="emoji-list emoji-text emoji-default btools-add-text" data-emoji-text="' + item + '">' + item + '</a>';
       });
       $('.emoji-box .emoji-wrap a:first').before(html);
     }
@@ -258,19 +258,15 @@ function createDom(f_info) {
 
   var reply = f_info.isReply ? 'reply' : 'box';
 
-  if($(`.btools-history-emoji-${reply}`).length > 0) return false;
+  if($('.btools-history-emoji-' + reply).length > 0) return false;
 
   CommentSet.textarea = CommentSet.textarea !== null ? CommentSet.textarea : CommentSet.topTextarea;
 
   CommentSet.textarea.parent('.textarea-container').css({
     'position': 'relative'
-  }).append(`
-    <div class="btools-history-emoji-${reply}">
-      <ul class="btools-history-emoji-scroll"></ul>
-    </div>
-  `);
+  }).append('<div class="btools-history-emoji-' + reply + '"><ul class="btools-history-emoji-scroll"></ul></div>');
 
-  $(`.btools-history-emoji-${reply}`).css({
+  $('.btools-history-emoji-' + reply).css({
     'top': f_info.top,
     'left': f_info.left
   });
@@ -286,31 +282,9 @@ function saveSet() {
   });
 }
 
-function clearSet() {
-  $('body').append(`
-    <a id="clearSet" href="javascript:void(0);" style="position: fixed; top: 50px; left: 50px; font-size: 50px; z-index: 9999999999;">一键清空</a>
-  `).find('#clearSet').click(function() {
-    chrome.storage.sync.set({emoji: null}, function() {
-    });
-  });
-}
-
-// clearSet();
-
 function searchShow() {
   if($('#BtoolsSearchComments').length !== 0) return false;
-  $('body').append(`
-    <div id="BtoolsSearchComments">
-      <a id="BtoolsSearchClose" href="javascript:void(0);">×</a>
-      <input type="text" id="BtoolsSearchText" placeholder="请输入关键词按下回车键" autocomplete="off" >
-      <div class="BtoolsSearchListBox">
-        <ul id="BtoolsSearchList">
-
-        </ul>
-      </div>
-      <div class="BtoolsBg"></div>
-    </div>
-  `);
+  $('body').append('<div id="BtoolsSearchComments"><a id="BtoolsSearchClose" href="javascript:void(0);">×</a><input type="text" id="BtoolsSearchText" placeholder="请输入关键词按下回车键" autocomplete="off" ><div class="BtoolsSearchListBox"><ul id="BtoolsSearchList"></ul></div><div class="BtoolsBg"></div></div>');
   $('#BtoolsSearchClose').click(function() {
     CommentSet.comments = [];
     $('#BtoolsSearchComments').remove();
@@ -319,7 +293,7 @@ function searchShow() {
       CommentSet.loadTimer = null;
     }
   });
-  $('#BtoolsSearchText').keydown(e => {
+  $('#BtoolsSearchText').keydown(function(e) {
     if(e.keyCode === 13 && $('#BtoolsSearchText').attr('readonly') !== '' && $('#BtoolsSearchText').val() !== '') {
       searchComments($('#BtoolsSearchText').val());
     }
@@ -356,27 +330,24 @@ function searchShow() {
     return;
   }
 
-  // 未完待续
-  console.log(`https://api.bilibili.com/x/v2/reply?pn=${CommentSet.loadPage}&type=${apiType}&oid=${oid}&sort=0`);
-
   if(CommentSet.loadTimer === null && CommentSet.comments.length !== CommentSet.count) {
     CommentSet.loadTimer = setInterval(function() {
       chrome.runtime.sendMessage({
         type: 'fetch',
-        url: `https://api.bilibili.com/x/v2/reply?pn=${CommentSet.loadPage}&type=${apiType}&oid=${oid}&sort=0`
+        url: 'https://api.bilibili.com/x/v2/reply?pn=' + CommentSet.loadPage + '&type=' + apiType + '&oid=' + oid + '&sort=0'
       },
-      json => {
+      function(json) {
         if(json.code === 0) {
           CommentSet.loadPage++;
 
           if(CommentSet.count === -1) {
             CommentSet.count = json.data.page.count;
           }
-          json.data.replies.forEach((item, index) => {
+          json.data.replies.forEach(function(item, index) {
             CommentSet.comments.push(item);
           });
 
-          $('#BtoolsSearchText').css({'color': '#999'}).attr('readonly', '').val(`加载评论中...${Math.floor(CommentSet.comments.length / CommentSet.count * 100)}%`);
+          $('#BtoolsSearchText').css({'color': '#999'}).attr('readonly', '').val('加载评论中...' + Math.floor(CommentSet.comments.length / CommentSet.count * 100) + '%');
 
           if(json.data.replies.length < 20) {
             $('#BtoolsSearchText').css({'color': '#FFF'}).removeAttr('readonly').val('');
@@ -391,10 +362,10 @@ function searchShow() {
 }
 
 function searchComments(text) {
-  var reg = new RegExp(`(${text})`, 'ig');
+  var reg = new RegExp('(' + text + ')', 'ig');
   if(CommentSet.comments.length === 0) return false;
   $('#BtoolsSearchList').html('');
-  CommentSet.comments.forEach((item, index) => {
+  CommentSet.comments.forEach(function(item, index) {
     var isShow = false;
     if(reg.test(item.content.message) || reg.test(item.member.uname)) {
       var message = item.content.message.replace(reg, '<span class="BtoolsCommentKeyword">$1</span>');
@@ -402,13 +373,11 @@ function searchComments(text) {
       isShow = true;
     }
 
+    var vipName = item.member.vip.vipStatus === 1 ? 'BtoolsVipName' : '';
+    var userFace = item.member.avatar}${!/noface\.gif/.test(item.member.avatar) ? '@50w_50h.webp':'';
+
     if(isShow) {
-      var html = `
-        <li>
-          <p class="BtoolsUserInfo"><img class="BtoolsUserHead" src="${item.member.avatar}${!/noface\.gif/.test(item.member.avatar) ? '@50w_50h.webp':''}"><a href="http://space.bilibili.com/${item.member.mid}" class="BtoolsUserNickname ${item.member.vip.vipStatus === 1 ? 'BtoolsVipName' : ''}" target="_blank">${userName}</a></p>
-          <p class="BtoolsUserComment">${message}</p>
-        </li>
-      `;
+      var html = '<li><p class="BtoolsUserInfo"><img class="BtoolsUserHead" src="' + userFace + '"><a href="http://space.bilibili.com/${item.member.mid}" class="BtoolsUserNickname ' + vipName + '" target="_blank">' + userName + '</a></p><p class="BtoolsUserComment">' + message + '</p></li>';
       $('#BtoolsSearchList').append(html);
     }
   });

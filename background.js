@@ -27,9 +27,9 @@ function(request, sender, sendResponse) {
   switch(request.type) {
     case 'fetch':
       fetch(request.url)
-        .then(response => response.json())
-        .then(json => sendResponse(json))
-        .catch(error => sendResponse(null))
+        .then(function(response) { return response.json() })
+        .then(function(json) { return sendResponse(json) })
+        .catch(function(error) { return sendResponse(null) });
       return true;  // Will respond asynchronously.
     break;
     case 'getInfo':

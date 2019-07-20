@@ -16,11 +16,7 @@ const openImgSet = {
 
 openImgSet.timer = setInterval(function(){
   if($('#bofqi').length > 0) {
-    var openImgBtnHTML =`
-      <div class="BtoolsLogoBtn">
-        <a href="javascript:void(0);">${Btools.logo()}</a>
-      </div>
-    `;
+    var openImgBtnHTML = '<div class="BtoolsLogoBtn"><a href="javascript:void(0);">' + Btools.logo() + '</a></div>';
     var bofqiTop = $('#bofqi').offset().top + 22;
     var bofqiLeft = $('#bofqi').offset().left - 40;
     $('body').append(openImgBtnHTML).find('.BtoolsLogoBtn').css({
@@ -33,14 +29,14 @@ openImgSet.timer = setInterval(function(){
         {
           key: 70,
           title: '打开封面',
-          action: () => {
+          action: function() {
             $('body').append('<script id="openImg">window.open(window.__INITIAL_STATE__.epInfo.cover);void(0);</script>').find('#openImg').remove();
           }
         },
         {
           key: 83,
           title: '打开海报',
-          action: () => {
+          action: function() {
             $('body').append('<script id="openPosterImg">window.open(window.__INITIAL_STATE__.mediaInfo.cover);void(0);</script>').find('#openPosterImg').remove();
           }
         }
@@ -50,7 +46,7 @@ openImgSet.timer = setInterval(function(){
         {
           key: 70,
           title: '打开封面',
-          action: () => {
+          action: function() {
             if(openImgSet.watchlaterUrlReg.test(window.location.href) && $('.bilibili-player-watchlater-item[data-state-play=true] img').length > 0) {
               window.open(openImgSet.urlReg.exec($('.bilibili-player-watchlater-item[data-state-play=true] img').attr('src'))[1]);
               return false;
@@ -69,7 +65,7 @@ openImgSet.timer = setInterval(function(){
       {
         key: 70,
         title: '打开封面',
-        action: () => {
+        action: function() {
           $('body').append('<script id="openLiveRoomImg">if(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover !== \'\') window.open(window.__NEPTUNE_IS_MY_WAIFU__.baseInfoRes.data.user_cover);void(0);</script>').find('#openLiveRoomImg').remove();
         }
       }

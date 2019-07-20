@@ -83,10 +83,11 @@ $(document).ready(function(){
     e = e || window.event || arguments.callee.caller.arguments[0];
     nihongo.text = $(this);
 
-    if(nihongo.isComKey && e.keyCode === 77) {
+    if(nihongo.isComKey && e.keyCode === 123) {
       nihongo.on = !nihongo.on;
       $('body .jpinputMsg').remove();
-      $('body').append(`<div class="jpinputMsg">${nihongo.on ? 'ON' : 'OFF'}</div>`).find('.jpinputMsg').delay(500).fadeOut();;
+      var status = nihongo.on ? 'ON' : 'OFF';
+      $('body').append('<div class="jpinputMsg">' + status + '</div>').find('.jpinputMsg').delay(500).fadeOut();
     }
     if(e.keyCode === 81 && nihongo.isComKey) {
       nihongo.isKatagana = !nihongo.isKatagana;

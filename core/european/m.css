@@ -289,3 +289,20 @@
   height: 3px;
   background-color: #FFF;
 }
+
+.europeanStopLoadding {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 15px;
+
+  color: #FFF;
+  font-size: 20px;
+  text-align: center;
+  background-color: #ff94b1;
+
+  display: none;
+}

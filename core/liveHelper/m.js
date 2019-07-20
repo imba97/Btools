@@ -27,20 +27,15 @@ $(document).ready(function() {
 
 // live助手初始化
 function liveHelperInit() {
-  var liveHelperHTML =
-    `<div id="BtoolsLiveHelper" class="item pointer">
-      <a id="BtoolsHideCtrl" href="javascript:;" target="_self">${Btools.logo()}</a>
-    </div>
-    `;
+  var liveHelperHTML = '<div id="BtoolsLiveHelper" class="item pointer"><a id="BtoolsHideCtrl" href="javascript:;" target="_self">' + Btools.logo() + '</a></div>';
   $('.supporting-info .live-skin-coloration-area:eq(0)').prepend(liveHelperHTML);
-  // console.log('liveHelper 运行');
 
   $('#BtoolsLiveHelper #BtoolsHideCtrl').HKM([
     {
       key: 86,
       continued: true,
       title: 'PK分数显示隐藏',
-      action: () => {
+      action: function() {
         if($('.process-box').length !== 0){
           if($('.process-box').is(':hidden')){
             liveHelperHide(0);

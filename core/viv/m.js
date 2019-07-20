@@ -137,8 +137,8 @@ function VivInit() {
         {
           'key': 85,
           'title': '打开UP主空间',
-          'action': () => {
-            window.open(`http://space.bilibili.com/${upMid}`);
+          'action': function() {
+            window.open('http://space.bilibili.com/' + upMid);
             void(0);
           }
         },
@@ -146,7 +146,7 @@ function VivInit() {
           'key': 68,
           'title': '详情信息',
           'position': 'last',
-          'action': () => {
+          'action': function() {
             media_info(index);
           },
           'parent': '.small-item'
@@ -157,8 +157,8 @@ function VivInit() {
         {
           'key': 85,
           'title': '搜索UP主',
-          'action': () => {
-            window.open(`https://search.bilibili.com/upuser?keyword=${upName}`);
+          'action': function() {
+            window.open('https://search.bilibili.com/upuser?keyword=' + upName);
             void(0);
           },
           'parent': '.small-item'
@@ -173,7 +173,7 @@ function VivInit() {
           'key': 67,
           'title': '打开封面',
           'position': 'first',
-          'action': () => {
+          'action': function() {
             window.open(coverReg.exec($(this).find('img:eq(0)').attr('src'))[1]);
             void(0);
           }
@@ -182,7 +182,7 @@ function VivInit() {
           'key': 86,
           'title': '打开视频',
           'position': 'first',
-          'action': () => {
+          'action': function() {
             window.open(url);
             void(0);
           }
@@ -242,15 +242,15 @@ function favJson(pn) {
     break;
   }
 
-  var data = `media_id=${fid}&pn=${VivSet.pn}&ps=20&order=${VivSet.order}&tid=${VivSet.tid}&type=0&jsonp=jsonp`;
-  var url = `https://api.bilibili.com/medialist/gateway/base/spaceDetail?${data}`;
+  var data = 'media_id=' + fid + '&pn=' + VivSet.pn + '&ps=20&order=' + VivSet.order + '&tid=' + VivSet.tid + '&type=0&jsonp=jsonp';
+  var url = 'https://api.bilibili.com/medialist/gateway/base/spaceDetail?' + data;
 
   if(typeof chrome.app.isInstalled!=='undefined'){
     chrome.runtime.sendMessage({
       type: 'fetch',
       url: url
     },
-    json => {
+    function(json) {
       if(json === null) {
         VivSet.fav = null;
         return false;
@@ -270,11 +270,11 @@ function media_info(mid) {
   var f = VivSet.fav[mid];
   if(f.page > 1) {
     var pagesHTML = '';
-    f.pages.forEach((item, index) => {
-      pagesHTML += `<p><span>[P${item.page}]</span> ${item.title}</p>`;
+    f.pages.forEach(function(item, index) {
+      pagesHTML += '<p><span>[P' + item.page + ']</span> ' + item.title + '</p>';
     });
   } else if(f.pages[0].title !== '') {
-    var pageName = `<p><span>[P1]</span> ${f.pages[0].title}</p>`;
+    var pageName = '<p><span>[P1]</span> ' + f.pages[0].title + '</p>';
   }
   var avNum = /video\/(\d+)/i.exec(f.link)[1];
   if(f.title === '已失效视频') {
@@ -283,26 +283,28 @@ function media_info(mid) {
   } else {
     var bilibilijjText = '跳转到哔哩哔哩唧唧下载？';
   }
-  var html = `
-    <div id="vivWindow">
-      <p class="vivMediaInfoTitle">${videoName || f.title || ''}</p>
+  var content = pagesHTML || pageName || '';
+  var title = videoName || f.title || '';
+  var html =
+    '<div id="vivWindow">'+
+      '<p class="vivMediaInfoTitle">' + title + '</p>'+
 
-      <p class="vivMediaInfoContent">${f.intro}</p>
+      '<p class="vivMediaInfoContent">' + f.intro + '</p>'+
 
-      <p class="vivMediaCount">共${f.page}P</p>
-      <div class="vivP">
-        ${pagesHTML || pageName || ''}
-      </div>
+      '<p class="vivMediaCount">共' + f.page + 'P</p>'+
+      '<div class="vivP">'+
+        content+
+      '</div>'+
 
-      <p>收藏于 ${getTime(f.fav_time)}</p>
+      '<p>收藏于 ' + getTime(f.fav_time) + '</p>'+
 
-      <p class="vivBilibilijj"><a href="https://www.jijidown.com/video/av${avNum}" target="_blank">${bilibilijjText}</a></p>
+      '<p class="vivBilibilijj"><a href="https://www.jijidown.com/video/av' + avNum + '" target="_blank">' + bilibilijjText + '</a></p>'+
 
-      <a class="vivClose" href="javascript:void(0);">×</a>
+      '<a class="vivClose" href="javascript:void(0);">×</a>'+
 
-      <div class="vivBG"></div>
-    </div>
-  `;
+      '<div class="vivBG"></div>'+
+    '</div>';
+
   $('body').append(html).find('#vivWindow').css({
     'top': ($(document).height() / 2) - ($('#vivWindow').outerHeight() / 2),
     'left': ($(document).width() / 2) - ($('#vivWindow').outerWidth() / 2)
