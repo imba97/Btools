@@ -3,7 +3,7 @@
   openImg 获取封面图
 
 */
-const openImgSet = {
+var openImgSet = {
   loopNum: 0,
   loopMax: 10,
   timer: null,

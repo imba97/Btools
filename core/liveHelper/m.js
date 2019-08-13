@@ -1,4 +1,4 @@
-const LiveHelperSet = {
+var LiveHelperSet = {
   loopNum: 0,
   loopMax: 10,
   timer: null,

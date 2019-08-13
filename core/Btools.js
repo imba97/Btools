@@ -1,6 +1,6 @@
 chrome = chrome || browser;
 
-const Btools = {
+var Btools = {
   info: 'Btools',
   infoColor: 'color:#00a1d6',
   Reg: {

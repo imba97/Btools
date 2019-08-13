@@ -3,7 +3,7 @@
   转发抽奖工具
 
 */
-const europeanSet = {
+var europeanSet = {
   loopNumOnload: 0,
   loopNumOnloadMax: 20,
   timerOnload: null,

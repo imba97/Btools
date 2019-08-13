@@ -168,13 +168,14 @@ function VivInit() {
 
     if($(this).attr('class').indexOf('disabled') === -1) {
       var url = $(this).find('a.cover').attr('href');
+      var self = this;
       $(this).find('a:eq(1),.meta-mask,a.disabled').HKM([
         {
           'key': 67,
           'title': '打开封面',
           'position': 'first',
           'action': function() {
-            window.open(coverReg.exec($(this).find('img:eq(0)').attr('src'))[1]);
+            window.open(coverReg.exec($(self).find('img:eq(0)').attr('src'))[1]);
             void(0);
           }
         },
@@ -306,8 +307,8 @@ function media_info(mid) {
     '</div>';
 
   $('body').append(html).find('#vivWindow').css({
-    'top': ($(document).height() / 2) - ($('#vivWindow').outerHeight() / 2),
-    'left': ($(document).width() / 2) - ($('#vivWindow').outerWidth() / 2)
+    'top': ($(window).height() / 2) - ($('#vivWindow').outerHeight() / 2),
+    'left': ($(window).width() / 2) - ($('#vivWindow').outerWidth() / 2)
   });
   $('#vivWindow .vivClose').click(function(){
     $('#vivWindow').remove();

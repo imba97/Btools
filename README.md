@@ -6,11 +6,6 @@
 [![github-releases](https://img.shields.io/github/downloads/imba97/Btools/total.svg)](https://github.com/imba97/Btools/releases)
 [![website](https://img.shields.io/website-up-down-green-red/https/shields.io.svg?label=website)](http://btools.cc)
 
-
-#### 首先感谢：[【干货】Chrome插件(扩展)开发全攻略](https://www.cnblogs.com/liuxianan/p/chrome-plugin-develop.html)
-#### 这个教程给了我很大帮助
-#### （下次更新会把这个移动到页尾的感谢内）
-
 ## 前言
 如果你想参观代码，请先看这里。
 代码是纯jQuery项目，没其他框架，没用其他工具，目录结构、文件名、函数名我记几个儿随便瞎起的，所以观赏性极差，劝你做好心理准备。
@@ -57,35 +52,24 @@ Btools(逼砣)，本插件主要目的是以B站为主的网站页面优化，�
 
 ## 更新介绍
 
-### v1.0.7
-* `2019-06-13`
-   * 优化了历史表情功能，即使历史表情消失了点击输入框也会再次出现
-* `2019-06-14`
-   * 修复回复评论时自动跳转评论处历史表情重叠的BUG
-* `2019-06-21`
-   * 修复活动页面和番剧的评论搜索无法获取评论的BUG
-* `2019-06-26`
-   * 修复相册评论搜索无法获取评论的BUG
-   * 新功能：直播助手 > 自动关闭提示窗
-* `2019-07-10`
-   * 转发抽奖保存的表格从Excel变更为CSV
-* `2019-07-13`
-   * 新功能：增强评论功能 > 自定义颜文字
-   * 历史表情和自定义颜文字可以按鼠标中键删除
-   * 视频简介中的网址会自动变成可以点击打开的
-* `2019-07-20`
-   * 优化转发抽奖从页面获取用户时获取At数的方式
-   * 转发抽奖出现问题后可以手动停止加载
-   * 日语输入法开关改为Ctrl/Shift/Alt任意一个 + F12
+### v1.0.8
+* `2019-08-06`
+   * 修复视频详情弹出窗口位置不对的BUG
+   * 修复视频简介链接不正确的BUG
 
-* #### [关于“快捷键菜单”](http://btools.cc/hot-key-menu/)
+* #### [历史更新](https://btools.cc/tag/update/)
 
-* #### [历史更新](http://btools.cc/tag/%E6%9B%B4%E6%96%B0/)
+## 感谢
+* [【干货】Chrome插件(扩展)开发全攻略](https://www.cnblogs.com/liuxianan/p/chrome-plugin-develop.html)
 
 ## 反馈
 * 随时TJ的官网：[btools.cc](http://btools.cc)
 * 魔改的用户群：[Lost Temple 97 & Btools](https://jq.qq.com/?_wv=1027&k=5WdaKxF)
 * 演示视频下留言：[【程序猿日常】Btools Chrome插件开发](https://www.bilibili.com/video/av38950957/)
+
+## 其他
+
+[关于“快捷键菜单”](http://btools.cc/hot-key-menu/)
 
 ## LICENSE
 [MIT](https://github.com/imba97/Btools/blob/master/LICENSE)
