@@ -21,7 +21,10 @@ function showSet()
     defaultSet = items;
     // $('.whatTheFuck').text(defaultSet.playerShow);
     $.each(items, function(k, v){
-      $('#'+k+' span').text(setText[k][v]);
+      if(setText[k] !== undefined) {
+        console.log(k);
+        $('#'+k+' span').text(setText[k][v]);
+      }
     });
 	});
 }

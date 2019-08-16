@@ -26,7 +26,7 @@ var europeanSet = {
   autoLoadMax: 20,
   Alleuropeans: 0,
   defaultAtNum: 0,
-  mod: false,
+  mod: true,
   atNumArr: [],
   atNumReg: /<?a href="\/\/space\.bilibili\.com\/\d+\/dynamic"[^<>]*>\@([^<>@]*)<\/a>/ig
 }
@@ -340,72 +340,70 @@ function autoLoad() {
   var dynamic_id = /t\.bilibili\.com\/(\d+)\??/i.exec(window.location.href)[1];
   var url = 'https://api.vc.bilibili.com/dynamic_repost/v1/dynamic_repost/view_repost?dynamic_id=' + dynamic_id + '&offset=' + europeanSet.autoLoadOffset;
 
-  if(typeof chrome.app.isInstalled !== 'undefined'){
-    chrome.runtime.sendMessage({
-      type: 'fetch',
-      url: url
-    },
-    function(json) {
-      if(json === null) {
-        if(europeanSet.autoLoadNum / europeanSet.autoLoadMax < 0.5) {
-            $('#europeanUserArr .europeanUser').html('<font class="europeanUserMsg">网络请求失败 重试 ' + europeanSet.autoLoadNum + '，请稍等</font>');
-          } else {
-            europeanSet.mod = false;
-            europeanSet.userAtArr = [];
-            $('#europeanUserArr .europeanUser').html('<font class="europeanUserMsg">模式切换，正在从前台页面获取数据</font>');
+  chrome.runtime.sendMessage({
+    type: 'fetch',
+    url: url
+  },
+  function(json) {
+    if(json === null) {
+      if(europeanSet.autoLoadNum / europeanSet.autoLoadMax < 0.5) {
+          $('#europeanUserArr .europeanUser').html('<font class="europeanUserMsg">网络请求失败 重试 ' + europeanSet.autoLoadNum + '，请稍等</font>');
+        } else {
+          europeanSet.mod = false;
+          europeanSet.userAtArr = [];
+          $('#europeanUserArr .europeanUser').html('<font class="europeanUserMsg">模式切换，正在从前台页面获取数据</font>');
+        }
+      return false;
+    }
+
+    if(json.code === 0) {
+      if(europeanSet.autoLoadOffset === 0) {
+        europeanSet.autoLoadMax = json.data.total_count / 20 * 2;
+        europeanSet.Alleuropeans = json.data.total_count;
+      }
+
+      $('.europeanAutoLoadProgressBar').css({
+        'width': (europeanSet.autoLoadNum / europeanSet.autoLoadMax) * 100 + '%'
+      });
+
+      var com = json.data.comments;
+      if(com.length > 0) {
+        json.data.comments.forEach(function(item, index) {
+          var atNum = 0;
+          var atArr = item.ctrl.match(/"data":"\d+","length":\d+,"location":\d+,"type":\d+/g);
+          var uCom = item.comment.split('//@')[0];
+
+          if(uCom !== '' && atArr !== null) {
+            atArr.forEach(function(v, k) {
+              var comReg = /"location":(\d+)/.exec(v);
+              var imgRex = /\[.*\]/.exec(uCom);
+              var imgNum = imgRex !== null ? imgRex.length * 3 : 0;
+              if(comReg.length > 1 && uCom.length - imgNum >= Number(comReg[1])) {
+                atNum++;
+              }
+            });
           }
+
+          var uData = {
+            uID: item.uid,
+            uName: item.uname,
+            uFace: item.face_url,
+            uAt: atNum,
+            uSpace: 'https://space.bilibili.com/' + item.uid,
+            uMsg: 'https://message.bilibili.com/#/whisper/mid' + item.uid
+          };
+          europeanSet.userArr = uniqueArr(uData, europeanSet.userArr, true);
+          $('body').append('<img class="european-read-face" style="width:0" src="' + uData.uFace + '">');
+        });
+      } else {
         return false;
       }
 
-      if(json.code === 0) {
-        if(europeanSet.autoLoadOffset === 0) {
-          europeanSet.autoLoadMax = json.data.total_count / 20 * 2;
-          europeanSet.Alleuropeans = json.data.total_count;
-        }
-
-        $('.europeanAutoLoadProgressBar').css({
-          'width': (europeanSet.autoLoadNum / europeanSet.autoLoadMax) * 100 + '%'
-        });
-
-        var com = json.data.comments;
-        if(com.length > 0) {
-          json.data.comments.forEach(function(item, index) {
-            var atNum = 0;
-            var atArr = item.ctrl.match(/"data":"\d+","length":\d+,"location":\d+,"type":\d+/g);
-            var uCom = item.comment.split('//@')[0];
-
-            if(uCom !== '' && atArr !== null) {
-              atArr.forEach(function(v, k) {
-                var comReg = /"location":(\d+)/.exec(v);
-                var imgRex = /\[.*\]/.exec(uCom);
-                var imgNum = imgRex !== null ? imgRex.length * 3 : 0;
-                if(comReg.length > 1 && uCom.length - imgNum >= Number(comReg[1])) {
-                  atNum++;
-                }
-              });
-            }
-
-            var uData = {
-              uID: item.uid,
-              uName: item.uname,
-              uFace: item.face_url,
-              uAt: atNum,
-              uSpace: 'https://space.bilibili.com/' + item.uid,
-              uMsg: 'https://message.bilibili.com/#/whisper/mid' + item.uid
-            };
-            europeanSet.userArr = uniqueArr(uData, europeanSet.userArr, true);
-            $('body').append('<img class="european-read-face" style="width:0" src="' + uData.uFace + '">');
-          });
-        } else {
-          return false;
-        }
-
-        if(com.length === 20) {
-          europeanSet.autoLoadOffset += 20;
-        }
+      if(com.length > 0) {
+        europeanSet.autoLoadOffset += com.length;
       }
-    });
-  }
+    }
+  });
 }
 
 function makeUserHTML(u)

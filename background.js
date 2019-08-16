@@ -2,8 +2,8 @@ var isChrome = !!chrome;
 chrome = chrome || browser;
 
 var BtoolsInfo = {
-  version: '1.0.8',
-  releaseVersion: 9
+  version: '1.0.9',
+  releaseVersion: 10
 }
 
 if(isChrome) {
@@ -24,6 +24,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
 
 chrome.runtime.onMessage.addListener(
 function(request, sender, sendResponse) {
+  console.log(request);
   switch(request.type) {
     case 'fetch':
       fetch(request.url)

@@ -6,7 +6,7 @@
 
 chrome = chrome || browser;
 
-const VivSet = {
+var VivSet = {
   init: true,
   loopNum: 0,
   loopMax: 10,
@@ -117,7 +117,6 @@ function VivInitLoop()
 {
   VivSet.timerOff = false;
   VivSet.timer = setInterval(function() {
-    // console.log(VivSet.loopNum);
     VivInit();
     VivSet.loopNum++;
   }, 500);
@@ -203,7 +202,7 @@ function VivInit() {
   }
 }
 
-function favJson(pn) {
+function favJson() {
   var fid = $('.fav-item[class~=cur]').attr('fid');
   if(fid === null) return false;
 
@@ -246,23 +245,21 @@ function favJson(pn) {
   var data = 'media_id=' + fid + '&pn=' + VivSet.pn + '&ps=20&order=' + VivSet.order + '&tid=' + VivSet.tid + '&type=0&jsonp=jsonp';
   var url = 'https://api.bilibili.com/medialist/gateway/base/spaceDetail?' + data;
 
-  if(typeof chrome.app.isInstalled!=='undefined'){
-    chrome.runtime.sendMessage({
-      type: 'fetch',
-      url: url
-    },
-    function(json) {
-      if(json === null) {
-        VivSet.fav = null;
-        return false;
-      }
+  chrome.runtime.sendMessage({
+    type: 'fetch',
+    url: url
+  },
+  function(json) {
+    if(json === null) {
+      VivSet.fav = null;
+      return false;
+    }
 
-      if(json.code === 0) {
-        VivSet.fav = json.data.medias;
-        VivSet.count = json.data.info.media_count;
-      }
-    });
-  }
+    if(json.code === 0) {
+      VivSet.fav = json.data.medias;
+      VivSet.count = json.data.info.media_count;
+    }
+  });
 }
 
 function media_info(mid) {
