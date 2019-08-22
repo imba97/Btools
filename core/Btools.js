@@ -150,7 +150,7 @@ $.fn.extend({
 
       hotKeyMenu.forEach(function(item, index) {
         var top = (index+1) * 35 + 5;
-        html += '<p style="top: '+ top +'px" data-is-key="true" data-index="' + index + '" data-key="' + item.key + '"><span class="key">' + String.fromCharCode(item.key) + '</span><span class="title">' + item.title + '</span></p>';
+        html += '<p style="top: '+ top +'px; cursor:default;" data-is-key="true" data-index="' + index + '" data-key="' + item.key + '"><span class="key">' + String.fromCharCode(item.key) + '</span><span class="title">' + item.title + '</span></p>';
       });
 
       hkm[0].BtoolsHKMKeys = hotKeys;

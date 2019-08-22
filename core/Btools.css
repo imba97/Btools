@@ -82,6 +82,7 @@
   z-index: -1;
 }
 
+#hotKeyMenu,
 .Btools-user-select-none a
 {
   user-select: none;

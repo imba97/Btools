@@ -8,9 +8,11 @@ var openImgSet = {
   loopMax: 10,
   timer: null,
   timerOff: false,
-  urlReg: /([^\@]*\.(?:webp|jpg|png|gif))(?:\@|\_).*\.(?:webp|jpg|png|gif)?/,
+  isReadImg: true,
+  urlReg: /([^\@]*\.(?:webp|jpg|png|gif))(?:\@|\_)?.*\.?(?:webp|jpg|png|gif)?/,
   bannerImgReg: /url\("((?:http|https):\/\/[^\@]*)(?:\@|\_)(?:.*\.(?:webp|jpg|png|gif))?"\)/,
   watchlaterUrlReg: /(?:http|https):\/\/www\.bilibili\.com\/watchlater\/.*/,
+  readUrlReg: /(?:http|https):\/\/www\.bilibili\.com\/read\/.*/,
   liveRoomUrlReg: /(?:http|https):\/\/live\.bilibili\.com\/\d+\/.*/
 }
 
@@ -74,20 +76,102 @@ openImgSet.timer = setInterval(function(){
     clearInterval(openImgSet.timer);
 
     // 文章头图获取
-  } else if($('.banner-img-holder').length > 0) {
-    var openImgBtnHTML = '<a id="BtoolsOpenBannerImg" href="javascript:void(0);">获取头图</a>';
+  } else if(openImgSet.readUrlReg.test(window.location.href)) {
+    if(openImgSet.isReadImg && $('.banner-img-holder').length > 0) {
+      var openImgBtnHTML = '<a id="BtoolsOpenBannerImg" href="javascript:void(0);">获取头图</a>';
 
-    var btnTop = $('.banner-img-holder').offset().top + 10;
-    var btnLeft = $('.banner-img-holder').offset().left + $('.banner-img-holder').width() - 50;
+      var btnTop = $('.banner-img-holder').offset().top + 10;
+      var btnLeft = $('.banner-img-holder').offset().left + $('.banner-img-holder').width() - 50;
 
-    $('body').append(openImgBtnHTML).find('#BtoolsOpenBannerImg').css({
-      'top': btnTop,
-      'left': btnLeft
+      $('body').append(openImgBtnHTML).find('#BtoolsOpenBannerImg').css({
+        'top': btnTop,
+        'left': btnLeft
+      });
+      $('#BtoolsOpenBannerImg').click(function() {
+        window.open(openImgSet.bannerImgReg.exec($('.banner-img-holder').css('background-image'))[1]);
+      });
+
+      openImgSet.isReadImg = false;
+    }
+
+    $('body').on('mouseover', '.img-box img', function() {
+      if($(this).attr('isOpenImg') !== 'true') {
+        var imageReg = openImgSet.urlReg.exec($(this).attr('data-src'));
+        if(imageReg !== null) {
+          $(this).HKM([
+            {
+              key: 67,
+              title: '查看原图',
+              action: function() {
+                if($('#BtoolsImageView').length > 0) {
+                  $('#BtoolsImageView').remove();
+                }
+                var imageViewHTML = '<div id="BtoolsImageView">' +
+                                      '<img src="' + imageReg[1] + '">' +
+                                      '<div class="BtoolsImageViewBg"></div>' +
+                                    '</div>';
+                $('body').append(imageViewHTML);
+                var imageTimerNum = 0;
+                var imageTimer = setInterval(function() {
+                  var imageViewHeight = $('#BtoolsImageView').outerHeight();
+                  var imageViewWidth = $('#BtoolsImageView').outerWidth();
+                  var imageHeight = $('#BtoolsImageView img').outerHeight();
+                  var imageWidth = $('#BtoolsImageView img').outerWidth();
+                  if(imageHeight !== 0 && imageWidth !== 0) {
+                    var imageTop = imageHeight < imageViewHeight ? (imageViewHeight / 2) - (imageHeight / 2) : 0;
+                    var imageLeft = imageWidth < imageViewWidth ? (imageViewWidth / 2) - (imageWidth / 2) : 0;
+                    $('#BtoolsImageView img').css({
+                      'top': imageTop,
+                      'left': imageLeft,
+                      'opacity': 1
+                    });
+                    clearInterval(imageTimer);
+                  }
+                  if(imageTimerNum > 20) {
+                    imageTimerNum = 0;
+                    clearInterval(imageTimer);
+                  } else {
+                    imageTimerNum++;
+                  }
+                }, 100);
+
+                $('#BtoolsImageView').click(function() {
+                  $('#BtoolsImageView').remove();
+                });
+              }
+            },
+            {
+              key: 86,
+              title: '新窗口打开原图',
+              action: function() {
+                window.open(imageReg[1]);
+              }
+            }
+          ]);
+
+          $(this).attr('isOpenImg', 'true');
+        }
+      }
     });
-    $('#BtoolsOpenBannerImg').click(function(){
-      window.open(openImgSet.bannerImgReg.exec($('.banner-img-holder').css('background-image'))[1]);
-    });
 
-    clearInterval(openImgSet.timer);
+    // $('body').on('click', '.img-box', function() {
+    //   var src = $(this).find('img').attr('src');
+    //   var findSrc = src !== undefined ? openImgSet.urlReg.exec(src)[1] : '' ;
+    //   $(this).HKM([
+    //     {
+    //       key: 86,
+    //       title: '打开大图',
+    //       action: function() {
+    //         window.open(findSrc);
+    //       }
+    //     }
+    //   ]);
+    // });
+
+    openImgSet.loopNum++;
+
+    if(openImgSet.loopNum > openImgSet.loopMax) {
+      clearInterval(openImgSet.timer);
+    }
   }
 }, 200);
