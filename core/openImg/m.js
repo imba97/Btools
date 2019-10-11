@@ -108,8 +108,8 @@ openImgSet.timer = setInterval(function(){
                 }
                 var imageViewHTML = '<div id="BtoolsImageView">' +
                                       '<img src="' + imageReg[1] + '">' +
-                                      '<div class="BtoolsImageViewBg"></div>' +
-                                    '</div>';
+                                    '</div>' +
+                                    '<div class="BtoolsImageViewBg"></div>';
                 $('body').append(imageViewHTML);
                 var imageTimerNum = 0;
                 var imageTimer = setInterval(function() {
@@ -136,7 +136,7 @@ openImgSet.timer = setInterval(function(){
                 }, 100);
 
                 $('#BtoolsImageView').click(function() {
-                  $('#BtoolsImageView').remove();
+                  $('#BtoolsImageView,.BtoolsImageViewBg').remove();
                 });
               }
             },

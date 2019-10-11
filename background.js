@@ -2,8 +2,8 @@ var isChrome = !!chrome;
 chrome = chrome || browser;
 
 var BtoolsInfo = {
-  version: '1.0.9',
-  releaseVersion: 10
+  version: '1.1.0',
+  releaseVersion: 11
 }
 
 if(isChrome) {
@@ -24,7 +24,6 @@ chrome.runtime.onInstalled.addListener(function(details) {
 
 chrome.runtime.onMessage.addListener(
 function(request, sender, sendResponse) {
-  console.log(request);
   switch(request.type) {
     case 'fetch':
       fetch(request.url)
@@ -33,8 +32,23 @@ function(request, sender, sendResponse) {
         .catch(function(error) { return sendResponse(null) });
       return true;  // Will respond asynchronously.
     break;
+    case 'post':
+      fetch(request.url, {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: JSON.stringify(request.data)
+      })
+      .then(function(response) { return response.json() })
+      .then(function(json) { return sendResponse(json) })
+      .catch(function(error) { return sendResponse(null) });
+      return true;  // Will respond asynchronously.
+    break;
     case 'getInfo':
-      sendResponse(BtoolsInfo)
+      sendResponse(BtoolsInfo);
     break;
   }
 });

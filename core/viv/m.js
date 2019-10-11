@@ -276,7 +276,7 @@ function media_info(mid) {
   }
   var avNum = /video\/(\d+)/i.exec(f.link)[1];
   if(f.title === '已失效视频') {
-    var videoName = f.page > 1 ? '希望通过简介和分P名帮你想起来' : f.title;
+    var videoName = f.page > 1 ? 'av' + avNum : f.title;
     var bilibilijjText = '去哔哩哔哩唧唧看看有没有资源？';
   } else {
     var bilibilijjText = '跳转到哔哩哔哩唧唧下载？';
