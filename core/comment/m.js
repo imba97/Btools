@@ -145,6 +145,35 @@ $(document).ready(function(){
         deleteItem('addText', val);
       }
     });
+
+    // 定位按钮被点击
+    $('body').on('click', '#BtoolsSearchList .BtoolsCommentLocation', function() {
+      if($('#BtoolsPageJump').length > 0 || $(this).text() == '正在跳转') return;
+      var self = $(this);
+      var text = self.text();
+      self.text('正在跳转');
+      var currentPage = $('.bb-comment .bottom-page .current').text();
+      var page = self.attr('data-page');
+      var location = self.attr('data-location');
+
+      if(currentPage != page) {
+        $('body').append('<script id="BtoolsPageJump">$(".page-jump input").val(' + page + ').trigger($.Event("keydown", {keyCode: 13}))</script>');
+      }
+
+      setTimeout(function() {
+        var targetDom = $('.comment-list .list-item:eq(' + location + ')');
+        var scrollTop = targetDom.offset().top;
+
+        targetDom.css({'background-color': '#FF0'});
+        setTimeout(function() {
+          targetDom.css({'background-color': ''});
+        }, 2000);
+
+        self.text(text);
+        $("html,body").animate({scrollTop:scrollTop + "px"});
+        $('#BtoolsPageJump').remove();
+      }, 500);
+    });
 });
 
 function reDisplayEmojiSaveList() {
@@ -284,7 +313,7 @@ function saveSet() {
 
 function searchShow() {
   if($('#BtoolsSearchComments').length !== 0) return false;
-  $('body').append('<div id="BtoolsSearchComments"><a id="BtoolsSearchClose" href="javascript:void(0);">×</a><input type="text" id="BtoolsSearchText" placeholder="请输入关键词按下回车键" autocomplete="off" ><div class="BtoolsSearchListBox"><ul id="BtoolsSearchList"></ul></div><div class="BtoolsBg"></div></div>');
+  $('body').append('<div id="BtoolsSearchComments"><a id="BtoolsSearchClose" href="javascript:void(0);">×</a><input type="text" id="BtoolsSearchText" autocomplete="off" readonly><div class="BtoolsSearchListBox"><ul id="BtoolsSearchList"></ul></div><div class="BtoolsBg"></div></div>');
   $('#BtoolsSearchClose').click(function() {
     CommentSet.comments = [];
     $('#BtoolsSearchComments').remove();
@@ -325,6 +354,12 @@ function searchShow() {
     }
   }
 
+  // 不同排序类型
+  var sort = 2;
+  if($('.bb-comment .comment-header .clearfix li.on').text() === '按时间排序') {
+    sort = 0;
+  }
+
   if(oid === null) {
     $('#BtoolsSearchText').css({'color': '#F66'}).attr('readonly', '').val('加载失败，请关闭该窗口，重新尝试');
     return;
@@ -334,7 +369,7 @@ function searchShow() {
     CommentSet.loadTimer = setInterval(function() {
       chrome.runtime.sendMessage({
         type: 'fetch',
-        url: 'https://api.bilibili.com/x/v2/reply?pn=' + CommentSet.loadPage + '&type=' + apiType + '&oid=' + oid + '&sort=0'
+        url: 'https://api.bilibili.com/x/v2/reply?pn=' + CommentSet.loadPage + '&type=' + apiType + '&oid=' + oid + '&sort=' + sort
       },
       function(json) {
         if(json.code === 0) {
@@ -344,6 +379,11 @@ function searchShow() {
             CommentSet.count = json.data.page.count;
           }
           json.data.replies.forEach(function(item, index) {
+            // 定位用，page是页码，location是当页位置
+            item.position = {
+              page: Math.floor(CommentSet.comments.length / 20) + 1,
+              location: index
+            }
             CommentSet.comments.push(item);
           });
 
@@ -377,7 +417,7 @@ function searchComments(text) {
     var userFace = !/noface\.gif/.test(item.member.avatar) ? '@50w_50h.webp':'';
 
     if(isShow) {
-      var html = '<li><p class="BtoolsUserInfo"><img class="BtoolsUserHead" src="' + item.member.avatar + userFace + '"><a href="http://space.bilibili.com/' + item.member.mid + '" class="BtoolsUserNickname ' + vipName + '" target="_blank">' + userName + '</a></p><p class="BtoolsUserComment">' + message + '</p></li>';
+      var html = '<li><p class="BtoolsUserInfo"><img class="BtoolsUserHead" src="' + item.member.avatar + userFace + '"><a href="http://space.bilibili.com/' + item.member.mid + '" class="BtoolsUserNickname ' + vipName + '" target="_blank">' + userName + '</a><a href="javascript:void(0);" data-page="' + item.position.page + '" data-location="' + item.position.location + '" class="BtoolsCommentLocation">跳转' + item.position.page + '页' + (item.position.location + 1) + '条</a></p><p class="BtoolsUserComment">' + message + '</p></li>';
       $('#BtoolsSearchList').append(html);
     }
   });

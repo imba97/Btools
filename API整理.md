@@ -19,7 +19,7 @@
    * `oid` [AV号] [40905080]
    * pn [页数] [1]
    * ps [每页显示个数] [20]
-   * sort [?]
+   * sort [排序方式] [0/按时间排序|2/按热度排序] [2]
 * [https://api.bilibili.com/x/v2/reply?pn=1&type=11&oid=11041156](https://api.bilibili.com/x/v2/reply?pn=1&type=1&oid=40905080)
 * [https://api.bilibili.com/x/v2/reply?pn=1&type=11&oid=11041156](https://api.bilibili.com/x/v2/reply?pn=1&type=11&oid=11041156)
 
