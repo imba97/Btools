@@ -154,14 +154,15 @@ $(document).ready(function(){
       self.text('正在跳转');
       var currentPage = $('.bb-comment .bottom-page .current').text();
       var page = self.attr('data-page');
-      var location = self.attr('data-location');
+      var location = parseInt(self.attr('data-location'));
 
       if(currentPage != page) {
-        $('body').append('<script id="BtoolsPageJump">$(".page-jump input").val(' + page + ').trigger($.Event("keydown", {keyCode: 13}))</script>');
+        $('body').append('<script id="BtoolsPageJump">$(".page-jump input").val("' + page + '").trigger($.Event("keydown", {keyCode: 13}))</script>');
       }
 
       setTimeout(function() {
-        var targetDom = $('.comment-list .list-item:eq(' + location + ')');
+        var isTop = $('.comment-list .is-top').length;
+        var targetDom = $('.comment-list .list-item:eq(' + (location + isTop) + ')');
         var scrollTop = targetDom.offset().top;
 
         targetDom.css({'background-color': '#FF0'});
