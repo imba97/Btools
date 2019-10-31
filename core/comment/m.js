@@ -160,19 +160,22 @@ $(document).ready(function(){
         $('body').append('<script id="BtoolsPageJump">$(".page-jump input").val("' + page + '").trigger($.Event("keydown", {keyCode: 13}))</script>');
       }
 
-      setTimeout(function() {
+      var findCommentTimer = setInterval(function() {
         var isTop = $('.comment-list .is-top').length;
         var targetDom = $('.comment-list .list-item:eq(' + (location + isTop) + ')');
-        var scrollTop = targetDom.offset().top;
+        if(targetDom.length > 0) {
+          var scrollTop = targetDom.offset().top - 100;
 
-        targetDom.css({'background-color': '#FF0'});
-        setTimeout(function() {
-          targetDom.css({'background-color': ''});
-        }, 2000);
+          targetDom.addClass('BtoolsFindComment');
+          setTimeout(function() {
+            targetDom.removeClass('BtoolsFindComment');
+          }, 1500);
 
-        self.text(text);
-        $("html,body").animate({scrollTop:scrollTop + "px"});
-        $('#BtoolsPageJump').remove();
+          self.text(text);
+          $("html,body").animate({scrollTop:scrollTop});
+          $('#BtoolsPageJump').remove();
+          clearInterval(findCommentTimer);
+        }
       }, 500);
     });
 });
@@ -316,11 +319,16 @@ function searchShow() {
   if($('#BtoolsSearchComments').length !== 0) return false;
   $('body').append('<div id="BtoolsSearchComments"><a id="BtoolsSearchClose" href="javascript:void(0);">×</a><input type="text" id="BtoolsSearchText" autocomplete="off" readonly><div class="BtoolsSearchListBox"><ul id="BtoolsSearchList"></ul></div><div class="BtoolsBg"></div></div>');
   $('#BtoolsSearchClose').click(function() {
-    CommentSet.comments = [];
     $('#BtoolsSearchComments').remove();
     if(CommentSet.loadTimer !== null) {
       clearInterval(CommentSet.loadTimer);
       CommentSet.loadTimer = null;
+    }
+    CommentSet.loadPage = 1;
+    CommentSet.comments = [];
+    // 如果跳转页数出问题 通过关闭搜索框重置
+    if($('#BtoolsPageJump').length > 0) {
+      $('#BtoolsPageJump').remove();
     }
   });
   $('#BtoolsSearchText').keydown(function(e) {

@@ -33,7 +33,7 @@ function getRealUrl(html) {
   while(regUrl = regexp.exec(html)) {
     n++; if(n>100) break;
     if(regUrl) {
-      if(!/(=\")[^"]*/.test(regUrl[0])) {
+      if(!/^(=\")/.test(regUrl[0]) && !/^(\"\>)/.test(regUrl[0])) {
         realUrl = html.replace(regUrl[1], '<a href="' + regUrl[1] + '" class="BtoolsGetUrl" target="_blank">' + regUrl[1] + '</a>');
       }
     } else {

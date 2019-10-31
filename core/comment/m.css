@@ -176,3 +176,27 @@
 .btools-add-text {
   color: #00a1d6 !important;
 }
+
+.BtoolsFindComment {
+  background-color: #FF6 !important;
+}
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+.BtoolsSearchListBox::-webkit-scrollbar
+{
+  width: 5px;  /*滚动条宽度*/
+  height: 5px;  /*滚动条高度*/
+}
+
+/*定义滚动条轨道 内阴影*/
+.BtoolsSearchListBox::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #CCC;/*滚动条的背景颜色*/
+}
+
+/*定义滑块 内阴影+圆角*/
+.BtoolsSearchListBox::-webkit-scrollbar-thumb
+{
+  background-color: #666;  /*滚动条的背景颜色*/
+}
