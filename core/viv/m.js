@@ -14,6 +14,9 @@ var VivSet = {
   timerOff: false,
   eqNum: 0,
   fav: null,
+  expiredTimer: null,
+  expired: null, // 存储失效视频
+  expiredIndex: 0, // 当前正在获取信息的失效视频
   count: 0,
   pn: 1,
   isKey: false,
@@ -252,15 +255,86 @@ function favJson() {
   function(json) {
     if(json === null) {
       VivSet.fav = null;
+      VivSet.expired = null;
       return false;
     }
 
     if(json.code === 0) {
       VivSet.fav = json.data.medias;
       VivSet.count = json.data.info.media_count;
+
+      // 失效视频
+      VivSet.expired = new Array;
+      if(VivSet.fav !== null) {
+        VivSet.fav.forEach(function(item, index) {
+          if(item.title === '已失效视频') VivSet.expired.push(item);
+        });
+      }
     }
   });
+
+  if(VivSet.expired !== null && VivSet.expiredTimer === null) {
+    if($('.fav-video-list li.disabled').length == $('.fav-video-list li.BtoolsVivFinded').length) return;
+    VivSet.expiredIndex = 0;
+    VivSet.expiredTimer = setInterval(function() {
+      var video = VivSet.expired[VivSet.expiredIndex];
+      var url = 'https://www.biliplus.com/api/view?id=' + /video\/(\d+)/i.exec(video.link)[1];
+      chrome.runtime.sendMessage({
+        type: 'fetch',
+        url: url
+      },
+      function(json) {
+        if(json !== null) {
+          var isPic = json.hasOwnProperty("pic");
+          var isTitle = json.hasOwnProperty("title");
+          var isCode = json.hasOwnProperty("code");
+          var liDisabled = $('.fav-video-list li.disabled:eq(' + VivSet.expiredIndex + ')');
+
+          liDisabled.css({
+            'position': 'relative'
+          }).append('<div class="BtoolsVivLoadding">' + Btools.logo() + '<p class="BtoolsVivLoaddingText">正在查找···</p></div>');
+          if(isPic) {
+            liDisabled.find('.disabled-cover').remove();
+            liDisabled.find('.cover img').attr({
+              'src': json.pic + '@380w_240h_100Q_1c.webp'
+            }).css({
+              '-webkit-filter': 'none'
+            });
+          }
+          if(isTitle) {
+            liDisabled.find('.title').text(json.title).css({
+              'color': '#F66',
+              'font-weight': '700'
+            });
+          }
+          if(isPic || isTitle || (isCode && json.code !== -503)) {
+            setTimeout(function() {
+              liDisabled.find('.BtoolsVivLoadding').remove();
+            }, 1000);
+            liDisabled.addClass('BtoolsVivFinded').find('a:eq(1),.meta-mask,a.disabled').HKM([
+              {
+                'key': 83,
+                'title': '搜索标题',
+                'position': 'first',
+                'action': function() {
+                  window.open('https://www.baidu.com/s?wd=' + json.title);
+                  void(0);
+                }
+              }
+            ]);
+            VivSet.expiredIndex++;
+          }
+          if(VivSet.expiredIndex == $('.fav-video-list li.disabled').length) {
+            clearInterval(VivSet.expiredTimer);
+            VivSet.expiredTimer = null;
+          }
+        }
+      });
+    }, 2000);
+  }
 }
+
+
 
 function media_info(mid) {
   if(VivSet.fav === null) return false;
@@ -274,15 +348,13 @@ function media_info(mid) {
   } else if(f.pages[0].title !== '') {
     var pageName = '<p><span>[P1]</span> ' + f.pages[0].title + '</p>';
   }
+
+  // https://www.biliplus.com/api/view?id=12656941
   var avNum = /video\/(\d+)/i.exec(f.link)[1];
-  if(f.title === '已失效视频') {
-    var videoName = 'av' + avNum;
-    var bilibilijjText = '去哔哩哔哩唧唧看看有没有资源？';
-  } else {
-    var bilibilijjText = '跳转到哔哩哔哩唧唧下载？';
-  }
+  var avTextNum = 'av' + avNum;
+
   var content = pagesHTML || pageName || '';
-  var title = videoName || f.title || '';
+  var title = avTextNum || f.title || '';
   var html =
     '<div id="vivWindow">'+
       '<p class="vivMediaInfoTitle">' + title + '</p>'+
@@ -296,7 +368,7 @@ function media_info(mid) {
 
       '<p>收藏于 ' + getTime(f.fav_time) + '</p>'+
 
-      '<p class="vivBilibilijj"><a href="https://www.jijidown.com/video/av' + avNum + '" target="_blank">' + bilibilijjText + '</a></p>'+
+      '<p class="vivBilibiliCache">缓存：<a href="https://www.jijidown.com/video/av' + avNum + '" target="_blank">哔哩哔哩唧唧</a>、<a href="https://www.biliplus.com/video/av' + avNum + '" target="_blank">biliplus</a></p>'+
 
       '<a class="vivClose" href="javascript:void(0);">×</a>'+
 
