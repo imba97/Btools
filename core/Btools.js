@@ -84,7 +84,6 @@ $.fn.extend({
     }
 
     if(hkm[0].BtoolsHKM !== undefined) {
-      console.log(hkm[0].BtoolsHKM);
       var hotKeys = hkm[0].BtoolsHKMKeys;
       menu.forEach(function(item, index) {
         if($.inArray(item.key, hotKeys) >= 0) return false;
