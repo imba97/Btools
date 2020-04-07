@@ -9,7 +9,7 @@ var openImgSet = {
   timer: null,
   timerOff: false,
   isReadImg: true,
-  urlReg: /([^\@]*\.(?:webp|jpg|png|gif))(?:\@|\_)?.*\.?(?:webp|jpg|png|gif)?/,
+  urlReg: /([^\@]*\.(?:webp|jpg|jpeg|png|gif))(?:\@|\_)?.*\.?(?:webp|jpg|jpeg|png|gif)?/,
   bannerImgReg: /url\("((?:http|https):\/\/[^\@]*)(?:\@|\_)(?:.*\.(?:webp|jpg|png|gif))?"\)/,
   watchlaterUrlReg: /(?:http|https):\/\/www\.bilibili\.com\/watchlater\/.*/,
   readUrlReg: /(?:http|https):\/\/www\.bilibili\.com\/read\/.*/,

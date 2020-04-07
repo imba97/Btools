@@ -9,8 +9,6 @@ var CommentSet = {
     emoji: null,
     addText: null
   },
-  textarea: null,
-  topTextarea: null,
   loadTimer: null,
   loadPage: 1,
   comments: [],
@@ -36,11 +34,10 @@ $(document).ready(function(){
   }
 
   $('body').on('click', '.comment-list .reply', function() {
-    CommentSet.textarea = $(this).parents('.con').find('.textarea-container textarea');
     createDom({
       isReply: true,
-      top: 65,
-      left: 80
+      top: 70,
+      left: 100
     });
   });
 
@@ -70,11 +67,9 @@ $(document).ready(function(){
     });
 
     $('body').on('click', '.btools-history-emoji', function() {
-      if($(this).parent().parent().attr('class') === 'btools-history-emoji-box') {
-        CommentSet.topTextarea.insertAtCaret($(this).attr('data-emoji-text'));
-      } else {
-        CommentSet.textarea.insertAtCaret($(this).attr('data-emoji-text'));
-      }
+
+      $(this).parents('.textarea-container').find('textarea').insertAtCaret($(this).attr('data-emoji-text'));
+
       reorder('emoji', $(this).attr('data-emoji-text') + ',' + $(this).html());
       $(this).one('mouseout' ,function(){
         createHTML();
@@ -86,7 +81,7 @@ $(document).ready(function(){
     });
 
     $('body').on('click', '.emoji-container .emoji-tab-wrap a', function(){
-      if($(this).attr('data-index') == 1) {
+      if($('.emoji-box .emoji-title span').text() == '颜文字') {
         createAddTextHTML();
         if($('#btoolsAddEmojiText').length > 0) {
           $('#btoolsAddEmojiText').show();
@@ -127,7 +122,10 @@ $(document).ready(function(){
       if(e.button === 1) {
         var val = $(this).attr('data-emoji-text') + ',' + $(this).html();
         e.preventDefault();
+
         deleteItem('emoji', val);
+
+        setHistoryEmojiBgHeight();
       }
     });
 
@@ -178,11 +176,46 @@ $(document).ready(function(){
         }
       }, 500);
     });
+
+    $('body').on('click', '.btools-history-emoji-all-btn', function() {
+
+        var data_click = $(this).attr('data-click');
+
+        if(data_click == undefined || data_click == 'false') {
+            $(this).text('关闭').attr('data-click', 'true').siblings('.btools-history-emoji-scroll').css({
+                'height': 'auto'
+            });
+
+            var scrollHeight = $(this).siblings('.btools-history-emoji-scroll').height();
+
+            setHistoryEmojiBgHeight();
+
+            $(this).siblings('.btools-history-emoji-bg').show();
+
+        } else {
+            $(this).text('全部').attr('data-click', 'false').siblings('.btools-history-emoji-scroll').css({
+                'height': 31
+            });
+
+            $(this).siblings('.btools-history-emoji-bg').hide();
+        }
+
+    })
 });
+
+function setHistoryEmojiBgHeight() {
+
+    $('.btools-history-emoji-scroll').each(function() {
+        if($(this).height() != 31) {
+            $('.btools-history-emoji-bg').css({
+                'height': $(this).height() + 20
+            });
+        }
+    });
+}
 
 function reDisplayEmojiSaveList() {
   if($('.bb-comment > .comment-send:eq(0) .textarea-container .btools-history-emoji-box').length === 0) {
-    CommentSet.textarea = null;
     CommontInit();
   }
 }
@@ -221,9 +254,7 @@ function reorder(id, key) {
     if(key !== newEmoji[0]) {
       newEmoji.forEach(function(item, index) {
         if(key != item) {
-          if(newArr.length < 4) {
-            newArr.push(item);
-          }
+          newArr.push(item);
         }
       });
       CommentSet.config[id] = key + CommentSet.sep + newArr.join(CommentSet.sep);
@@ -246,13 +277,24 @@ function deleteItem(id, val) {
   }
   switch(id) {
     case 'emoji':
-      $('.btools-history-emoji:eq(' + index + ')').remove();
+      $('.btools-history-emoji-box').each(function() {
+          $(this).find('.btools-history-emoji:eq(' + index + ')').remove();
+      });
     break;
     case 'addText':
       $('.btools-add-text:eq(' + index + ')').remove();
     break;
   }
+
   saveSet();
+
+  if(getEmojiLength() > 5) {
+      $('.btools-history-emoji-all-btn').show();
+  } else {
+      $('.btools-history-emoji-all-btn').hide();
+      $('.btools-history-emoji-bg').hide();
+  }
+
 }
 
 function createHTML() {
@@ -264,6 +306,16 @@ function createHTML() {
       html += '<li class="btools-history-emoji" data-emoji-text="' + val[0] + '">' + val[1] + '</li>';
     });
     $('.btools-history-emoji-scroll').html(html);
+
+    setHistoryEmojiBgHeight();
+
+    if(emoji.length > 5) {
+        $('.btools-history-emoji-all-btn').show();
+    } else {
+        $('.btools-history-emoji-all-btn').hide();
+        $('.btools-history-emoji-bg').hide();
+    }
+
   }
 }
 
@@ -283,31 +335,29 @@ function createAddTextHTML() {
 
 function createDom(f_info) {
 
-  f_info = f_info || {
-    isReply: false,
-    top: 63,
-    left: 80
-  }
+    f_info = f_info || {
+        isReply: false,
+        top: 68,
+        left: 100
+    }
 
-  var reply = f_info.isReply ? 'reply' : 'box';
+    $('.textarea-container').each(function() {
+        if($(this).find('.btools-history-emoji-box').length == 0) {
+            $(this).css({
+                'position': 'relative'
+            }).append('<div class="btools-history-emoji-box"><ul class="btools-history-emoji-scroll"></ul><a href="javascript:void(0);" class="btools-history-emoji-all-btn">全部</a><div class="btools-history-emoji-bg"></div></div>');
 
-  if($('.btools-history-emoji-' + reply).length > 0) return false;
+            $(this).find('.btools-history-emoji-box').css({
+                'top': f_info.top,
+                'left': f_info.left
+            });
+        }
+    });
 
-  CommentSet.textarea = CommentSet.textarea !== null ? CommentSet.textarea : CommentSet.topTextarea;
-
-  CommentSet.textarea.parent('.textarea-container').css({
-    'position': 'relative'
-  }).append('<div class="btools-history-emoji-' + reply + '"><ul class="btools-history-emoji-scroll"></ul></div>');
-
-  $('.btools-history-emoji-' + reply).css({
-    'top': f_info.top,
-    'left': f_info.left
-  });
-
-  chrome.storage.sync.get(CommentSet.config, function(items){
-    CommentSet.config = items;
-    createHTML();
-  });
+    chrome.storage.sync.get(CommentSet.config, function(items){
+        CommentSet.config = items;
+        createHTML();
+    });
 }
 
 function saveSet() {
@@ -408,6 +458,10 @@ function searchShow() {
       });
     }, 500);
   }
+}
+
+function getEmojiLength() {
+    return CommentSet.config.emoji !== null ? CommentSet.config.emoji.split(CommentSet.sep).length : 0;
 }
 
 function searchComments(text) {

@@ -1,22 +1,52 @@
 @charset "UTF-8";
 
-.btools-history-emoji-reply,
 .btools-history-emoji-box {
   position: absolute;
-  width: 450px;
+  width: 150px;
   height: 30px;
 }
+
+.btools-history-emoji-all-btn {
+    position: absolute;
+    top: 5px;
+    left: 180px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 10px;
+    color: #00a1d6;
+    display: none;
+}
+
+.btools-history-emoji-bg {
+    position: absolute;
+    top: -10px;
+    left: -20px;
+    width: 190px;
+    height: 0;
+    opacity: 0.75;
+    border-radius: 10px;
+    background-color: #000;
+    z-index: 100;
+    display: none;
+}
+
 .btools-history-emoji-scroll {
   position: absolute;
   top: 0; left: 0;
+  width: 150px;
+  height: 31px;
+  overflow: hidden;
+  z-index: 1000;
 }
 .btools-history-emoji {
   margin: 0 5px;
   font-size: 12px !important;
-  color: #666 !important;
+  color: #999 !important;
   float: left;
   height: 30px;
-  line-height: 40px;
+  line-height: 30px;
   cursor: pointer;
 
   transition: all .2s;
