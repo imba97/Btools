@@ -231,7 +231,14 @@ function VivInit() {
 }
 
 function favJson() {
-  var fid = $('.fav-item[class~=cur]').attr('fid');
+  var fid_href = $('.fav-item[class~=cur] .router-link-active').attr('href');
+  var fid_reg = /fid=(\d+)/i;
+  var fid = null;
+
+  if(fid_reg.exec(fid_href) !== null) {
+      fid = fid_reg.exec(fid_href)[1]
+  }
+
   if(fid === null) return false;
 
   if(!VivSet.isKey) VivSet.pn = Number($('.be-pager-item-active').text()); else VivSet.isKey = false;
