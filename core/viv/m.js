@@ -14,9 +14,7 @@ var VivSet = {
   timerOff: false,
   eqNum: 0,
   fav: null,
-  expiredTimer: null,
   expired: null, // 存储失效视频
-  expiredIndex: 0, // 当前正在获取信息的失效视频
   count: 0,
   pn: 1,
   isKey: false,
@@ -144,16 +142,20 @@ function VivInit() {
 
     if(VivSet.fav !== null) {
       $(this).find('a:eq(1),.meta-mask,a.disabled').HKM('clear');
-      var upMid = VivSet.fav[index].upper.mid;
+      var upMid = VivSet.fav[index].hasOwnProperty('upper') ? VivSet.fav[index].upper.mid : '';
+      if(upMid != '') {
+          $(this).find('a:eq(1),.meta-mask,a.disabled').HKM([
+            {
+              'key': 85,
+              'title': '打开UP主空间',
+              'action': function() {
+                window.open('http://space.bilibili.com/' + upMid);
+                void(0);
+              }
+            }
+          ]);
+      }
       $(this).find('a:eq(1),.meta-mask,a.disabled').HKM([
-        {
-          'key': 85,
-          'title': '打开UP主空间',
-          'action': function() {
-            window.open('http://space.bilibili.com/' + upMid);
-            void(0);
-          }
-        },
         {
           'key': 68,
           'title': '详情信息',
@@ -309,7 +311,7 @@ function favJson() {
                 // 如果本地有缓存
                 if(BtoolsConfig.localCache.hasOwnProperty(item.id)) {
                   var videoInfo = BtoolsConfig.localCache[item.id];
-                  var liDisabled = $('.fav-video-list li[data-aid=' + item.id + ']');
+                  var liDisabled = $('.fav-video-list li[data-aid=' + av2bv(item.id) + ']');
 
                   liDisabled.addClass('BtoolsVivFinded');
 
@@ -328,7 +330,7 @@ function favJson() {
 
                 } else {
                   // 否则查询
-                  VivSet.expired.push(item);
+                  VivSet.expired.push(item.id);
                 }
               }
             });
@@ -338,31 +340,39 @@ function favJson() {
     }
   });
 
-  if(VivSet.expired !== null && VivSet.expiredTimer === null) {
+  if(VivSet.expired !== null && VivSet.expired.length !== 0) {
     if($('.fav-video-list li.disabled').length == $('.fav-video-list li.BtoolsVivFinded').length) {
-      if(VivSet.expiredTimer !== null) {
-        clearInterval(VivSet.expiredTimer);
-        VivSet.expired = null;
-        VivSet.expiredTimer = null;
-      }
+      VivSet.expired = null;
       return;
     }
-    VivSet.expiredTimer = setInterval(function() {
-      var video = VivSet.expired[VivSet.expiredIndex];
-      if(video === undefined || !video.hasOwnProperty('id')) return;
-      var url = 'https://www.biliplus.com/api/view?id=' + video.id;
-      chrome.runtime.sendMessage({
+
+    var url = 'https://www.biliplus.com/api/aidinfo?aid=' + VivSet.expired.join(',');
+    chrome.runtime.sendMessage({
         type: 'fetch',
         url: url
-      },
-      function(json) {
-        if(json !== null) {
-          var isPic = json.hasOwnProperty("pic");
-          var isTitle = json.hasOwnProperty("title");
-          var isCode = json.hasOwnProperty("code");
-          var liDisabled = $('.fav-video-list li[data-aid=' + video.id + ']');
+    }, function(json) {
 
-          if($('.BtoolsVivLoaddingBG').length === 0) {
+        $.each(VivSet.expired, function(index, expiredItem) {
+
+            if(typeof json.data == 'undefined' || typeof json.data[expiredItem] == 'undefined') {
+                // 添加到插件本地存储
+                addLocalCache(expiredItem, {
+                  title: '缓存失效',
+                  pic: ''
+                });
+                return true;
+            }
+
+            var item = json.data[expiredItem];
+
+            var isPic = item.hasOwnProperty("pic");
+            var isTitle = item.hasOwnProperty("title");
+            var isCode = item.hasOwnProperty("code");
+
+            var liDisabled = $('.fav-video-list li[data-aid=' + av2bv(expiredItem) + ']');
+
+            if(liDisabled.find('.BtoolsVivLoaddingBG').length !== 0) return true;
+
             liDisabled.css({
               'position': 'relative'
             }).append('<div class="BtoolsVivLoaddingBG"></div><div class="BtoolsVivLoadding">' + Btools.logo() + '<p class="BtoolsVivLoaddingText">正在查找···</p></div>');
@@ -373,64 +383,64 @@ function favJson() {
             $('.BtoolsVivLoadding').css({
               'left': (liDisabled.outerWidth() / 2) - ($('.BtoolsVivLoadding').outerWidth() / 2)
             });
-          }
 
-          if(isPic) {
-            liDisabled.find('.disabled-cover').remove();
-            liDisabled.find('.cover img').attr({
-              'src': json.pic + '@380w_240h_100Q_1c.webp',
-              'alt': '图片文件失效'
-            }).css({
-              '-webkit-filter': 'none'
-            });
-          }
-          if(isTitle) {
-            liDisabled.find('.title').text(json.title).css({
-              'color': '#F66',
-              'font-weight': '700'
-            });
+            if(isPic) {
+              liDisabled.find('.disabled-cover').remove();
+              liDisabled.find('.cover img').attr({
+                'src': item.pic + '@380w_240h_100Q_1c.webp',
+                'alt': '图片文件失效'
+              }).css({
+                '-webkit-filter': 'none'
+              });
+            }
+            if(isTitle) {
+              liDisabled.find('.title').text(item.title).css({
+                'color': '#F66',
+                'font-weight': '700'
+              });
 
-            // 失效视频 搜索视频
-            liDisabled.find('a:eq(1),.meta-mask,a.disabled').HKM([
-              {
-                'key': 83,
-                'title': '搜索标题',
-                'position': 'first',
-                'action': function() {
-                  window.open('https://www.baidu.com/s?wd=' + json.title);
-                  void(0);
+              // 失效视频 搜索视频
+              liDisabled.find('a:eq(1),.meta-mask,a.disabled').HKM([
+                {
+                  'key': 83,
+                  'title': '搜索标题',
+                  'position': 'first',
+                  'action': function() {
+                    window.open('https://www.baidu.com/s?wd=' + item.title);
+                    void(0);
+                  }
                 }
-              }
-            ]);
-          }
-          if(isCode && json.code === -404) {
-            liDisabled.find('.title').text('缓存失效').css({
-              'color': '#F66',
-              'font-weight': '700'
-            });
-          }
-          if(isPic || isTitle || (isCode && json.code !== -503)) {
-            setTimeout(function() {
-              liDisabled.find('.BtoolsVivLoadding,.BtoolsVivLoaddingBG').remove();
-            }, 1000);
-            liDisabled.addClass('BtoolsVivFinded');
+              ]);
+            }
+
+            if(isCode && item.code === -404) {
+              liDisabled.find('.title').text('缓存失效').css({
+                'color': '#F66',
+                'font-weight': '700'
+              });
+            }
+
+            if(isPic || isTitle || (isCode && item.code !== -503)) {
+              setTimeout(function() {
+                liDisabled.find('.BtoolsVivLoadding,.BtoolsVivLoaddingBG').remove();
+              }, 1000);
+              liDisabled.addClass('BtoolsVivFinded');
+
+            }
 
             // 添加到插件本地存储
-            addLocalCache(video.id, {
-              title: isTitle ? json.title : '缓存失效',
-              pic: isPic ? json.pic : ''
+            addLocalCache(expiredItem, {
+              title: isTitle ? item.title : '缓存失效',
+              pic: isPic ? item.pic : ''
             });
 
-            VivSet.expiredIndex++;
-          }
-          if(VivSet.expiredIndex == $('.fav-video-list li.disabled').length) {
+            if(VivSet.expiredIndex == $('.fav-video-list li.disabled').length) {
 
-            clearInterval(VivSet.expiredTimer);
-            VivSet.expiredTimer = null;
-          }
-        }
-      });
-    }, 2000);
+            }
+        });
+    });
+
+
   }
 }
 

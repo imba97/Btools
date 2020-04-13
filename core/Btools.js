@@ -23,23 +23,33 @@ var Btools = {
   }
 }
 
+var avbv = {
+    table: 'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF',
+    xor: 177451812,
+    add: 8728348608,
+    s: [11, 10, 3, 8, 4, 6]
+}
+
 // BV2AV - 参考 http://bv2av.com/
 function bv2av(bv) {
 
-    var table = 'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF';
-    var s = [11, 10, 3, 8, 4, 6];
-
-    var xor = 177451812;
-    var add = 8728348608;
-
     var result = 0;
     for(var i = 0; i < 6; i++) {
-        result += table.indexOf(bv[s[i]]) * 58 ** i;
+        result += avbv.table.indexOf(bv[avbv.s[i]]) * Math.pow(58, i);
     }
 
-    var av = (result - add ^ xor);
+    var av = (result - avbv.add ^ avbv.xor);
 
     return av;
+}
+
+function av2bv(av) {
+    av = (av ^ avbv.xor) + avbv.add;
+    var result = ['B', 'V', '1', ' ', ' ', '4', ' ', '1', ' ', '7', ' ', ' '];
+    for(var i = 0; i < 6; i++) {
+        result[avbv.s[i]] = avbv.table[Math.floor(av / Math.pow(58, i)) % 58];
+    }
+    return result.join('');
 }
 
 chrome.runtime.sendMessage({ type: 'getInfo' }, function(info) {
@@ -47,6 +57,40 @@ chrome.runtime.sendMessage({ type: 'getInfo' }, function(info) {
   Btools.releaseVersion = info.releaseVersion;
   Btools.info = '%c ____     __                   ___\n/\\  _`\\  /\\ \\__               /\\_ \\\n\\ \\ \\L\\ \\\\ \\ ,_\\   ___     ___\\//\\ \\     ____\n \\ \\  _ <\'\\ \\ \\/  / __`\\  / __`\\\\ \\ \\   /\',__\\\n  \\ \\ \\L\\ \\\\ \\ \\_/\\ \\L\\ \\/\\ \\L\\ \\\\_\\ \\_/\\__, `\\ \n   \\ \\____/ \\ \\__\\ \\____/\\ \\____//\\____\\/\\____/\n    \\/___/   \\/__/\\/___/  \\/___/ \\/____/\\/___/\n\n                                     version ' + info.version;
 });
+
+/*
+var getCookie = function (NameOfCookie) {
+    if (document.cookie.length > 0) {
+        begin = document.cookie.indexOf(NameOfCookie + "=");
+        if (begin !== -1) {
+            begin += NameOfCookie.length + 1;
+            end = document.cookie.indexOf(";", begin);
+            if (end === -1) end = document.cookie.length;
+            return unescape(document.cookie.substring(begin, end));
+        }
+    }
+    return null;
+}
+*/
+
+/*
+$.ajax({
+    type: 'POST',
+    url: 'https://api.bilibili.com/x/web-interface/archive/like',
+    data: {
+        aid: 882653974,
+        like: 1,
+        csrf: getCookie('bili_jct')
+    },
+    success: function(json) {
+        return console.log(json)
+    },
+    error: function(error) {
+        return console.log(error)
+    },
+    dataType: 'json'
+});
+*/
 
 // 监听加载状态改变
 document.onreadystatechange = function() {

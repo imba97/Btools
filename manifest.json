@@ -79,6 +79,7 @@
 	"permissions":
 	[
 		"notifications",
+		"cookies",
 		"storage",
 		"tabs",
 		"http://*/*",

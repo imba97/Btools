@@ -7,38 +7,26 @@ var BtoolsInfo = {
 
 // 安装完成后
 chrome.runtime.onInstalled.addListener(function(details) {
-
+    // 1.1.3 清除本地缓存
+    chrome.storage.sync.set({
+      localCache: {}
+    });
 });
 
 chrome.runtime.onMessage.addListener(
 function(request, sender, sendResponse) {
-  switch(request.type) {
-    case 'fetch':
-      fetch(request.url)
-        .then(function(response) { return response.json() })
-        .then(function(json) { return sendResponse(json) })
-        .catch(function(error) { return sendResponse(null) });
-      return true;  // Will respond asynchronously.
-    break;
-    case 'post':
-      fetch(request.url, {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: JSON.stringify(request.data)
-      })
-      .then(function(response) { return response.json() })
-      .then(function(json) { return sendResponse(json) })
-      .catch(function(error) { return sendResponse(null) });
-      return true;  // Will respond asynchronously.
-    break;
-    case 'getInfo':
-      sendResponse(BtoolsInfo);
-    break;
-  }
+    switch(request.type) {
+        case 'fetch':
+            fetch(request.url)
+            .then(function(response) { return response.json() })
+            .then(function(json) { return sendResponse(json) })
+            .catch(function(error) { return sendResponse(null) });
+            return true;  // Will respond asynchronously.
+            break;
+        case 'getInfo':
+            sendResponse(BtoolsInfo);
+        break;
+    }
 });
 
 /*
