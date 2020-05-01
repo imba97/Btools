@@ -9,21 +9,15 @@ var LiveHelperSet = {
   hideTimerOff: true
 }
 
-chrome = chrome || browser;
-
 var BtoolsConfig = {
-  PKPoint: 0,
-  miniPlayerShow: 0
+  liveHelperPKPoint: 0,
+  liveHelperMiniPlayer: 0
 }
 
-$(document).ready(function() {
-  $('body').on('click', '.lottery-box', function() {
-    var msg = $('.link-popup-ctnr .link-popup-ctnr .link-popup-panel .popup-content-ctnr p').text();
-    setTimeout(function() {
-      $('.close-btn').click();
-    }, 1000);
-  });
-});
+
+// $(document).ready(function() {
+  // 自动关闭领奖提示窗（B站已优化显示效果，所以删除此功能）
+// });
 
 // live助手初始化
 function liveHelperInit() {
@@ -46,18 +40,6 @@ function liveHelperInit() {
       }
     }
   ]);
-
-  $('#BtoolsLiveHelperPKPointHide').click(function(){
-    if($('.process-box').length !== 0){
-      if($('.process-box').is(':hidden')){
-        liveHelperHide(0);
-      }else{
-        liveHelperHide(1);
-      }
-    } else {
-      BtoolsLiveHelperMsg(false, '未检测到PK分数窗口');
-    }
-  });
 
   chrome.storage.sync.get(BtoolsConfig, function(items){
     BtoolsConfig = items;
@@ -86,7 +68,7 @@ function liveHelperHideTimer(k)
     }
 
     // 隐藏迷你播放器
-    if(BtoolsConfig.miniPlayerShow === 1) $('.player-section .live-player-ctnr').addClass('miniPlayerHide');
+    if(BtoolsConfig.liveHelperMiniPlayer === 1) $('.player-section .live-player-ctnr').addClass('miniPlayerHide');
   }, 500); // fuck you!!!
 }
 

@@ -26,6 +26,14 @@ $(document).ready(function(){
 
     reorder('emoji', data);
     createHTML();
+
+    if(getEmojiLength() > 5) {
+
+      setHistoryEmojiBgHeight()
+
+      doc.parents('.comment').find('.btools-history-emoji-box .btools-history-emoji-bg[isShow=true]').show();
+    }
+
   });
 
   CommontInit();
@@ -80,6 +88,7 @@ $(document).ready(function(){
       reDisplayEmojiSaveList();
     });
 
+    // 切换表情
     $('body').on('click', '.emoji-container .emoji-tab-wrap a', function(){
       if($('.emoji-box .emoji-title span').text() == '颜文字') {
         createAddTextHTML();
@@ -190,14 +199,14 @@ $(document).ready(function(){
 
             setHistoryEmojiBgHeight();
 
-            $(this).siblings('.btools-history-emoji-bg').show();
+            $(this).siblings('.btools-history-emoji-bg').show().attr('isShow', 'true');
 
         } else {
             $(this).text('全部').attr('data-click', 'false').siblings('.btools-history-emoji-scroll').css({
                 'height': 31
             });
 
-            $(this).siblings('.btools-history-emoji-bg').hide();
+            $(this).siblings('.btools-history-emoji-bg').hide().attr('isShow', 'false');
         }
 
     })
@@ -408,6 +417,7 @@ function searchShow() {
       break;
       case 'blackboard':
         oid = Btools.bilibili.activeID();
+        console.log(oid);
         apiType = '4';
       break;
     }
@@ -437,13 +447,19 @@ function searchShow() {
           if(CommentSet.count === -1) {
             CommentSet.count = json.data.page.count;
           }
-          json.data.replies.forEach(function(item, index) {
-            // 定位用，page是页码，location是当页位置
-            item.position = {
-              page: Math.floor(CommentSet.comments.length / 20) + 1,
-              location: index
-            }
-            CommentSet.comments.push(item);
+
+          if(typeof json.data.replies == 'undefined') {
+              $('#BtoolsSearchText').css({'color': '#F66'}).attr('readonly', '').val('获取评论失败');
+              return;
+          }
+
+          $.each(json.data.replies, function(index, item) {
+              // 定位用，page是页码，location是当页位置
+              item.position = {
+                page: Math.floor(CommentSet.comments.length / 20) + 1,
+                location: index
+              }
+              CommentSet.comments.push(item);
           });
 
           $('#BtoolsSearchText').css({'color': '#999'}).attr('readonly', '').val('加载评论中...' + Math.floor(CommentSet.comments.length / CommentSet.count * 100) + '%');

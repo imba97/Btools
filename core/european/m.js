@@ -42,7 +42,7 @@ europeanSet.timerOnload = setInterval(function(){
     europeanSet.cardW = $('.detail-card .card:eq(0)').outerWidth();
     if($('.content').children('.card').length === 0) europeanShow();
 
-    europeanSet.upName = $('.main-content:eq(0) .user-name:eq(0) a.c-pointer').text();
+    europeanSet.upName = $('.main-content .user-name a.c-pointer').text();
     europeanSet.Alleuropeans = Number($('.button-bar span:eq(0) span:eq(0)').text());
 
     clearInterval(europeanSet.timerOnload);
@@ -366,7 +366,10 @@ function autoLoad() {
         'width': (europeanSet.autoLoadNum / europeanSet.autoLoadMax) * 100 + '%'
       });
 
+      if(typeof json.data.comments == 'undefined') return;
+
       var com = json.data.comments;
+
       if(com.length > 0) {
         json.data.comments.forEach(function(item, index) {
           var atNum = 0;

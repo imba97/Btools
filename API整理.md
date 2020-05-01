@@ -41,6 +41,13 @@
 * [http://api.vc.bilibili.com/dynamic_repost/v1/dynamic_repost/view_repost?dynamic_id=227011488571075494](http://api.vc.bilibili.com/dynamic_repost/v1/dynamic_repost/view_repost?dynamic_id=227011488571075494)
 
 ### 用户card信息
-* https://api.bilibili.com/x/web-interface/card
+* https://api.bilibili.com/x/web-interface/card `GET`
    * `mid` [用户ID] [2198461]
 * https://api.bilibili.com/x/web-interface/card?mid=2198461
+
+### 给视频点赞
+
+* https://api.bilibili.com/x/web-interface/archive/like `POST`
+   * `aid` [AV号] [40905080]
+   * `like` [点赞或取消] [1/点赞|0/取消]
+   * `csrf` [CSRF] [一般是获取cookie的bili_jct]

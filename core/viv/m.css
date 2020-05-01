@@ -51,17 +51,10 @@
 #vivWindow .vivP
 {
   margin: 0 auto;
+  padding: 10px 0;
   width: 500px;
   max-height: 200px;
-  overflow-y: auto;
-}
-#vivWindow .vivP p
-{
-  margin: 2px 0;
-}
-#vivWindow .vivP p span
-{
-  color: #CCC;
+  color: #999;
 }
 
 .vivBilibiliCache a

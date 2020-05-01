@@ -11,10 +11,10 @@ var Btools = {
   },
   bilibili: {
     getApiType: function() { return /^\/([^\/]*)\//.exec(window.location.pathname) !== null ? /^\/([^\/]*)\//.exec(window.location.pathname)[1] : null },
-    av:         function() { return /video\/([Bb][Vv][fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF]{10})/.exec(window.location.pathname) !== null ? bv2av(/video\/([Bb][Vv][fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF]{10})/.exec(window.location.pathname)[1]) : null },
+    av:         function() { return /video\/([Bb][Vv][fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF]{10})/.exec(window.location.pathname) !== null ? bv2av(/video\/([Bb][Vv][fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF]{10})/.exec(window.location.pathname)[1]) : /video\/[Aa][Vv](\d+)/.exec(window.location.pathname) !== null ? /video\/[Aa][Vv](\d+)/.exec(window.location.pathname)[1] : null },
     bangumiID:  function() { return /([Bb][Vv][fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF]{10})/.exec($('.pub-wrapper .av-link').text()) !== null ? bv2av(/([Bb][Vv][fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF]{10})/.exec($('.pub-wrapper .av-link').text())[1]) : null },
     readID:     function() { return /read\/cv(\d+)/.exec(window.location.pathname) !== null ? /read\/cv(\d+)/.exec(window.location.pathname)[1] : null },
-    activeID:   function() { return /\/activity(\d+)\//.exec($('script[crossorigin=anonymous]:last').attr('src')) !== null ? /\/activity(\d+)\//.exec($('script[crossorigin=anonymous]:last').attr('src'))[1] : null },
+    activeID:   function() { if($('#BtoolsActivityId').length === 0) { $('body').append('<input type="hidden" id="BtoolsActivityId"><script>document.querySelector(\'#BtoolsActivityId\').value=window.activityId</script>'); } return $('#BtoolsActivityId').val(); },
     albumID:    function() { return /h\.bilibili\.com\/(\d+)/.exec(window.location.href) !== null ? /h\.bilibili\.com\/(\d+)/.exec(window.location.href)[1] : null }
   },
   logo: function(color) {
@@ -23,6 +23,8 @@ var Btools = {
   }
 }
 
+// BV2AV - 参考 http://bv2av.com/
+
 var avbv = {
     table: 'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF',
     xor: 177451812,
@@ -30,7 +32,6 @@ var avbv = {
     s: [11, 10, 3, 8, 4, 6]
 }
 
-// BV2AV - 参考 http://bv2av.com/
 function bv2av(bv) {
 
     var result = 0;
@@ -51,6 +52,8 @@ function av2bv(av) {
     }
     return result.join('');
 }
+
+// BV2AV - 参考 http://bv2av.com/
 
 chrome.runtime.sendMessage({ type: 'getInfo' }, function(info) {
   Btools.version = info.version;
@@ -140,24 +143,46 @@ $.fn.extend({
   'HKM': function(menu) {
     var hkm = $(this);
 
-    if(menu === 'clear') {
-      hkm[0].BtoolsHKM = undefined;
-      hkm[0].BtoolsHKMKeys = undefined;
-      return false;
+    var clear = /clear(?:-(\d+))?/.exec(menu);
+
+    if(clear !== null) {
+
+      if(typeof clear[1] === 'string') {
+        // 清空某一个快捷键
+        var index = hkm[0].BtoolsHKMKeys.indexOf(clear[1]);
+        hkm[0].BtoolsHKMKeys.splice(index, 1);
+        hkm[0].BtoolsHKM.splice(index, 1);
+        if(hkm[0].BtoolsHKMKeys.length === 0) {
+          delete clear[1];
+        }
+      }
+
+      // 清空所有快捷键
+      if(typeof clear[1] === 'undefined') {
+        hkm[0].BtoolsHKM = undefined;
+        hkm[0].BtoolsHKMKeys = undefined;
+      }
+
+      return hkm;
+
     }
+
+
 
     if(hkm[0].BtoolsHKM !== undefined) {
       var hotKeys = hkm[0].BtoolsHKMKeys;
       menu.forEach(function(item, index) {
         if($.inArray(item.key, hotKeys) >= 0) return false;
-        hkm[0].BtoolsHKMKeys.push(item.key);
+
         switch(item.position) {
           case 'first':
             hkm[0].BtoolsHKM.unshift(item);
+            hkm[0].BtoolsHKMKeys.unshift(item.key);
           break;
           case 'last':
           default:
             hkm[0].BtoolsHKM.push(item);
+            hkm[0].BtoolsHKMKeys.push(item.key);
           break;
         }
       });
@@ -270,6 +295,8 @@ $.fn.extend({
 
       // mousedown
     });
+
+    return hkm;
   }
   // hotKeyMenu --- END
 });

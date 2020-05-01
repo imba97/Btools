@@ -24,7 +24,7 @@ var VivSet = {
 
 var BtoolsConfig = {
   vivFind: 0,
-  localCache: {}
+  vivLocalCache: {}
 }
 
 $(document).ready(function(){
@@ -124,6 +124,12 @@ VivInitLoop();
 
 function VivInitLoop()
 {
+
+  // 获取设置
+  chrome.storage.sync.get(BtoolsConfig, function(items){
+    BtoolsConfig = items;
+  });
+
   VivSet.timerOff = false;
   VivSet.timer = setInterval(function() {
     VivInit();
@@ -142,7 +148,7 @@ function VivInit() {
 
     if(VivSet.fav !== null) {
       $(this).find('a:eq(1),.meta-mask,a.disabled').HKM('clear');
-      var upMid = VivSet.fav[index].hasOwnProperty('upper') ? VivSet.fav[index].upper.mid : '';
+      var upMid = typeof VivSet.fav[index].hasOwnProperty('upper') !== 'undefined' && VivSet.fav[index].hasOwnProperty('upper') ? VivSet.fav[index].upper.mid : '';
       if(upMid != '') {
           $(this).find('a:eq(1),.meta-mask,a.disabled').HKM([
             {
@@ -215,7 +221,7 @@ function VivInit() {
           'title': '搜索标题',
           'position': 'first',
           'action': function() {
-            window.open('https://www.baidu.com/s?wd=' + title);
+            window.open('https://www.baidu.com/s?wd=' + html_decode(title));
             void(0);
           }
         }
@@ -233,13 +239,7 @@ function VivInit() {
 }
 
 function favJson() {
-  var fid_href = $('.fav-item[class~=cur] .router-link-active').attr('href');
-  var fid_reg = /fid=(\d+)/i;
-  var fid = null;
-
-  if(fid_reg.exec(fid_href) !== null) {
-      fid = fid_reg.exec(fid_href)[1]
-  }
+  var fid = $('.fav-item[class~=cur]').attr('fid');
 
   if(fid === null) return false;
 
@@ -280,7 +280,7 @@ function favJson() {
   }
 
   var data = 'media_id=' + fid + '&pn=' + VivSet.pn + '&ps=20&order=' + VivSet.order + '&tid=' + VivSet.tid + '&type=0&jsonp=jsonp';
-  var url = 'https://api.bilibili.com/medialist/gateway/base/spaceDetail?' + data;
+  var url = 'https://api.bilibili.com/x/v3/fav/resource/list?' + data;
 
   chrome.runtime.sendMessage({
     type: 'fetch',
@@ -297,46 +297,44 @@ function favJson() {
       VivSet.fav = json.data.medias;
       VivSet.count = json.data.info.media_count;
 
-      // 失效视频
-      chrome.storage.sync.get(BtoolsConfig, function(items){
-        BtoolsConfig = items;
-        // 如果设置开启
-        if(items.vivFind === 0) {
-          VivSet.expiredIndex = 0;
-          VivSet.expired = new Array;
-          if(VivSet.fav !== null) {
-            VivSet.fav.forEach(function(item, index) {
+      VivSet.expiredIndex = 0;
+      VivSet.expired = new Array;
+      if(VivSet.fav !== null) {
+        VivSet.fav.forEach(function(item, index) {
 
-              if(item.title === '已失效视频') {
-                // 如果本地有缓存
-                if(BtoolsConfig.localCache.hasOwnProperty(item.id)) {
-                  var videoInfo = BtoolsConfig.localCache[item.id];
-                  var liDisabled = $('.fav-video-list li[data-aid=' + av2bv(item.id) + ']');
+          if(item.title === '已失效视频') {
+            // 如果本地有缓存
+            if(BtoolsConfig.vivLocalCache.hasOwnProperty(item.id)) {
+              var videoInfo = BtoolsConfig.vivLocalCache[item.id];
+              var liDisabled = $('.fav-video-list li[data-aid=' + av2bv(item.id) + ']');
 
-                  liDisabled.addClass('BtoolsVivFinded');
+              liDisabled.addClass('BtoolsVivFinded');
 
-                  liDisabled.find('.disabled-cover').remove();
-                  liDisabled.find('.cover img').attr({
-                    'src': videoInfo.pic + '@380w_240h_100Q_1c.webp',
-                    'alt': '图片文件失效'
-                  }).css({
-                    '-webkit-filter': 'none'
-                  });
+              liDisabled.find('.disabled-cover').remove();
+              liDisabled.find('.cover img').attr({
+                'src': videoInfo.pic + '@380w_240h_100Q_1c.webp',
+                'alt': '图片文件失效'
+              }).css({
+                '-webkit-filter': 'none'
+              });
 
-                  liDisabled.find('.title').text(videoInfo.title).css({
-                    'color': '#F66',
-                    'font-weight': '700'
-                  });
+              liDisabled.find('.title').text(videoInfo.title).css({
+                'color': '#F66',
+                'font-weight': '700'
+              });
 
-                } else {
-                  // 否则查询
-                  VivSet.expired.push(item.id);
-                }
-              }
-            });
+            } else {
+
+              // 如果设置关闭搜索
+              if(BtoolsConfig.vivFind === 1) return;
+              // 否则查询
+              VivSet.expired.push(item.id);
+
+            }
           }
-        }
-      });
+        });
+      }
+
     }
   });
 
@@ -406,7 +404,7 @@ function favJson() {
                   'title': '搜索标题',
                   'position': 'first',
                   'action': function() {
-                    window.open('https://www.baidu.com/s?wd=' + item.title);
+                    window.open('https://www.baidu.com/s?wd=' + html_decode(item.title));
                     void(0);
                   }
                 }
@@ -445,10 +443,10 @@ function favJson() {
 }
 
 function addLocalCache(avNum, videoInfo) {
-  chrome.storage.sync.get(BtoolsConfig.localCache, function(items) {
-    BtoolsConfig.localCache = items;
+  chrome.storage.sync.get(BtoolsConfig, function(items) {
+    BtoolsConfig.vivLocalCache = items.vivLocalCache;
   });
-  BtoolsConfig.localCache[avNum] = videoInfo;
+  BtoolsConfig.vivLocalCache[avNum] = videoInfo;
   chrome.storage.sync.set(BtoolsConfig);
 }
 
@@ -457,21 +455,13 @@ function addLocalCache(avNum, videoInfo) {
 function media_info(mid) {
   if(VivSet.fav === null) return false;
   if($('#vivWindow').length > 0) $('#vivWindow').remove();
+  console.log(VivSet.fav);
   var f = VivSet.fav[mid];
-  if(f.page > 1) {
-    var pagesHTML = '';
-    f.pages.forEach(function(item, index) {
-      pagesHTML += '<p><span>[P' + item.page + ']</span> ' + item.title + '</p>';
-    });
-  } else if(f.pages[0].title !== '') {
-    var pageName = '<p><span>[P1]</span> ' + f.pages[0].title + '</p>';
-  }
 
   // https://www.biliplus.com/api/view?id=12656941
   var avNum = /video\/(\d+)/i.exec(f.link)[1];
   var avTextNum = 'av' + avNum;
 
-  var content = pagesHTML || pageName || '';
   var title = avTextNum || f.title || '';
   var html =
     '<div id="vivWindow">'+
@@ -480,9 +470,8 @@ function media_info(mid) {
       '<p class="vivMediaInfoContent">' + f.intro + '</p>'+
 
       '<p class="vivMediaCount">共' + f.page + 'P</p>'+
-      '<div class="vivP">'+
-        content+
-      '</div>'+
+
+      '<div class="vivP">分P信息在新的接口中已被删除</div>'+
 
       '<p>收藏于 ' + getTime(f.fav_time) + '</p>'+
 
@@ -517,4 +506,16 @@ function getTime(timeStamp) {
   minute = minute < 10 ? ('0' + minute) : minute;
   second = second < 10 ? ('0' + second) : second;
   return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
+}
+
+function html_decode(str){
+  var s = "";
+  if(str.length == 0) return "";
+  s = str.replace(/&amp;/g,"&");
+  s = s.replace(/&lt;/g,"<");
+  s = s.replace(/&gt;/g,">");
+  s = s.replace(/&nbsp;/g," ");
+  s = s.replace(/&#39;/g,"\'");
+  s = s.replace(/&quot;/g,"\"");
+  return encodeURIComponent(s);
 }
