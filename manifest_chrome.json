@@ -40,9 +40,9 @@
 			"run_at": "document_start"
 		},
 		{
-			"matches": ["*://space.bilibili.com/*/favlist*"],
-			"js": ["core/viv/m.js"],
-			"css": ["core/viv/m.css"],
+			"matches": ["*://space.bilibili.com/*"],
+			"js": ["core/viv/m.js", "core/channel/m.js"],
+			"css": ["core/viv/m.css", "core/channel/m.css"],
 			"run_at": "document_end"
 		},
 		{
@@ -67,12 +67,6 @@
 			"matches": ["*://*.bilibili.com/watchlater/*", "*://*.bilibili.com/video/*", "*://*.bilibili.com/bangumi/*", "*://live.bilibili.com/*", "*://*.bilibili.com/read/*"],
 			"js": ["core/openImg/m.js"],
 			"css": ["core/openImg/m.css"],
-			"run_at": "document_end"
-		},
-		{
-			"matches": ["*://*space.bilibili.com/*/channel/detail"],
-			"js": ["core/channel/m.js"],
-			"css": ["core/channel/m.css"],
 			"run_at": "document_end"
 		},
 		{

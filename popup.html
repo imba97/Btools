@@ -5,45 +5,93 @@
 	<meta charset="utf-8"/>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<style>
-	body,div,p{margin:0;padding:0;}
+	body,div,p,ul,li{margin:0;padding:0;}
+	a { text-decoration: none; }
 	body {
 		font-family: 'Microsoft Yahei';
-		width: 500px;
+		width: 300px;
 		min-height: 100px;
+
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		user-select: none;
 	}
-	.Btools-title,.Btools-content
-	{
-		text-align: center;
+
+	.channelChecked {
+		clear: both;
 	}
-	.Btools-title {font-size: 30px;}
-	.Btools-content
-	{
+	.channelChecked ul li {
+
+		position: relative;
+
+		list-style: none;
+		cursor: pointer;
+		width: 140px;
+		height: 110px;
+
+
+		background-size: 100% auto;
+		background-repeat : no-repeat;
+
+		float: left;
+
+	}
+
+	.channelChecked ul li p {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 22px;
+		line-height: 22px;
+		background-color: #FFF;
+	}
+
+	.content {
+		clear: both;
+	}
+
+	.upName {
 		font-size: 20px;
+		width: 100%;
 		color: #999;
 	}
-	.Btools-content a
-	{
-		color: #333;
-		font-weight: 700;
-		text-decoration: none;
+	.channelName {
+		font-size: 16px;
+		background-color: #666;
 	}
-	#logo {
-		margin: 10px auto;
-		width: 100px;
-		height: 100px;
+
+	.channelName a {
+		color: #FFF;
 	}
+
+	.videoLink {
+		width: 100%;
+		height: 100%;
+		display: block;
+		z-index: 10;
+	}
+
+	.clean {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 36px;
+		height: 20px;
+		line-height: 20px;
+		font-size: 14px;
+		background-color: #F66;
+		color: #FFF;
+		border-radius: 0 0 0 5px;
+		text-align: center;
+		z-index: 100;
+	}
+
 	</style>
 </head>
 <body>
-	<div>
-		<p id="logo"></p>
-		<p class="Btools-title">Btools B站小工具</p>
-		<p class="Btools-content">以后可能不止B站，也会添加其他网站的优化</p>
-		<p class="Btools-content">目前这里并没什么卵用</p>
-		<p class="Btools-content">你可以右键将图标隐藏</p>
-		<p class="Btools-content"><a href="https://www.github.com/imba97/Btools" target="_blank">GitHub</a></p>
-		<p class="Btools-content"><a style="color: #029bcd;" href="http://btools.cc" target="_blank">Btools.cc</a></p>
-	</div>
+
 </body>
+<script src="js/jq.js"></script>
 <script src="js/popup.js"></script>
 </html>

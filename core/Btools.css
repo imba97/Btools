@@ -1,28 +1,5 @@
 @charset "UTF-8";
 
-#app .Btools #BtoolsLOGO
-{
-  content: '';
-  position: absolute;
-  top: 125px; left: 21px;
-  width: 30px;
-  height: 30px;
-  transform: rotate(50deg);
-  -ms-transform: rotate(50deg);
-  -webkit-transform: rotate(50deg);
-  -o-transform: rotate(50deg);
-  -moz-transform: rotate(50deg);
-}
-#app .Btools::after
-{
-  content: '';
-  position: absolute;
-  top: 69px; left: 32px;
-  width: 1px;
-  height: 57px;
-  background-color: #029bcd;
-}
-
 #hotKeyMenu
 {
   position: absolute;

@@ -40,13 +40,33 @@ var ChannelConfig = {
   channelShow: {},
   channelChecked: {}
 };
-BtoolsInfo.channelListenerTimer = setInterval(function(){
-  chrome.storage.sync.get(ChannelConfig, function(items) {
-    ChannelConfig = items;
+getLocalConfig(null);
 
-    // console.log(ChannelConfig);
+// 每过10秒检测一次有没有需要重新获取数据的频道
+BtoolsInfo.channelListenerTimer = setInterval(function(){
+
+  getLocalConfig(function() {
+
+    $.each(ChannelConfig.channelShow, function(uid, item) {
+      $.each(item, function(cid, channelInfo) {
+
+        var time = parseInt(new Date().getTime() / 1000) - ChannelConfig.channelChecked[cid].date;
+
+        if(time < ChannelConfig.channelUpdateTime) return true;
+
+        var channelData = {
+          uid: uid,
+          cid: cid
+        };
+
+        getChannelData(channelData, true);
+
+      });
+    });
+
 
   });
+
 }, 10000);
 
 var GetChannelDataConfig = {
@@ -57,9 +77,11 @@ var GetChannelDataConfig = {
 // 获取 isAuto true 是自动检测 如果 aids 中不存在 则视为 unread | false 是手动点击 不会存入 unread 数组
 function getChannelData(channelData, isAuto) {
 
-  GetChannelDataConfig.timer = setInterval(function() {
+  var page = 1;
 
-    var url = 'https://api.bilibili.com/x/space/channel/video?mid=' + channelData.uid + '&cid=' + channelData.cid + '&pn=' + GetChannelDataConfig.page + '&ps=30&order=0&jsonp=jsonp';
+  var timer = setInterval(function() {
+
+    var url = 'https://api.bilibili.com/x/space/channel/video?mid=' + channelData.uid + '&cid=' + channelData.cid + '&pn=' + page + '&ps=30&order=0&jsonp=jsonp';
 
     fetch(url, {
         headers: {
@@ -75,6 +97,7 @@ function getChannelData(channelData, isAuto) {
 
         if(typeof ChannelConfig.channelShow[channelData.uid] === 'undefined') ChannelConfig.channelShow[channelData.uid] = {};
         if(typeof ChannelConfig.channelShow[channelData.uid][channelData.cid] === 'undefined') ChannelConfig.channelShow[channelData.uid][channelData.cid] = {
+          upName: '',
           name: json.data.list.name,
           unread: []
         }
@@ -89,27 +112,29 @@ function getChannelData(channelData, isAuto) {
             aids: [],
             completed: false
           };
-        } else {
-          ChannelConfig.channelChecked[channelData.cid].completed = false;
         }
 
         // 循环数据 不在 ChannelConfig.channelChecked[uid] 里面的则添加
         json.data.list.archives.forEach(function(item, index) {
+
           if($.inArray(item.aid, ChannelConfig.channelChecked[channelData.cid].aids) === -1) {
 
             if(isAuto) {
-              ChannelConfig.channelShow[channelData.uid][channelData.cid].unread.push(item.aid);
+              ChannelConfig.channelShow[channelData.uid][channelData.cid].unread.push({
+                aid: item.aid,
+                title: item.title,
+                pic: item.pic
+              });
             }
 
-            ChannelConfig.channelChecked[channelData.cid].aids.push(item.aid)
+            ChannelConfig.channelChecked[channelData.cid].aids.push(item.aid);
+
           }
         });
 
       } else {
 
-        clearInterval(GetChannelDataConfig.timer);
-        GetChannelDataConfig.page = 1;
-        GetChannelDataConfig.timer = null;
+        clearInterval(timer);
         ChannelConfig.channelChecked[channelData.cid].completed = true;
         saveLocalConfig(ChannelConfig);
 
@@ -118,7 +143,7 @@ function getChannelData(channelData, isAuto) {
       }
 
       // 页数+1
-      GetChannelDataConfig.page++;
+      page++;
 
 
     })
@@ -127,6 +152,13 @@ function getChannelData(channelData, isAuto) {
 
     }, 200);
 
+}
+
+function getLocalConfig(callback) {
+  chrome.storage.sync.get(ChannelConfig, function(items){
+    ChannelConfig = items;
+    if(typeof callback === 'function') callback();
+  });
 }
 
 function saveLocalConfig(config) {

@@ -138,6 +138,11 @@ function VivInitLoop()
 }
 
 function VivInit() {
+
+  if(!/space\.bilibili\.com\/\d+\/favlist/i.test(location.href)) {
+    return;
+  }
+
   favJson();
   $('.fav-video-list li.small-item').each(function(index) {
     var coverReg = /([^\@]*\.(?:webp|jpg|png|gif))(?:\@|\_).*\.(?:webp|jpg|png|gif)?/;
