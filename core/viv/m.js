@@ -460,7 +460,6 @@ function addLocalCache(avNum, videoInfo) {
 function media_info(mid) {
   if(VivSet.fav === null) return false;
   if($('#vivWindow').length > 0) $('#vivWindow').remove();
-  console.log(VivSet.fav);
   var f = VivSet.fav[mid];
 
   // https://www.biliplus.com/api/view?id=12656941

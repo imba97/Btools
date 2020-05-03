@@ -417,7 +417,6 @@ function searchShow() {
       break;
       case 'blackboard':
         oid = Btools.bilibili.activeID();
-        console.log(oid);
         apiType = '4';
       break;
     }

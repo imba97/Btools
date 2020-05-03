@@ -62,7 +62,6 @@ openImgSet.timer = setInterval(function(){
     $(window).resize(function() {
         var bofqiTop = $('#bofqi').offset().top + 22;
         var bofqiLeft = $('#bofqi').offset().left - 40;
-        console.log(bofqiTop);
         $('.BtoolsLogoBtn').css({
             'top': bofqiTop,
             'left': bofqiLeft

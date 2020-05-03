@@ -1,4 +1,4 @@
-var channelSet = {
+var ChannelSet = {
   loopNum: 0,
   loopMax: 10,
   timer: null,
@@ -14,67 +14,33 @@ var channelSet = {
   }
 }
 
-var ChannelConfig = {
+var ChannelConfigTemp = {
   // 订阅的channelID
   channelShow: {},
   // 订阅中的信息 date：最后查询的日期时间戳 aids：已存在的视频AV号
   channelChecked: {}
 }
+var ChannelConfig = ChannelConfigTemp;
 
 $(function() {
 
-  channelInit();
-
-  $('body').on('click', '.n-tab-links .n-channel', function() {
-
-    console.log('头部列表');
-
-    console.log($('.channel-item').length);
-
-    $('#page-channel').on('click', '.channel-item a', function() {
-      console.log('channel-item');
-      channelInit();
-    });
-
-    $('#page-channel').on('click', '.breadcrumb a.item', function() {
-      channelInit();
-    });
-
-  });
-
-  $('#page-channel').on('click', '.channel-item', function() {
-    channelInit();
-  });
-
-  $('#page-channel').on('click', '.breadcrumb a.item', function() {
-    channelInit();
-  });
-
-  window.onpopstate = function(event) {
-    channelInit();
-  };
-
-});
-
-function channelInit() {
-
-  channelSet.timer = setInterval(function() {
+  ChannelSet.timer = setInterval(function() {
 
     if(!/space\.bilibili\.com\/\d+\/channel\/detail/.test(window.location.href)) return;
 
-    if($('.page-head').length === 0 || $('#channelBtoolsBtn').length > 0) return false;
+    if($('.page-head').length === 0 || $('#channelBtoolsBtn').length > 0) return;
 
-    $('.page-head').append('<a id="channelBtoolsBtn" href="javascript:void(0);">' + Btools.logo() + '</a>');
-    console.log('create');
+    $('.page-head').append('<a id="channelBtoolsBtn" href="javascript:void(0);"></a>');
 
     getLocalConfig(channelBtnInit);
 
-    clearInterval(channelSet.timer);
-    channelSet.timer = null;
+    // clearInterval(ChannelSet.timer);
+    // ChannelSet.timer = null;
 
   }, 1000);
 
-}
+});
+
 
 function channelBtnInit() {
 
@@ -86,34 +52,22 @@ function channelBtnInit() {
 
   getLocalConfig(function() {
 
-    $('#channelBtoolsBtn').html(Btools.logo(channelSet.watch.logoColor)).HKM([
-      {
-        key: 89,
-        title: '测试',
-        action: function() {
-          getLocalConfig(function() {
-            console.log(ChannelConfig);
-          });
-        }
-      }
-    ]);
-
     // 已订阅则直接显示 取消订阅
     if(ChannelConfig.channelShow.hasOwnProperty(uid) && ChannelConfig.channelShow[uid].hasOwnProperty(cid)) {
-      $('#channelBtoolsBtn').html(Btools.logo(channelSet.watch.logoColor)).HKM([
+      $('#channelBtoolsBtn').html(Btools.logo(ChannelSet.watch.logoColor)).HKM([
         {
-          key: channelSet.unwatch.key,
-          title: channelSet.unwatch.title,
+          key: ChannelSet.unwatch.key,
+          title: ChannelSet.unwatch.title,
           action: function() {
             channelUnwatch(uid, cid);
           }
         }
       ]);
     } else {
-      $('#channelBtoolsBtn').HKM([
+      $('#channelBtoolsBtn').html(Btools.logo()).HKM([
         {
-          key: channelSet.watch.key,
-          title: channelSet.watch.title,
+          key: ChannelSet.watch.key,
+          title: ChannelSet.watch.title,
           action: function() {
             channelWatch(uid, cid);
           }
@@ -124,10 +78,10 @@ function channelBtnInit() {
 
   function channelUnwatch(uid, cid) {
 
-    $('#channelBtoolsBtn').HKM('clear-' + channelSet.unwatch.key).HKM([
+    $('#channelBtoolsBtn').HKM('clear-' + ChannelSet.unwatch.key).HKM([
       {
-        key: channelSet.watch.key,
-        title: channelSet.watch.title,
+        key: ChannelSet.watch.key,
+        title: ChannelSet.watch.title,
         action: function() {
           channelWatch(uid, cid);
         }
@@ -143,16 +97,17 @@ function channelBtnInit() {
       }
       delete ChannelConfig.channelChecked[cid];
       saveLocalConfig();
+
     });
 
   }
 
   function channelWatch(uid, cid) {
 
-    if(channelSet.completedTimer !== null) return;
+    if(ChannelSet.completedTimer !== null) return;
 
     // 清掉快捷键
-    $('#channelBtoolsBtn').HKM('clear-' + channelSet.watch.key);
+    $('#channelBtoolsBtn').HKM('clear-' + ChannelSet.watch.key);
     // 按钮变灰
     $('#channelBtoolsBtn').html(Btools.logo('#666'));
 
@@ -170,32 +125,33 @@ function channelBtnInit() {
       isAuto: false
     });
 
-    channelSet.completedTimer = setInterval(function() {
+    ChannelSet.completedTimer = setInterval(function() {
 
       getLocalConfig(function() {
 
         // 获取到数据后
         if(ChannelConfig.channelShow.hasOwnProperty(uid) && ChannelConfig.channelShow[uid].hasOwnProperty(cid) && ChannelConfig.channelChecked[cid].completed === true) {
 
-          clearInterval(channelSet.completedTimer);
-          channelSet.completedTimer = null;
+          clearInterval(ChannelSet.completedTimer);
+          ChannelSet.completedTimer = null;
 
           ChannelConfig.channelShow[uid][cid].upName = $('#h-name').text();
+          ChannelConfig.channelShow[uid][cid].face = $('.h-avatar img').attr('src');
 
           saveLocalConfig();
-          $('#channelBtoolsBtn').html(Btools.logo(channelSet.watch.logoColor));
+          $('#channelBtoolsBtn').html(Btools.logo(ChannelSet.watch.logoColor));
 
           $('#channelBtoolsBtn').HKM([
             {
-              key: channelSet.unwatch.key,
-              title: channelSet.unwatch.title,
+              key: ChannelSet.unwatch.key,
+              title: ChannelSet.unwatch.title,
               action: function() {
                 channelUnwatch(uid, cid);
               }
             }
           ]);
 
-        } else { console.log('loading...'); }
+        } // else { console.log('loading...'); }
 
 
       });
@@ -206,14 +162,12 @@ function channelBtnInit() {
 }
 
 function getLocalConfig(callback) {
-  chrome.storage.sync.get(ChannelConfig, function(items){
+  chrome.storage.sync.get(ChannelConfigTemp, function(items){
     ChannelConfig = items;
     if(typeof callback === 'function') callback();
   });
 }
 
 function saveLocalConfig() {
-  chrome.storage.sync.set(ChannelConfig, function() {
-    console.log(ChannelConfig);
-  })
+  chrome.storage.sync.set(ChannelConfig)
 }

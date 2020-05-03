@@ -1,17 +1,20 @@
 chrome = chrome || browser;
 
-var ChannelConfig = {
+var ChannelConfigTemp = {
   // 订阅的channelID
   channelShow: {},
   // 订阅中的信息 date：最后查询的日期时间戳 aids：已存在的视频AV号
   channelChecked: {}
 }
+var ChannelConfig = ChannelConfigTemp;
 
 channelListInit();
 
 function channelListInit() {
 
   getLocalConfig(function() {
+
+    var noFace = '//i0.hdslb.com/bfs/face/member/noface.jpg';
 
     var html = '';
 
@@ -25,10 +28,11 @@ function channelListInit() {
       // 循环频道信息
       $.each(item, function(cid, channelItem) {
 
+        var face = typeof channelItem.face !== 'undefined' ? channelItem.face : noFace;
+
         // upName 只添加一次
         if(isAddUpName) {
-          console.log(channelItem.upName);
-          html += '<p class="upName">' + channelItem.upName + '</p>';
+          html += '<p class="upName"><img class="face" src="http:' + face + '"><a href="https://space.bilibili.com/' + uid + '" target="_blank">' + channelItem.upName + '</a></p>';
           isAddUpName = false;
         }
 
@@ -102,14 +106,12 @@ function deleteItem(uid, cid, index) {
 }
 
 function getLocalConfig(callback) {
-  chrome.storage.sync.get(ChannelConfig, function(items){
+  chrome.storage.sync.get(ChannelConfigTemp, function(items){
     ChannelConfig = items;
     if(typeof callback === 'function') callback();
   });
 }
 
 function saveLocalConfig() {
-  chrome.storage.sync.set(ChannelConfig, function() {
-
-  })
+  chrome.storage.sync.set(ChannelConfig)
 }

@@ -35,11 +35,12 @@ function(request, sender, sendResponse) {
 });
 
 // 检查关注频道的更新
-var ChannelConfig = {
+var ChannelConfigTemp = {
   channelUpdateTime: 3600,
   channelShow: {},
   channelChecked: {}
 };
+var ChannelConfig = ChannelConfigTemp;
 getLocalConfig(null);
 
 // 每过10秒检测一次有没有需要重新获取数据的频道
@@ -50,7 +51,7 @@ BtoolsInfo.channelListenerTimer = setInterval(function(){
     $.each(ChannelConfig.channelShow, function(uid, item) {
       $.each(item, function(cid, channelInfo) {
 
-        var time = parseInt(new Date().getTime() / 1000) - ChannelConfig.channelChecked[cid].date;
+        var time = parseInt(new Date().getTime() / 1000) - ChannelConfig.channelChecked[cid].updated_at;
 
         if(time < ChannelConfig.channelUpdateTime) return true;
 
@@ -64,98 +65,111 @@ BtoolsInfo.channelListenerTimer = setInterval(function(){
       });
     });
 
-
   });
 
-}, 10000);
 
-var GetChannelDataConfig = {
-  timer: null,
-  page: 1
-}
+
+}, 10000);
 
 // 获取 isAuto true 是自动检测 如果 aids 中不存在 则视为 unread | false 是手动点击 不会存入 unread 数组
 function getChannelData(channelData, isAuto) {
 
   var page = 1;
+  var now = 1;
+  var timeout = 30;
 
-  var timer = setInterval(function() {
+  getLocalConfig(function() {
 
-    var url = 'https://api.bilibili.com/x/space/channel/video?mid=' + channelData.uid + '&cid=' + channelData.cid + '&pn=' + page + '&ps=30&order=0&jsonp=jsonp';
+    var timer = setInterval(function() {
+      var url = 'https://api.bilibili.com/x/space/channel/video?mid=' + channelData.uid + '&cid=' + channelData.cid + '&pn=' + page + '&ps=30&order=0&jsonp=jsonp';
 
-    fetch(url, {
-        headers: {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
-        },
-    })
-    .then(function(response) { return response.json() })
-    .then(function(json) {
+      fetch(url, {
+          headers: {
+              'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
+          },
+      })
+      .then(function(response) { return response.json() })
+      .then(function(json) {
 
-      if(json.code !== 0) return;
+        if(json.code !== 0) return;
 
-      if(!isAuto) {
+        // 页数+1
+        page++;
 
-        if(typeof ChannelConfig.channelShow[channelData.uid] === 'undefined') ChannelConfig.channelShow[channelData.uid] = {};
-        if(typeof ChannelConfig.channelShow[channelData.uid][channelData.cid] === 'undefined') ChannelConfig.channelShow[channelData.uid][channelData.cid] = {
-          upName: '',
-          name: json.data.list.name,
-          unread: []
-        }
+        if(!isAuto) {
 
-      }
-
-      if(json.data.list.archives.length > 0) {
-
-        if(typeof ChannelConfig.channelChecked[channelData.cid] === 'undefined') {
-          ChannelConfig.channelChecked[channelData.cid] = {
-            date: parseInt(new Date().getTime() / 1000),
-            aids: [],
-            completed: false
-          };
-        }
-
-        // 循环数据 不在 ChannelConfig.channelChecked[uid] 里面的则添加
-        json.data.list.archives.forEach(function(item, index) {
-
-          if($.inArray(item.aid, ChannelConfig.channelChecked[channelData.cid].aids) === -1) {
-
-            if(isAuto) {
-              ChannelConfig.channelShow[channelData.uid][channelData.cid].unread.push({
-                aid: item.aid,
-                title: item.title,
-                pic: item.pic
-              });
-            }
-
-            ChannelConfig.channelChecked[channelData.cid].aids.push(item.aid);
-
+          if(typeof ChannelConfig.channelShow[channelData.uid] === 'undefined') ChannelConfig.channelShow[channelData.uid] = {};
+          if(typeof ChannelConfig.channelShow[channelData.uid][channelData.cid] === 'undefined') ChannelConfig.channelShow[channelData.uid][channelData.cid] = {
+            upName: '',
+            name: json.data.list.name,
+            unread: []
           }
-        });
 
-      } else {
+        }
 
-        clearInterval(timer);
-        ChannelConfig.channelChecked[channelData.cid].completed = true;
-        saveLocalConfig(ChannelConfig);
+        if(json.data.list.archives.length > 0) {
 
-        return;
+          var updated_at = parseInt(new Date().getTime() / 1000);
 
-      }
+          if(typeof ChannelConfig.channelChecked[channelData.cid] === 'undefined') {
+            ChannelConfig.channelChecked[channelData.cid] = {
+              updated_at: updated_at,
+              aids: [],
+              completed: false
+            };
+          } else {
+            ChannelConfig.channelChecked[channelData.cid].updated_at = updated_at;
+          }
 
-      // 页数+1
-      page++;
+          // 循环数据 不在 ChannelConfig.channelChecked[uid] 里面的则添加
+          json.data.list.archives.forEach(function(item, index) {
+
+            if($.inArray(item.aid, ChannelConfig.channelChecked[channelData.cid].aids) === -1) {
+
+              if(isAuto) {
+                ChannelConfig.channelShow[channelData.uid][channelData.cid].unread.push({
+                  aid: item.aid,
+                  title: item.title,
+                  pic: item.pic
+                });
+              }
+
+              ChannelConfig.channelChecked[channelData.cid].aids.push(item.aid);
+
+            }
+          });
+
+        } else {
+
+          clearInterval(timer);
+          ChannelConfig.channelChecked[channelData.cid].completed = true;
+          saveLocalConfig(ChannelConfig);
+
+          return;
+
+        }
+
+        // timeout 判断用
+        now++;
+
+        if(now > timeout) {
+          clearInterval(timer);
+        }
 
 
-    })
-    .catch(function(error) { console.log(error); });
+      })
+      .catch(function(error) { console.log(error); });
+      return true;
 
 
-    }, 200);
+      }, 200);
+
+    });
 
 }
 
 function getLocalConfig(callback) {
-  chrome.storage.sync.get(ChannelConfig, function(items){
+  chrome.storage.sync.get(ChannelConfigTemp, function(items){
     ChannelConfig = items;
     if(typeof callback === 'function') callback();
   });
