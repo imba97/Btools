@@ -1,88 +1,88 @@
 {
-	"background":
-	{
-		"page": "background.html"
-	},
-	"manifest_version": 2,
-	"name": "Btools",
-	"version": "1.1.4",
-	"description": "__MSG_pluginDesc__",
-	"icons":
-	{
-		"16": "icon/16.png",
-		"48": "icon/48.png",
-		"128": "icon/128.png"
-	},
-	"browser_action":
-	{
-		"default_icon": "icon/128.png",
-		"default_title": "Btools",
-		"default_popup": "popup.html"
-	},
-	"options_page": "options.html",
-  "options_ui":
-  {
-      "page": "options.html",
-      "chrome_style": true
+  "background": {
+    "page": "background.html"
   },
-	"content_scripts":
-	[
-		{
-			"matches": ["<all_urls>"],
-			"js": ["js/jq.js", "core/jpInput/m.js"],
-			"css": ["core/jpInput/m.css"],
-			"run_at": "document_start"
-		},
-		{
-			"matches": ["*://*.bilibili.com/*", "*://*.weibo.com/*", "*://*.btools.cc/*"],
-			"js": ["core/Btools.js"],
-			"css": ["core/Btools.css"],
-			"run_at": "document_start"
-		},
-		{
-			"matches": ["*://space.bilibili.com/*"],
-			"js": ["core/viv/m.js", "core/channel/m.js"],
-			"css": ["core/viv/m.css", "core/channel/m.css"],
-			"run_at": "document_end"
-		},
-		{
-			"matches": ["*://live.bilibili.com/*"],
-			"js": ["core/liveHelper/m.js"],
-			"css": ["core/liveHelper/m.css"],
-			"run_at": "document_end"
-		},
-		{
-			"matches": ["*://t.bilibili.com/*"],
-			"js": ["core/european/m.js"],
-			"css": ["core/european/m.css"],
-			"run_at": "document_end"
-		},
-		{
-			"matches": ["*://*.bilibili.com/read/*", "*://*.bilibili.com/video/*"],
-			"js": ["core/getUrl/m.js"],
-			"css": ["core/getUrl/m.css"],
-			"run_at": "document_end"
-		},
-		{
-			"matches": ["*://*.bilibili.com/watchlater/*", "*://*.bilibili.com/video/*", "*://*.bilibili.com/bangumi/*", "*://live.bilibili.com/*", "*://*.bilibili.com/read/*"],
-			"js": ["core/openImg/m.js"],
-			"css": ["core/openImg/m.css"],
-			"run_at": "document_end"
-		},
-		{
-			"matches": ["*://www.bilibili.com/*", "*://h.bilibili.com/*"],
-			"js": ["core/comment/m.js"],
-			"css": ["core/comment/m.css"],
-			"run_at": "document_end"
-		}
-	],
-	"content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
-	"permissions":
-	[
-		"storage",
-		"http://*/*",
-		"https://*/*"
-	],
-	"homepage_url": "http://btools.cc",
-	"default_locale": "zh_CN"
+  "manifest_version": 2,
+  "name": "Btools",
+  "version": "1.1.5",
+  "description": "__MSG_pluginDesc__",
+  "icons": {
+    "16": "icon/16.png",
+    "48": "icon/48.png",
+    "128": "icon/128.png"
+  },
+  "browser_action": {
+    "default_icon": "icon/128.png",
+    "default_title": "Btools",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["js/jq.js", "core/jpInput/m.js"],
+      "css": ["core/jpInput/m.css"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "*://*.bilibili.com/*",
+        "*://*.weibo.com/*",
+        "*://*.btools.cc/*"
+      ],
+      "js": ["core/Btools.js"],
+      "css": ["core/Btools.css"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["*://space.bilibili.com/*"],
+      "js": ["core/viv/m.js", "core/channel/m.js"],
+      "css": ["core/viv/m.css", "core/channel/m.css"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["*://live.bilibili.com/*"],
+      "js": ["core/liveHelper/m.js"],
+      "css": ["core/liveHelper/m.css"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["*://t.bilibili.com/*"],
+      "js": ["core/european/m.js"],
+      "css": ["core/european/m.css"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["*://*.bilibili.com/read/*", "*://*.bilibili.com/video/*"],
+      "js": ["core/getUrl/m.js"],
+      "css": ["core/getUrl/m.css"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "*://*.bilibili.com/watchlater/*",
+        "*://*.bilibili.com/video/*",
+        "*://*.bilibili.com/bangumi/*",
+        "*://live.bilibili.com/*",
+        "*://*.bilibili.com/read/*"
+      ],
+      "js": ["core/openImg/m.js"],
+      "css": ["core/openImg/m.css"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["*://www.bilibili.com/*", "*://h.bilibili.com/*"],
+      "js": ["core/comment/m.js"],
+      "css": ["core/comment/m.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+  "permissions": ["storage", "http://*/*", "https://*/*"],
+  "homepage_url": "http://btools.cc",
+  "default_locale": "zh_CN"
 }
