@@ -359,3 +359,13 @@
 .btools_comment_search_options input {
   zoom: 1.5;
 }
+
+.btools_comment_close_btn {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  font-size: 50px;
+  color: #fff;
+}

@@ -15,6 +15,7 @@ var CommentSet = {
   count: -1,
   comment_replys: new Array(),
   comment_reg: null,
+  comment_is_show: false,
 }
 
 var CommentElement = {
@@ -448,7 +449,13 @@ function saveSet() {
 }
 
 function searchShow() {
-  var comment_box = document.createElement('div')
+  var comment_box = document.querySelector('.btools_comment_box')
+  if (comment_box !== null) {
+    comment_box.style.display = 'block'
+    return
+  }
+
+  comment_box = document.createElement('div')
   comment_box.setAttribute('class', 'btools_comment_box')
   comment_box.innerHTML = '<div class="btools_comment_background"></div>'
 
@@ -481,9 +488,18 @@ function searchShow() {
     CommentElement.comment_progress_span
   )
 
+  var comment_close_btn = document.createElement('a')
+  comment_close_btn.setAttribute('class', 'btools_comment_close_btn')
+  comment_close_btn.innerText = '×'
+
+  comment_close_btn.addEventListener('click', function () {
+    comment_box.style.display = 'none'
+  })
+
   comment_box.append(CommentElement.comment_replys_ul)
   comment_box.append(comment_options)
   comment_box.append(CommentElement.comment_progress)
+  comment_box.append(comment_close_btn)
 
   document.body.appendChild(comment_box)
 
