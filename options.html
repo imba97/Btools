@@ -10,6 +10,7 @@
 	#BtoolsSet p a,
 	#BtoolsBtn p a
 	{
+    position: relative;
 		font-size: 20px;
 		text-decoration: none;
 		color: #666;
@@ -24,7 +25,33 @@
 		font-size: 16px;
 		border: none;
 		border-bottom: 1px #000 solid;
-	}
+  }
+  .tips {
+    position: absolute;
+    top: 3px;
+    right: -25px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    background-color: #666;
+    border-radius: 100%;
+    font-size: 10px;
+    text-align: center;
+    color: #FFF;
+    opacity: 0.75;
+    display: inline-block;
+  }
+  .tips-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px;
+    background-color: #000;
+    color: #FFF;
+    border-radius: 3px;
+    opacity: 0.8;
+    display: none;
+  }
 	</style>
 	<title>插件配置页</title>
 </head>
@@ -34,11 +61,13 @@
 		<p><a id="liveHelperPKPoint" data-max="1" href="#" target="_self">默认<span></span>PK分数</a></p>
 		<p><a id="liveHelperMiniPlayer" data-max="1" href="#" target="_self">默认<span></span>迷你播放器</a></p>
 		<p><a id="vivFind" data-max="1" href="#" target="_self"><span></span>自动搜索失效视频</a></p>
-		<p><a id="channelUpdateTime" data-max="1" href="#" target="_self">检查订阅频道频率<span></span></a></p>
+    <p><a id="channelUpdateTime" data-max="1" href="#" target="_self">检查订阅频道频率<span></span></a></p>
+    <p><a id="f__kSpace" data-max="1" href="#" target="_self"><span></span>空格键<label>F**k后，空格键不会控制滚动条向下翻动</label></a></p>
 	</div>
 	<div id="BtoolsBtn">
 		<p><a id="clearVivCache" href="#" target="_self">清空失效视频本地存储</a></p>
-	</div>
+  </div>
+  <p class="tips-box">233</p>
 
 	<script src="js/jq.js"></script>
 	<script src="js/options.js"></script>

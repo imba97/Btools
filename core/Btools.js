@@ -15,7 +15,8 @@ var Btools = {
     bangumiID:  function() { return /([Bb][Vv][fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF]{10})/.exec($('.pub-wrapper .av-link').text()) !== null ? bv2av(/([Bb][Vv][fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF]{10})/.exec($('.pub-wrapper .av-link').text())[1]) : null },
     readID:     function() { return /read\/cv(\d+)/.exec(window.location.pathname) !== null ? /read\/cv(\d+)/.exec(window.location.pathname)[1] : null },
     activeID:   function() { if($('#BtoolsActivityId').length === 0) { $('body').append('<input type="hidden" id="BtoolsActivityId"><script>document.querySelector(\'#BtoolsActivityId\').value=window.activityId</script>'); } return $('#BtoolsActivityId').val(); },
-    albumID:    function() { return /h\.bilibili\.com\/(\d+)/.exec(window.location.href) !== null ? /h\.bilibili\.com\/(\d+)/.exec(window.location.href)[1] : null }
+    albumID:    function() { return /h\.bilibili\.com\/(\d+)/.exec(window.location.href) !== null ? /h\.bilibili\.com\/(\d+)/.exec(window.location.href)[1] : null },
+    videoIsPlaying: false
   },
   logo: function(color, svgClass) {
     var c = color || '#029bcd';
@@ -100,6 +101,33 @@ $.ajax({
 document.onreadystatechange = function() {
     if (document.readyState === 'complete') {
       console.log(Btools.info,Btools.infoColor);
+
+      // 禁止空格键滚动页面
+      if(Btools.bilibili.getApiType() === 'video') {
+        chrome.storage.sync.get({f__kSpace: 0}, function (config) {
+          // 未开启
+          if(config.f__kSpace === 0) return;
+          // 获取视频标签
+          var video = $('video').get(0);
+          // 未获取到视频
+          if(video === null) return;
+          // 添加播放暂停监听 获取当前是否在播放
+          video.addEventListener('play', function() {
+            Btools.bilibili.videoIsPlaying = true;
+            console.log(Btools.bilibili.videoIsPlaying)
+          });
+          video.addEventListener('pause', function() {
+            Btools.bilibili.videoIsPlaying = false;
+            console.log(Btools.bilibili.videoIsPlaying)
+          });
+          // 添加空格键事件监听
+          document.addEventListener('keydown', function(e) {
+            if(e.key !== ' ' || $(":focus").length !== 0) return;
+            e.preventDefault();
+            Btools.bilibili.videoIsPlaying ? video.pause() : video.play()
+          })
+        })
+      }
 
       // 微博自动刷新评论工具
       setTimeout(function(){

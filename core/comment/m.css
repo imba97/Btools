@@ -39,7 +39,7 @@
   width: 150px;
   height: 31px;
   overflow: hidden;
-  z-index: 1000;
+  z-index: 120;
 }
 .btools-history-emoji {
   margin: 0 5px;
@@ -221,7 +221,7 @@
 
 /*定义滚动条轨道 内阴影*/
 .BtoolsSearchListBox::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: #ccc; /*滚动条的背景颜色*/
 }
 
@@ -362,10 +362,14 @@
 
 .btools_comment_close_btn {
   position: absolute;
-  top: 5px;
-  right: 10px;
+  top: 30px;
+  left: 400px;
   width: 40px;
   height: 40px;
   font-size: 50px;
   color: #fff;
+}
+
+.btools_comment_close_btn:hover {
+  color: #fb7299;
 }

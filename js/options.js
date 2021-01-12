@@ -4,7 +4,8 @@ var defaultSet = {
   liveHelperPKPoint: 0,
   liveHelperMiniPlayer: 0,
   vivFind: 0,
-  channelUpdateTime: 666
+  channelUpdateTime: 666,
+  f__kSpace: 0
 };
 
 var setText = {
@@ -16,7 +17,12 @@ var setText = {
     1800: '每30分钟',
     3600: '每小时',
     0: '自定义 { number:3600["min":300,"max":10800] } 秒'
-  }
+  },
+  f__kSpace: ['不F**k', 'F**k']
+}
+
+var tips = {
+
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -36,6 +42,18 @@ function showSet()
         if(typeof setText[k][v] === 'undefined') {
           var tempVal = v;
           v = 0;
+        }
+
+        var tip = $('#' + k + ' label');
+        if(tip.length > 0 && tip.text() !== '?') {
+          tips[k] = tip.text();
+          tip.text('?').addClass('tips').on('mouseover', function() {
+            $('.tips-box').text(tips[k]).css({
+              top: $(this).offset().top - 50
+            }).show();
+          }).on('mouseout', function() {
+            $('.tips-box').hide();
+          })
         }
 
         var regCode = /\{\s?([^\:]*)\:([^\[\]]*)\[(.*?)\]\s?\}/;
